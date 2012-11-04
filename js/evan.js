@@ -8,5 +8,5 @@ var evan = {},
 
 // adding Node.js dependencies
 if (typeof exports === 'object' && typeof require === 'function') {
-    troop = require('troop-0.1.9').troop;
+    troop = require('troop-0.1.10').troop;
 }
