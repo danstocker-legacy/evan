@@ -1,15 +1,15 @@
 /*global evan, module, test, expect, ok, equal, deepEqual, raises */
-(function (Event) {
-    module("Event");
+(function (EventSpace) {
+    module("EventSpace");
 
     test("Instantiation", function () {
         var event;
 
-        event = Event.create();
+        event = EventSpace.create();
         deepEqual(event.registry, {}, "Event registry initialized");
         equal(event.bubbling, true, "Bubbling is on by default");
 
-        event = Event.create({bubbling: false});
+        event = EventSpace.create({bubbling: false});
         equal(event.bubbling, false, "Bubbling turned off");
     });
 
@@ -18,7 +18,7 @@
      * @param [stopsPropagation] {boolean}
      */
     function testTriggering(noBubbling, stopsPropagation) {
-        var event = Event.create({bubbling: !noBubbling}),
+        var event = EventSpace.create({bubbling: !noBubbling}),
             i = 0;
 
         // mock subscriptions
@@ -60,5 +60,5 @@
         testTriggering(false, true);
     });
 }(
-    evan.Event
+    evan.EventSpace
 ));

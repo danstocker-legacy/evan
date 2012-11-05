@@ -1,12 +1,14 @@
 /**
- * Datastore Event Management
+ * Event Space
+ *
+ * Events traverse within a confined event space.
  */
 /*global troop, evan */
-troop.promise('evan.Event', function () {
+troop.promise('evan.EventSpace', function () {
     var base = troop.Base,
         self;
 
-    self = evan.Event = base.extend()
+    self = evan.EventSpace = base.extend()
         .addMethod({
             /**
              * Adds subscription registry.
