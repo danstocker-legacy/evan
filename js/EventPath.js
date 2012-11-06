@@ -39,6 +39,14 @@ troop.promise('evan.EventPath', function () {
              */
             match: function (path) {
                 return this.asString === path.asString;
+            },
+
+            /**
+             * Decreases path length by one.
+             * @return {EventPath} New event path instance.
+             */
+            shrink: function () {
+                return self.create(this.asArray.slice(0, -1));
             }
         });
 

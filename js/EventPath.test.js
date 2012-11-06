@@ -27,6 +27,16 @@
         equal(path.match(EventPath.create('test.path.it.is')), true, "Matching path");
         equal(path.match(EventPath.create('path.it.is')), false, "Non-matching path");
     });
+
+    test("Shrink", function () {
+        var path1 = EventPath.create('test.path.it.is'),
+            path2 = path1.shrink(),
+            path3 = path2.shrink();
+
+        equal(path1.asString, 'test.path.it.is', "Original path untouched");
+        equal(path2.asString, 'test.path.it', "Path shrunk");
+        equal(path3.asString, 'test.path', "Path shrunk further");
+    });
 }(
     evan.EventPath
 ));
