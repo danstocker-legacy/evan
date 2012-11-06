@@ -28,7 +28,8 @@ troop.promise('evan.EventPath', function () {
 
                 this.addConstant({
                     asArray: aPath,
-                    asString: sPath
+                    asString: sPath,
+                    length: aPath.length
                 });
             },
 

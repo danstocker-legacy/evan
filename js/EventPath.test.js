@@ -6,6 +6,7 @@
         var path = EventPath.create('test.path.it.is');
         deepEqual(path.asArray, ['test', 'path', 'it', 'is'], "Array representation");
         deepEqual(path.asString, 'test.path.it.is', "String representation");
+        equal(path.length, 4, "Path length");
     });
 
     test("Initialized by array", function () {
@@ -35,7 +36,9 @@
 
         equal(path1.asString, 'test.path.it.is', "Original path untouched");
         equal(path2.asString, 'test.path.it', "Path shrunk");
+        equal(path2.length, 3, "Path shrunk");
         equal(path3.asString, 'test.path', "Path shrunk further");
+        equal(path3.length, 2, "Path shrunk further");
     });
 }(
     evan.EventPath
