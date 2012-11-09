@@ -35,22 +35,23 @@ troop.promise('evan.EventSpace', function () {
 
             /**
              * Triggers event.
-             * @param path {string[]} Path on which to trigger event.
+             * @param path {string|string[]|EventPath} Path on which to trigger event.
              * @param eventName {string} Name of event to be triggered.
              * @param [data] {object} Extra data to be passed along with event to handlers.
              */
             trigger: function (path, eventName, data) {
+                path = evan.EventPath.create(path);
+
                 var registry = this.registry,
                     bubbling = this.bubbling,
-                    sPath = path.join('.'),
                     handlers,
                     i, handler, result;
 
-                if (!registry.hasOwnProperty(sPath)) {
+                if (!registry.hasOwnProperty(path.asString)) {
                     return this;
                 }
 
-                handlers = registry[sPath];
+                handlers = registry[path.asString];
                 if (!handlers.hasOwnProperty(eventName)) {
                     return this;
                 }
@@ -65,7 +66,7 @@ troop.promise('evan.EventSpace', function () {
                 for (i = 0; i < handlers.length; i++) {
                     handler = handlers[i];
                     result = handler.call(this, {
-                        target: sPath,
+                        target: path.asString,
                         name: eventName
                     }, data);
 
@@ -77,7 +78,7 @@ troop.promise('evan.EventSpace', function () {
                 }
 
                 if (bubbling && path.length) {
-                    this.trigger(path.slice(0, -1), eventName);
+                    this.trigger(path.shrink(), eventName);
                 }
 
                 return this;
