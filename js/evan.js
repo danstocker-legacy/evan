@@ -4,9 +4,11 @@
 /*global exports, require */
 /** @namespace */
 var evan = {},
+    dessert,
     troop;
 
 // adding Node.js dependencies
 if (typeof exports === 'object' && typeof require === 'function') {
-    troop = require('troop-0.1.10').troop;
+    dessert = require('dessert-0.2.1').dessert;
+    troop = require('troop-0.2.1').troop;
 }
