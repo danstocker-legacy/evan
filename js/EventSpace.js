@@ -3,83 +3,87 @@
  *
  * Events traverse within a confined event space.
  */
-/*global troop, evan */
+/*global dessert, troop, evan */
 troop.promise('evan.EventSpace', function () {
     var base = troop.Base,
         self;
+
+    dessert.addTypes({
+        isEventSpace: function (expr) {
+            return self.isPrototypeOf(expr);
+        },
+
+        isEventSpaceOptional: function (expr) {
+            return typeof expr === 'undefined' ||
+                   self.isPrototypeOf(expr);
+        }
+    });
 
     self = evan.EventSpace = base.extend()
         .addMethod({
             /**
              * Adds subscription registry.
              * @constructor
-             * @param options
-             * @param options.bubbling {boolean} Flag controlling bubbling. Default: true.
              */
-            init: function (options) {
-                options = options || {};
-
+            init: function () {
                 this
                     .addConstant({
                         /**
                          * Object serving as lookup for subscribed paths.
                          */
-                        registry: {},
-
-                        // flags
-                        bubbling: typeof options.bubbling === 'boolean' ?
-                            options.bubbling :
-                            true
+                        registry: {}
                     });
-            },
-
+            }
+        })
+        .addPrivateMethod({
             /**
-             * Triggers event.
-             * @param path {string|string[]|EventPath} Path on which to trigger event.
-             * @param eventName {string} Name of event to be triggered.
-             * @param [data] {object} Extra data to be passed along with event to handlers.
+             * Bubbles an event up the path.
+             * @param eventPath {EventPath}
+             * @param eventName {string}
+             * @param [data] {*}
+             * @private
              */
-            trigger: function (path, eventName, data) {
-                path = evan.EventPath.create(path);
-
-                var registry = this.registry,
-                    bubbling = this.bubbling,
-                    handlers,
+            _bubble: function (eventPath, eventName, data) {
+                var handlers = this.registry[eventPath.asString], // all handlers associated with path
                     i, handler, result;
 
-                if (!registry.hasOwnProperty(path.asString)) {
-                    return this;
-                }
+                if (handlers && handlers.hasOwnProperty(eventName)) {
+                    // obtaining actual list of handlers for path/eventName
+                    handlers = handlers[eventName];
 
-                handlers = registry[path.asString];
-                if (!handlers.hasOwnProperty(eventName)) {
-                    return this;
-                }
+                    // iterating over subscribed functions
+                    for (i = 0; i < handlers.length; i++) {
+                        handler = handlers[i];
+                        result = handler.call(this, {
+                            target: eventPath.asString,
+                            name  : eventName
+                        }, data);
 
-                // obtaining actual list of handlers for path/eventName
-                handlers = handlers[eventName];
-                if (!(handlers instanceof Array)) {
-                    return this;
-                }
-
-                // iterating over subscribed functions
-                for (i = 0; i < handlers.length; i++) {
-                    handler = handlers[i];
-                    result = handler.call(this, {
-                        target: path.asString,
-                        name: eventName
-                    }, data);
-
-                    if (result === false) {
-                        // iteration stops here and prevents further bubbling
-                        bubbling = false;
-                        break;
+                        if (result === false) {
+                            // iteration stops here and prevents further bubbling
+                            return;
+                        }
                     }
                 }
 
-                if (bubbling && path.length) {
-                    this.trigger(path.shrink(), eventName);
+                if (eventPath.asArray.length) {
+                    this._bubble(eventPath.shrink(), eventName, data);
                 }
+            }
+        })
+        .addMethod({
+            /**
+             * Triggers event.
+             * @param eventPath {string|string[]|EventPath} Path on which to trigger event.
+             * @param eventName {string} Name of event to be triggered.
+             * @param [data] {object} Extra data to be passed along with event to handlers.
+             */
+            trigger: function (eventPath, eventName, data) {
+                if (!dessert.isEventPath(eventPath, true)) {
+                    eventPath = evan.EventPath.create(eventPath);
+                }
+
+                this._bubble(eventPath, eventName, data);
 
                 return this;
             },

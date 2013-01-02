@@ -3,14 +3,8 @@
     module("EventSpace");
 
     test("Instantiation", function () {
-        var event;
-
-        event = EventSpace.create();
-        deepEqual(event.registry, {}, "Event registry initialized");
-        equal(event.bubbling, true, "Bubbling is on by default");
-
-        event = EventSpace.create({bubbling: false});
-        equal(event.bubbling, false, "Bubbling turned off");
+        var eventSpace = EventSpace.create();
+        deepEqual(eventSpace.registry, {}, "Event registry initialized");
     });
 
     /**
@@ -18,17 +12,17 @@
      * @param [stopsPropagation] {boolean}
      */
     function testTriggering(noBubbling, stopsPropagation) {
-        var event = EventSpace.create({bubbling: !noBubbling}),
+        var eventSpace = EventSpace.create({bubbling: !noBubbling}),
             i = 0;
 
         // mock subscriptions
-        event.registry.test = {};
-        event.registry.test.fooEvent = [
+        eventSpace.registry.test = {};
+        eventSpace.registry.test.fooEvent = [
             function () {
                 equal(i, 2, "Event bubbled");
             }];
-        event.registry['test.path'] = {};
-        event.registry['test.path'].fooEvent = [
+        eventSpace.registry['test.path'] = {};
+        eventSpace.registry['test.path'].fooEvent = [
             function (event, data) {
                 equal(event.target, 'test.path', "Target OK");
                 equal(event.name, 'fooEvent', "Event name OK");
@@ -42,17 +36,12 @@
                 equal(i++, 1, "First");
             }];
 
-        event.trigger(['test', 'path'], 'fooEvent', 'foo');
+        eventSpace.trigger(['test', 'path'], 'fooEvent', 'foo');
     }
 
     test("Triggering w/ bubbling", function () {
         expect(6);
         testTriggering();
-    });
-
-    test("Triggering w/o bubbling", function () {
-        expect(5);
-        testTriggering(true);
     });
 
     test("Triggering w/ stop-propagation", function () {

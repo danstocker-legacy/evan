@@ -3,10 +3,21 @@
  *
  * Path that points to an event target.
  */
-/*global troop, evan */
+/*global dessert, troop, evan */
 troop.promise('evan.EventPath', function () {
     var base = troop.Base,
         self;
+
+    dessert.addTypes({
+        isEventPath: function (expr) {
+            return self.isPrototypeOf(expr);
+        },
+
+        isEventPathOptional: function (expr) {
+            return typeof expr === 'undefined' ||
+                   self.isPrototypeOf(expr);
+        }
+    });
 
     self = evan.EventPath = base.extend()
         .addConstant({
@@ -18,18 +29,21 @@ troop.promise('evan.EventPath', function () {
              * @path {string|string[]}
              */
             init: function (path) {
-                if (self.isPrototypeOf(path)) {
-                    return path;
+                var sPath, aPath;
+
+                if (dessert.isArray(path, true)) {
+                    sPath = path.join('.');
+                    aPath = path;
+                } else if (dessert.isString(path, true)) {
+                    sPath = path,
+                    aPath = path.split(self.RE_PATH_SEPARATOR);
+                } else {
+                    dessert.assert(false, "Invalid path");
                 }
 
-                var isArray = path instanceof Array,
-                    sPath = isArray ? path.join('.') : path,
-                    aPath = isArray ? path : path.split(self.RE_PATH_SEPARATOR);
-
-                this.addConstant({
-                    asArray: aPath,
-                    asString: sPath,
-                    length: aPath.length
+                this.addPublic({
+                    asArray : aPath,
+                    asString: sPath
                 });
             },
 
@@ -39,15 +53,19 @@ troop.promise('evan.EventPath', function () {
              * @return {boolean}
              */
             match: function (path) {
+                dessert.isEventPath(path);
+
                 return this.asString === path.asString;
             },
 
             /**
              * Decreases path length by one.
-             * @return {EventPath} New event path instance.
              */
             shrink: function () {
-                return self.create(this.asArray.slice(0, -1));
+                this.asArray.pop();
+                this.asString = this.asArray.join('.');
+
+                return this;
             }
         });
 
