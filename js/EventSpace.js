@@ -79,7 +79,7 @@ troop.promise('evan.EventSpace', function () {
              * @param [data] {object} Extra data to be passed along with event to handlers.
              */
             trigger: function (eventPath, eventName, data) {
-                if (!dessert.isEventPath(eventPath, true)) {
+                if (!dessert.validators.isEventPath(eventPath)) {
                     eventPath = evan.EventPath.create(eventPath);
                 }
 

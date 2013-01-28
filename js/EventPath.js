@@ -29,12 +29,13 @@ troop.promise('evan.EventPath', function () {
              * @path {string|string[]}
              */
             init: function (path) {
-                var sPath, aPath;
+                var validators = dessert.validators,
+                    sPath, aPath;
 
-                if (dessert.isArray(path, true)) {
+                if (validators.isArray(path)) {
                     sPath = path.join('.');
                     aPath = path;
-                } else if (dessert.isString(path, true)) {
+                } else if (validators.isString(path)) {
                     sPath = path,
                     aPath = path.split(self.RE_PATH_SEPARATOR);
                 } else {
