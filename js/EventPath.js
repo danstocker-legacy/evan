@@ -68,6 +68,4 @@ troop.promise('evan.EventPath', function () {
                 return this;
             }
         });
-
-    return self;
 });

@@ -100,6 +100,4 @@ troop.promise('evan.EventSpace', function () {
 
             }
         });
-
-    return self;
 });
