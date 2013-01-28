@@ -6,7 +6,7 @@
 LIB="evan"
 
 FILES="
-js/evan.js
+js/namespace.js
 js/EventPath.js
 js/EventSpace.js
 js/exports.js
