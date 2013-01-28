@@ -1,4 +1,4 @@
-/build/
+/out/
 /lib/
 /.idea/
 /build*.sh
