@@ -4,7 +4,7 @@
  * Path that points to an event target.
  */
 /*global dessert, troop, evan */
-troop.promise('evan.EventPath', function () {
+troop.promise(evan, 'EventPath', function () {
     var base = troop.Base,
         self;
 

@@ -4,7 +4,7 @@
  * Events traverse within a confined event space.
  */
 /*global dessert, troop, evan */
-troop.promise('evan.EventSpace', function () {
+troop.promise(evan, 'EventSpace', function () {
     var base = troop.Base,
         self;
 

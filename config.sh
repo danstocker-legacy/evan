@@ -9,4 +9,5 @@ FILES="
 js/namespace.js
 js/EventPath.js
 js/EventSpace.js
+js/exports.js
 "
