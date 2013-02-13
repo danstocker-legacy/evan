@@ -8,17 +8,6 @@ troop.promise(evan, 'EventSpace', function () {
     var base = troop.Base,
         self;
 
-    dessert.addTypes({
-        isEventSpace: function (expr) {
-            return self.isPrototypeOf(expr);
-        },
-
-        isEventSpaceOptional: function (expr) {
-            return typeof expr === 'undefined' ||
-                   self.isPrototypeOf(expr);
-        }
-    });
-
     self = evan.EventSpace = base.extend()
         .addMethod({
             /**
@@ -100,4 +89,15 @@ troop.promise(evan, 'EventSpace', function () {
 
             }
         });
+});
+
+dessert.addTypes({
+    isEventSpace: function (expr) {
+        return evan.EventSpace.isPrototypeOf(expr);
+    },
+
+    isEventSpaceOptional: function (expr) {
+        return typeof expr === 'undefined' ||
+               evan.EventSpace.isPrototypeOf(expr);
+    }
 });

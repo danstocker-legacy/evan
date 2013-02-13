@@ -8,17 +8,6 @@ troop.promise(evan, 'EventPath', function () {
     var base = troop.Base,
         self;
 
-    dessert.addTypes({
-        isEventPath: function (expr) {
-            return self.isPrototypeOf(expr);
-        },
-
-        isEventPathOptional: function (expr) {
-            return typeof expr === 'undefined' ||
-                   self.isPrototypeOf(expr);
-        }
-    });
-
     self = evan.EventPath = base.extend()
         .addConstant({
             RE_PATH_SEPARATOR: /\./
@@ -69,4 +58,15 @@ troop.promise(evan, 'EventPath', function () {
                 return this;
             }
         });
+});
+
+dessert.addTypes({
+    isEventPath: function (expr) {
+        return evan.EventPath.isPrototypeOf(expr);
+    },
+
+    isEventPathOptional: function (expr) {
+        return typeof expr === 'undefined' ||
+               evan.EventPath.isPrototypeOf(expr);
+    }
 });
