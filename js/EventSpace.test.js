@@ -36,7 +36,7 @@
                 equal(i++, 1, "First");
             }];
 
-        eventSpace.trigger(['test', 'path'], 'fooEvent', 'foo');
+        eventSpace.trigger('fooEvent', ['test', 'path'], 'foo');
     }
 
     test("Triggering w/ bubbling", function () {

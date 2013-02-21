@@ -15,24 +15,23 @@ troop.promise(evan, 'EventSpace', function () {
              * @constructor
              */
             init: function () {
-                this
-                    .addConstant({
-                        /**
-                         * Object serving as lookup for subscribed paths.
-                         */
-                        registry: {}
-                    });
+                this.addConstant({
+                    /**
+                     * Object serving as lookup for subscribed paths.
+                     */
+                    registry: {}
+                });
             }
         })
         .addPrivateMethod({
             /**
              * Bubbles an event up the path.
-             * @param eventPath {EventPath}
              * @param eventName {string}
+             * @param eventPath {EventPath}
              * @param [data] {*}
              * @private
              */
-            _bubble: function (eventPath, eventName, data) {
+            _bubble: function (eventName, eventPath, data) {
                 var handlers = this.registry[eventPath.asString], // all handlers associated with path
                     i, handler, result;
 
@@ -56,28 +55,31 @@ troop.promise(evan, 'EventSpace', function () {
                 }
 
                 if (eventPath.asArray.length) {
-                    this._bubble(eventPath.shrink(), eventName, data);
+                    this._bubble(eventName, eventPath.shrink(), data);
                 }
             }
         })
         .addMethod({
             /**
              * Triggers event.
-             * @param eventPath {string|string[]|EventPath} Path on which to trigger event.
              * @param eventName {string} Name of event to be triggered.
+             * @param eventPath {string|string[]|EventPath} Path on which to trigger event.
              * @param [data] {object} Extra data to be passed along with event to handlers.
              */
-            trigger: function (eventPath, eventName, data) {
+            trigger: function (eventName, eventPath, data) {
                 if (!dessert.validators.isEventPath(eventPath)) {
                     eventPath = evan.EventPath.create(eventPath);
                 }
 
-                this._bubble(eventPath, eventName, data);
+                this._bubble(eventName, eventPath, data);
 
                 return this;
             },
 
-            on: function () {
+            /**
+             * Subscribes to event.
+             */
+            on: function (eventName, eventPath, handler) {
 
             },
 
