@@ -78,6 +78,10 @@ troop.promise(evan, 'EventSpace', function () {
 
             /**
              * Subscribes to event.
+             * @param eventName {string} Name of event to be triggered.
+             * @param eventPath {string|string[]|EventPath} Path on which to trigger event.
+             * @param handler {function} Event handler function that is called when the event
+             * is triggered on (or bubbles to) the specified path.
              */
             on: function (eventName, eventPath, handler) {
 
