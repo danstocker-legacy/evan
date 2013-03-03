@@ -26,8 +26,8 @@ troop.promise(evan, 'EventSpace', function () {
         .addPrivateMethod({
             /**
              * Bubbles an event up the path.
-             * @param eventName {string}
-             * @param eventPath {EventPath}
+             * @param {string} eventName
+             * @param {EventPath} eventPath
              * @param [data] {*}
              * @private
              */
@@ -62,9 +62,9 @@ troop.promise(evan, 'EventSpace', function () {
         .addMethod({
             /**
              * Triggers event.
-             * @param eventName {string} Name of event to be triggered.
-             * @param eventPath {string|string[]|EventPath} Path on which to trigger event.
-             * @param [data] {object} Extra data to be passed along with event to handlers.
+             * @param {string} eventName Name of event to be triggered.
+             * @param {string|string[]|EventPath} eventPath Path on which to trigger event.
+             * @param {object} [data] Extra data to be passed along with event to handlers.
              */
             trigger: function (eventName, eventPath, data) {
                 if (!dessert.validators.isEventPath(eventPath)) {
@@ -78,9 +78,9 @@ troop.promise(evan, 'EventSpace', function () {
 
             /**
              * Subscribes to event.
-             * @param eventName {string} Name of event to be triggered.
-             * @param eventPath {string|string[]|EventPath} Path on which to trigger event.
-             * @param handler {function} Event handler function that is called when the event
+             * @param {string} eventName Name of event to be triggered.
+             * @param {string|string[]|EventPath} eventPath Path on which to trigger event.
+             * @param {function} handler Event handler function that is called when the event
              * is triggered on (or bubbles to) the specified path.
              */
             on: function (eventName, eventPath, handler) {

@@ -8,8 +8,8 @@
     });
 
     /**
-     * @param [noBubbling] {boolean}
-     * @param [stopsPropagation] {boolean}
+     * @param {boolean} [noBubbling]
+     * @param {boolean} [stopsPropagation]
      */
     function testTriggering(noBubbling, stopsPropagation) {
         var eventSpace = EventSpace.create({bubbling: !noBubbling}),

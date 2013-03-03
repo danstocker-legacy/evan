@@ -38,7 +38,7 @@ troop.promise(evan, 'Path', function () {
 
             /**
              * Resolves a path relative to the supplied context.
-             * @param context {object}
+             * @param {object} context
              * @return {*}
              */
             resolve: function (context) {
@@ -60,7 +60,7 @@ troop.promise(evan, 'Path', function () {
             /**
              * Builds a path relative to the supplied context
              * and returns the object found at the end.
-             * @param context {object}
+             * @param {object} context
              */
             build: function (context) {
                 dessert.isObject(context);
@@ -82,7 +82,7 @@ troop.promise(evan, 'Path', function () {
 
             /**
              * Matches path to current path.
-             * @param path {Path}
+             * @param {Path} path
              * @return {boolean}
              */
             match: function (path) {
