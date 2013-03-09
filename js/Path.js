@@ -5,14 +5,15 @@
  */
 /*global dessert, troop, evan */
 troop.promise(evan, 'Path', function () {
-    var base = troop.Base,
-        self;
-
-    self = evan.Path = base.extend()
-        .addConstant({
+    /**
+     * @class evan.Path
+     * @extends troop.Base
+     */
+    var self = troop.Base.extend()
+        .addConstant(/** @lends evan.Path */{
             RE_PATH_SEPARATOR: /\./
         })
-        .addMethod({
+        .addMethod(/** @lends evan.Path */{
             /**
              * @constructor
              * @path {string|string[]}
@@ -91,9 +92,11 @@ troop.promise(evan, 'Path', function () {
                 return this.asString === path.asString;
             }
         });
+
+    return self;
 });
 
-dessert.addTypes({
+dessert.addTypes(/** @lends dessert */{
     isPath: function (expr) {
         return evan.Path.isBaseOf(expr);
     },

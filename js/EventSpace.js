@@ -5,11 +5,12 @@
  */
 /*global dessert, troop, evan */
 troop.promise(evan, 'EventSpace', function () {
-    var base = troop.Base,
-        self;
-
-    self = evan.EventSpace = base.extend()
-        .addMethod({
+    /**
+     * @class evan.EventSpace
+     * @extends troop.Base
+     */
+    return troop.Base.extend()
+        .addMethod(/** @lends evan.EventSpace */{
             /**
              * Adds subscription registry.
              * @constructor
@@ -23,7 +24,7 @@ troop.promise(evan, 'EventSpace', function () {
                 });
             }
         })
-        .addPrivateMethod({
+        .addPrivateMethod(/** @lends evan.EventSpace */{
             /**
              * Bubbles an event up the path.
              * @param {string} eventName
@@ -59,7 +60,7 @@ troop.promise(evan, 'EventSpace', function () {
                 }
             }
         })
-        .addMethod({
+        .addMethod(/** @lends evan.EventSpace */{
             /**
              * Triggers event.
              * @param {string} eventName Name of event to be triggered.
@@ -97,7 +98,7 @@ troop.promise(evan, 'EventSpace', function () {
         });
 });
 
-dessert.addTypes({
+dessert.addTypes(/** @lends dessert */{
     isEventSpace: function (expr) {
         return evan.EventSpace.isPrototypeOf(expr);
     },

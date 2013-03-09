@@ -5,11 +5,12 @@
  */
 /*global dessert, troop, evan */
 troop.promise(evan, 'EventPath', function () {
-    var base = evan.Path,
-        self;
-
-    self = evan.EventPath = base.extend()
-        .addMethod({
+    /**
+     * @class evan.EventPath
+     * @extends evan.Path
+     */
+    return evan.Path.extend()
+        .addMethod(/** @lends evan.EventPath */{
             /**
              * Decreases path length by one.
              */
@@ -22,7 +23,7 @@ troop.promise(evan, 'EventPath', function () {
         });
 });
 
-dessert.addTypes({
+dessert.addTypes(/** @lends dessert */{
     isEventPath: function (expr) {
         return evan.EventPath.isBaseOf(expr);
     },
