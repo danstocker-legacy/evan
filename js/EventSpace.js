@@ -29,6 +29,7 @@ troop.promise(evan, 'EventSpace', function () {
              * @param {string} eventName
              * @param {evan.EventPath} eventPath
              * @param [data] {*}
+             * @return {boolean}
              * @private
              */
             _bubble: function (eventName, eventPath, data) {
@@ -49,29 +50,39 @@ troop.promise(evan, 'EventSpace', function () {
 
                         if (result === false) {
                             // iteration stops here and prevents further bubbling
-                            return;
+                            return false;
                         }
                     }
                 }
 
-                if (eventPath.asArray.length) {
-                    this._bubble(eventName, eventPath.shrink(), data);
-                }
+                return true;
             }
         })
         .addMethod(/** @lends evan.EventSpace */{
             /**
              * Triggers event.
              * @param {string} eventName Name of event to be triggered.
-             * @param {string|string[]|evan.EventPath} eventPath Path on which to trigger event.
-             * @param {object} [data] Extra data to be passed along with event to handlers.
+             * @param {evan.EventPath|string|string[]} eventPath Path on which to trigger event.
+             * @param {*} [data] Extra data to be passed along with event to handlers.
              */
             trigger: function (eventName, eventPath, data) {
                 if (!dessert.validators.isEventPath(eventPath)) {
                     eventPath = evan.EventPath.create(eventPath);
+                } else {
+                    // path must be cloned because it will be modified
+                    eventPath = eventPath.clone();
                 }
 
-                this._bubble(eventName, eventPath, data);
+                // path will be chipped away from in each iteration
+                while (eventPath.asArray.length) {
+                    if (this._bubble(eventName, eventPath, data) === false) {
+                        // bubbling was deliberately stopped
+                        break;
+                    } else {
+                        // going on to next key in path
+                        eventPath.shrink();
+                    }
+                }
 
                 return this;
             },
