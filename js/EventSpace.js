@@ -27,12 +27,12 @@ troop.promise(evan, 'EventSpace', function () {
             /**
              * Bubbles an event up the path.
              * @param {string} eventName
-             * @param {EventPath} eventPath
+             * @param {evan.EventPath} eventPath
              * @param [data] {*}
              * @private
              */
             _bubble: function (eventName, eventPath, data) {
-                var handlers = this.registry[eventPath.asString], // all handlers associated with path
+                var handlers = this.registry[eventPath.toString()], // all handlers associated with path
                     i, handler, result;
 
                 if (handlers && handlers.hasOwnProperty(eventName)) {
@@ -43,7 +43,7 @@ troop.promise(evan, 'EventSpace', function () {
                     for (i = 0; i < handlers.length; i++) {
                         handler = handlers[i];
                         result = handler.call(this, {
-                            target: eventPath.asString,
+                            target: eventPath.toString(),
                             name  : eventName
                         }, data);
 
@@ -63,7 +63,7 @@ troop.promise(evan, 'EventSpace', function () {
             /**
              * Triggers event.
              * @param {string} eventName Name of event to be triggered.
-             * @param {string|string[]|EventPath} eventPath Path on which to trigger event.
+             * @param {string|string[]|evan.EventPath} eventPath Path on which to trigger event.
              * @param {object} [data] Extra data to be passed along with event to handlers.
              */
             trigger: function (eventName, eventPath, data) {
@@ -79,7 +79,7 @@ troop.promise(evan, 'EventSpace', function () {
             /**
              * Subscribes to event.
              * @param {string} eventName Name of event to be triggered.
-             * @param {string|string[]|EventPath} eventPath Path on which to trigger event.
+             * @param {string|string[]|evan.EventPath} eventPath Path on which to trigger event.
              * @param {function} handler Event handler function that is called when the event
              * is triggered on (or bubbles to) the specified path.
              */

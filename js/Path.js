@@ -6,11 +6,13 @@
  */
 /*global dessert, troop, evan */
 troop.promise(evan, 'Path', function () {
+    var self;
+
     /**
      * @class evan.Path
      * @extends troop.Base
      */
-    evan.Path = troop.Base.extend()
+    evan.Path = self = troop.Base.extend()
         .addConstant(/** @lends evan.Path */{
             RE_PATH_SEPARATOR: /\./
         })
@@ -19,29 +21,24 @@ troop.promise(evan, 'Path', function () {
              * @path {string|string[]}
              */
             init: function (path) {
-                var sPath, aPath;
+                var asArray;
 
                 // array representation is expected to be used more often
                 if (path instanceof Array) {
-                    sPath = path.join('.');
-                    aPath = path;
+                    asArray = path;
                 } else if (typeof path === 'string') {
-                    sPath = path;
-                    aPath = path.split(this.RE_PATH_SEPARATOR);
+                    asArray = path.split(this.RE_PATH_SEPARATOR);
                 } else {
                     dessert.assert(false, "Invalid path");
                 }
 
                 this.addPublic(/** @lends evan.Path */{
                     /**
+                     * Array buffer. Public because grants fast access.
+                     * Should not be changed from the outside.
                      * @type {Array}
                      */
-                    asArray : aPath,
-
-                    /**
-                     * @type {string}
-                     */
-                    asString: sPath
+                    asArray: asArray
                 });
             },
 
@@ -91,12 +88,37 @@ troop.promise(evan, 'Path', function () {
 
             /**
              * Matches remote path to current path.
-             * @param {evan.Path} remotePath Remote path
+             * @param {evan.Path|string|string[]} remotePath Remote path
              * @return {boolean}
              */
             equal: function (remotePath) {
-                return this.getBase().isBaseOf(remotePath) &&
-                       this.asString === remotePath.asString;
+                if (!self.isBaseOf(remotePath)) {
+                    remotePath = self.create(remotePath);
+                }
+
+                var currentArray = this.asArray,
+                    remoteArray = remotePath.asArray,
+                    i;
+
+                if (currentArray.length !== remoteArray.length) {
+                    return false;
+                } else {
+                    for (i = 0; i < remoteArray.length; i++) {
+                        if (currentArray[i] !== remoteArray[i]) {
+                            return false;
+                        }
+                    }
+                }
+
+                return true;
+            },
+
+            /**
+             * String representation
+             * @return {string}
+             */
+            toString: function () {
+                return this.asArray.join('.');
             }
         });
 });

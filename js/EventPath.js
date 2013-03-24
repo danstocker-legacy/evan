@@ -16,8 +16,6 @@ troop.promise(evan, 'EventPath', function () {
              */
             shrink: function () {
                 this.asArray.pop();
-                this.asString = this.asArray.join('.');
-
                 return this;
             }
         });
