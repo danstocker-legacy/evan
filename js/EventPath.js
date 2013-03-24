@@ -9,7 +9,7 @@ troop.promise(evan, 'EventPath', function () {
      * @class evan.EventPath
      * @extends evan.Path
      */
-    return evan.Path.extend()
+    evan.EventPath = evan.Path.extend()
         .addMethod(/** @lends evan.EventPath */{
             /**
              * Decreases path length by one.

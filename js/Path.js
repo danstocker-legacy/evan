@@ -9,7 +9,7 @@ troop.promise(evan, 'Path', function () {
      * @class evan.Path
      * @extends troop.Base
      */
-    var self = troop.Base.extend()
+    evan.Path = troop.Base.extend()
         .addConstant(/** @lends evan.Path */{
             RE_PATH_SEPARATOR: /\./
         })
@@ -26,12 +26,12 @@ troop.promise(evan, 'Path', function () {
                     aPath = path;
                 } else if (typeof path === 'string') {
                     sPath = path;
-                    aPath = path.split(self.RE_PATH_SEPARATOR);
+                    aPath = path.split(this.RE_PATH_SEPARATOR);
                 } else {
                     dessert.assert(false, "Invalid path");
                 }
 
-                this.addPublic({
+                this.addPublic(/** @lends evan.Path */{
                     asArray : aPath,
                     asString: sPath
                 });
@@ -92,8 +92,6 @@ troop.promise(evan, 'Path', function () {
                 return this.asString === path.asString;
             }
         });
-
-    return self;
 });
 
 dessert.addTypes(/** @lends dessert */{

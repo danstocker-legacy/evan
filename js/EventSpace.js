@@ -9,14 +9,13 @@ troop.promise(evan, 'EventSpace', function () {
      * @class evan.EventSpace
      * @extends troop.Base
      */
-    return troop.Base.extend()
+    evan.EventSpace = troop.Base.extend()
         .addMethod(/** @lends evan.EventSpace */{
             /**
              * Adds subscription registry.
-             * @constructor
              */
             init: function () {
-                this.addConstant({
+                this.addConstant(/** @lends evan.EventSpace */{
                     /**
                      * Object serving as lookup for subscribed paths.
                      */
