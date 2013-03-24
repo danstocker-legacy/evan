@@ -12,6 +12,14 @@ troop.promise(evan, 'EventPath', function () {
     evan.EventPath = evan.Path.extend()
         .addMethod(/** @lends evan.EventPath */{
             /**
+             * Clones event path instance
+             * @return {evan.EventPath}
+             */
+            clone: function () {
+                return this.getBase().create(this.asArray.concat());
+            },
+
+            /**
              * Decreases path length by one.
              */
             shrink: function () {
