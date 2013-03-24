@@ -9,6 +9,6 @@ var evan = {},
 
 // adding Node.js dependencies
 if (typeof require === 'function') {
-    dessert = require('dessert-0.2.3').dessert;
-    troop = require('troop-0.2.3').troop;
+    dessert = dessert || require('dessert').dessert;
+    troop = troop || require('troop').troop;
 }
