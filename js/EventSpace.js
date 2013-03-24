@@ -5,6 +5,8 @@
  */
 /*global dessert, troop, evan */
 troop.promise(evan, 'EventSpace', function () {
+    var hOP = Object.prototype.hasOwnProperty;
+
     /**
      * @class evan.EventSpace
      * @extends troop.Base
@@ -36,7 +38,7 @@ troop.promise(evan, 'EventSpace', function () {
                 var handlers = this.registry[eventPath.toString()], // all handlers associated with path
                     i, handler, result;
 
-                if (handlers && handlers.hasOwnProperty(eventName)) {
+                if (handlers && hOP.call(handlers, eventName)) {
                     // obtaining actual list of handlers for path/eventName
                     handlers = handlers[eventName];
 
