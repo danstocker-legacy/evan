@@ -1,0 +1,17 @@
+{
+    "name"        : "evan",
+    "version"     : "0.1.0",
+    "description" : "Custom events",
+    "keywords"    : ["custom", "events", "event", "troop"],
+    "author"      : "Dan Stocker <dan@kwaia.com>",
+    "repository"  : {
+        "type": "git",
+        "url" : "https://github.com/pdanstocker/evan.git"
+    },
+    "dependencies": {
+        "dessert": ">=0.2.4",
+        "troop"  : ">=0.3.0"
+    },
+    "files"       : ["out/evan.js"],
+    "main"        : "out/evan.js"
+}
