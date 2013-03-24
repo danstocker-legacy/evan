@@ -1,7 +1,8 @@
 /**
- * Event Path
+ * General Path
  *
- * Path that points to an event target.
+ * Represents a composite linear key, essentially
+ * an array, or a dot-separated string.
  */
 /*global dessert, troop, evan */
 troop.promise(evan, 'Path', function () {
@@ -15,12 +16,12 @@ troop.promise(evan, 'Path', function () {
         })
         .addMethod(/** @lends evan.Path */{
             /**
-             * @constructor
              * @path {string|string[]}
              */
             init: function (path) {
                 var sPath, aPath;
 
+                // array representation is expected to be used more often
                 if (path instanceof Array) {
                     sPath = path.join('.');
                     aPath = path;
@@ -32,7 +33,14 @@ troop.promise(evan, 'Path', function () {
                 }
 
                 this.addPublic(/** @lends evan.Path */{
+                    /**
+                     * @type {Array}
+                     */
                     asArray : aPath,
+
+                    /**
+                     * @type {string}
+                     */
                     asString: sPath
                 });
             },
@@ -40,7 +48,6 @@ troop.promise(evan, 'Path', function () {
             /**
              * Resolves a path relative to the supplied context.
              * @param {object} context
-             * @return {*}
              */
             resolve: function (context) {
                 dessert.isObject(context);
@@ -59,15 +66,16 @@ troop.promise(evan, 'Path', function () {
             },
 
             /**
-             * Builds a path relative to the supplied context
+             * Same as .resolve(), but builds the path if it does not exist
              * and returns the object found at the end.
+             * @see {evan.Path.resolve}
              * @param {object} context
              */
-            build: function (context) {
+            resolveOrBuild: function (context) {
                 dessert.isObject(context);
 
                 var result = context,
-                    path = this.asArray,
+                    path = this.asArray.concat(),
                     key;
 
                 while (path.length) {
@@ -82,14 +90,13 @@ troop.promise(evan, 'Path', function () {
             },
 
             /**
-             * Matches path to current path.
-             * @param {Path} path
+             * Matches remote path to current path.
+             * @param {evan.Path} remotePath Remote path
              * @return {boolean}
              */
-            match: function (path) {
-                dessert.isPath(path);
-
-                return this.asString === path.asString;
+            equal: function (remotePath) {
+                return this.getBase().isBaseOf(remotePath) &&
+                       this.asString === remotePath.asString;
             }
         });
 });

@@ -17,8 +17,8 @@
     test("Match", function () {
         var path = Path.create('test.path.it.is');
 
-        equal(path.match(Path.create('test.path.it.is')), true, "Matching path");
-        equal(path.match(Path.create('path.it.is')), false, "Non-matching path");
+        equal(path.equal(Path.create('test.path.it.is')), true, "Matching path");
+        equal(path.equal(Path.create('path.it.is')), false, "Non-matching path");
     });
 
     test("Path resolution", function () {
@@ -48,14 +48,17 @@
             };
 
         raises(function () {
-            path.build();
+            path.resolveOrBuild();
         }, "Path builder requires a context");
 
         raises(function () {
-            path.build('foo');
+            path.resolveOrBuild('foo');
         }, "Invalid context object");
 
-        path.build(context);
+        path.resolveOrBuild(context);
+
+        equal(path.asString, 'foo.bar', "String representation untouched by build");
+        deepEqual(path.asArray, ['foo', 'bar'], "Array representation untouched by build");
 
         deepEqual(context, {
             hello: "world",
@@ -64,11 +67,11 @@
             }
         }, "Path built");
 
-        Path.create('hello.world').build(context);
+        Path.create('hello.world').resolveOrBuild(context);
 
         deepEqual(context, {
             hello: {
-                world: {},
+                world: {}
             },
             foo  : {
                 bar: {}
