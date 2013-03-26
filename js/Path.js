@@ -49,11 +49,12 @@ troop.promise(evan, 'Path', function () {
             resolve: function (context) {
                 dessert.isObject(context);
 
-                var result = context,
-                    path = this.asArray.concat();
+                var asArray = this.asArray,
+                    result = context,
+                    i;
 
-                while (path.length) {
-                    result = result[path.shift()];
+                for (i = 0; i < asArray.length; i++) {
+                    result = result[asArray[i]];
                     if (typeof result === 'undefined') {
                         break;
                     }
@@ -71,12 +72,12 @@ troop.promise(evan, 'Path', function () {
             resolveOrBuild: function (context) {
                 dessert.isObject(context);
 
-                var result = context,
-                    path = this.asArray.concat(),
-                    key;
+                var asArray = this.asArray,
+                    result = context,
+                    i, key;
 
-                while (path.length) {
-                    key = path.shift();
+                for (i = 0; i < asArray.length; i++) {
+                    key = asArray[i];
                     if (typeof result[key] !== 'object') {
                         result[key] = {};
                     }
