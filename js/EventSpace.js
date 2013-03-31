@@ -63,6 +63,7 @@ troop.promise(evan, 'EventSpace', function () {
         .addMethod(/** @lends evan.EventSpace */{
             /**
              * Triggers event.
+             * @this {evan.EventSpace}
              * @param {string} eventName Name of event to be triggered.
              * @param {evan.EventPath|string|string[]} eventPath Path on which to trigger event.
              * @param {*} [data] Extra data to be passed along with event to handlers.
@@ -97,11 +98,44 @@ troop.promise(evan, 'EventSpace', function () {
              * is triggered on (or bubbles to) the specified path.
              */
             on: function (eventName, eventPath, handler) {
+                dessert.isFunction(handler);
 
+                var handlers = evan.Path.create([eventPath.toString()])
+                    .resolveOrBuild(this.registry);
+
+                if (hOP.call(handlers, eventName)) {
+                    handlers[eventName].push(handler);
+                } else {
+                    handlers[eventName] = [handler];
+                }
+
+                return this;
             },
 
-            off: function () {
+            /**
+             * Unsubscribes from event.
+             * @param {string} eventName Name of event to be triggered.
+             * @param {string|string[]|evan.EventPath} eventPath Path on which to trigger event.
+             * @param {function} [handler] Event handler function
+             */
+            off: function (eventName, eventPath, handler) {
+                dessert.isFunctionOptional(handler);
 
+                var handlers = evan.Path.create([eventPath.toString()])
+                    .resolve(this.registry);
+
+                if (handlers && hOP.call(handlers, eventName)) {
+                    if (handler) {
+                        // unsubscribing single handler from event on path
+                        handlers = handlers[eventName];
+                        handlers.splice(handlers.indexOf(handler), 1);
+                    } else {
+                        // unsubscribing all handlers from event on path
+                        delete handlers[eventName];
+                    }
+                }
+
+                return this;
             },
 
             one: function () {
