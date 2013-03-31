@@ -136,10 +136,6 @@ troop.promise(evan, 'EventSpace', function () {
                 }
 
                 return this;
-            },
-
-            one: function () {
-
             }
         });
 });
