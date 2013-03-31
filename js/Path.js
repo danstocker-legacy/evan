@@ -45,6 +45,7 @@ troop.promise(evan, 'Path', function () {
             /**
              * Resolves a path relative to the supplied context.
              * @param {object} context
+             * @return {object}
              */
             resolve: function (context) {
                 dessert.isObject(context);
@@ -67,7 +68,8 @@ troop.promise(evan, 'Path', function () {
              * Same as .resolve(), but builds the path if it does not exist
              * and returns the object found at the end.
              * @see {evan.Path.resolve}
-             * @param {object} context
+             * @param {object} context Object on which the path is resolved
+             * @return {object}
              */
             resolveOrBuild: function (context) {
                 dessert.isObject(context);
