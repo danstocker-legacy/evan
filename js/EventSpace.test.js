@@ -1,4 +1,4 @@
-/*global evan, module, test, expect, ok, equal, deepEqual, raises */
+/*global evan, module, test, expect, ok, equal, strictEqual, deepEqual, raises */
 (function (EventSpace) {
     module("EventSpace");
 
@@ -7,46 +7,21 @@
         deepEqual(eventSpace.registry, {}, "Event registry initialized");
     });
 
-    /**
-     * @param {boolean} [noBubbling]
-     * @param {boolean} [stopsPropagation]
-     */
-    function testTriggering(noBubbling, stopsPropagation) {
-        var eventSpace = /** @type {evan.EventSpace} */ EventSpace.create({bubbling: !noBubbling}),
-            i = 0;
+    test("Event creation", function () {
+        expect(2);
 
-        // mock subscriptions
-        eventSpace.registry.test = {};
-        eventSpace.registry.test.fooEvent = [
-            function () {
-                equal(i, 2, "Event bubbled");
-            }];
-        eventSpace.registry['test.path'] = {};
-        eventSpace.registry['test.path'].fooEvent = [
-            function (event, data) {
-                equal(event.target, 'test.path', "Target OK");
-                equal(event.name, 'fooEvent', "Event name OK");
-                equal(data, 'foo', "Data OK");
-                equal(i++, 0, "First");
-                if (stopsPropagation) {
-                    return false;
-                }
-            },
-            function () {
-                equal(i++, 1, "First");
-            }];
+        var eventSpace = /** @type {evan.EventSpace} */ EventSpace.create();
 
-        eventSpace.trigger('fooEvent', ['test', 'path'], 'foo');
-    }
+        evan.Event.addMock({
+            create: function (es, eventName) {
+                strictEqual(es, eventSpace, "Event space");
+                equal(eventName, 'myEvent', "Event name");
+            }
+        });
 
-    test("Triggering w/ bubbling", function () {
-        expect(6);
-        testTriggering();
-    });
+        eventSpace.createEvent('myEvent');
 
-    test("Triggering w/ stop-propagation", function () {
-        expect(4);
-        testTriggering(false, true);
+        evan.Event.removeMocks();
     });
 
     test("Subscription", function () {
@@ -115,5 +90,36 @@
             },
             "All handlers unsubscribed"
         );
+    });
+
+    test("Bubbling", function () {
+        expect(2);
+
+        var eventSpace = /** @type {evan.EventSpace} */ EventSpace.create()
+                .on('myEvent', 'test.event', function (event, data) {
+                    strictEqual(event, myEvent, "Event instance passed to handler");
+                    strictEqual(data, event.data, "Custom event data passed to handler");
+                }),
+            myEvent = eventSpace.createEvent('myEvent');
+
+        myEvent.originalPath = evan.EventPath.create('test.event');
+        myEvent.currentPath = myEvent.originalPath.clone();
+
+        strictEqual(eventSpace.bubbleSync(myEvent), eventSpace, "Bubbling returns event space");
+    });
+
+    test("Bubbling", function () {
+        var eventSpace = /** @type {evan.EventSpace} */ EventSpace.create()
+                .on('event', 'test.event', function () {
+                    return false;
+                }),
+            event = eventSpace.createEvent('event');
+
+        event.originalPath = evan.EventPath.create('test.event');
+        event.currentPath = event.originalPath.clone();
+
+        eventSpace.bubbleSync(event);
+
+        equal(eventSpace.bubbleSync(event), false, "Propagation stopped by handler");
     });
 }(evan.EventSpace));

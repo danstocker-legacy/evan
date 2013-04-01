@@ -4,7 +4,7 @@
  * Events traverse within a confined event space.
  */
 /*global dessert, troop, evan */
-troop.promise(evan, 'EventSpace', function () {
+troop.promise(evan, 'EventSpace', /** @borrows init as evan.EventSpace.create */ function () {
     var hOP = Object.prototype.hasOwnProperty;
 
     /**
@@ -23,71 +23,15 @@ troop.promise(evan, 'EventSpace', function () {
                      */
                     registry: {}
                 });
-            }
-        })
-        .addPrivateMethod(/** @lends evan.EventSpace */{
+            },
+
             /**
-             * Bubbles an event up the path.
-             * @param {string} eventName
-             * @param {evan.EventPath} eventPath
-             * @param [data] {*}
-             * @return {boolean}
-             * @private
+             * Creates an event in the context of the current event space.
+             * @param {string} eventName Event name
+             * @return {evan.Event} New event instance
              */
-            _bubble: function (eventName, eventPath, data) {
-                var handlers = this.registry[eventPath.toString()], // all handlers associated with path
-                    i, handler, result;
-
-                if (handlers && hOP.call(handlers, eventName)) {
-                    // obtaining actual list of handlers for path/eventName
-                    handlers = handlers[eventName];
-
-                    // iterating over subscribed functions
-                    for (i = 0; i < handlers.length; i++) {
-                        handler = handlers[i];
-                        result = handler.call(this, {
-                            target: eventPath.toString(),
-                            name  : eventName
-                        }, data);
-
-                        if (result === false) {
-                            // iteration stops here and prevents further bubbling
-                            return false;
-                        }
-                    }
-                }
-
-                return true;
-            }
-        })
-        .addMethod(/** @lends evan.EventSpace */{
-            /**
-             * Triggers event.
-             * @this {evan.EventSpace}
-             * @param {string} eventName Name of event to be triggered.
-             * @param {evan.EventPath|string|string[]} eventPath Path on which to trigger event.
-             * @param {*} [data] Extra data to be passed along with event to handlers.
-             */
-            trigger: function (eventName, eventPath, data) {
-                if (!dessert.validators.isEventPath(eventPath)) {
-                    eventPath = evan.EventPath.create(eventPath);
-                } else {
-                    // path must be cloned because it will be modified
-                    eventPath = eventPath.clone();
-                }
-
-                // path will be chipped away from in each iteration
-                while (eventPath.asArray.length) {
-                    if (this._bubble(eventName, eventPath, data) === false) {
-                        // bubbling was deliberately stopped
-                        break;
-                    } else {
-                        // going on to next key in path
-                        eventPath.shrink();
-                    }
-                }
-
-                return this;
+            createEvent: function (eventName) {
+                return evan.Event.create(this, eventName);
             },
 
             /**
@@ -136,6 +80,33 @@ troop.promise(evan, 'EventSpace', function () {
                 }
 
                 return this;
+            },
+
+            /**
+             * Triggers an event on a specific path in the current event space.
+             * Handlers are assumed to be synchronous.
+             * @param {evan.Event} event
+             * @return {*}
+             * @see evan.Event.trigger
+             */
+            bubbleSync: function (event) {
+                var handlers = evan.Path.create([event.currentPath.toString(), event.eventName])
+                        .resolve(this.registry),
+                    i, result;
+
+                if (handlers) {
+                    // iterating over subscribed functions
+                    // handlers is assumed to be array of functions
+                    for (i = 0; i < handlers.length; i++) {
+                        // calling subscribed function
+                        result = handlers[i].call(this, event, event.data);
+
+                        if (result === false) {
+                            // iteration stops here and prevents further bubbling
+                            return false;
+                        }
+                    }
+                }
             }
         });
 });
