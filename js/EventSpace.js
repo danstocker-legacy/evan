@@ -40,6 +40,7 @@ troop.promise(evan, 'EventSpace', /** @borrows init as evan.EventSpace.create */
              * @param {string|string[]|evan.EventPath} eventPath Path on which to trigger event.
              * @param {function} handler Event handler function that is called when the event
              * is triggered on (or bubbles to) the specified path.
+             * @return {evan.EventSpace}
              */
             on: function (eventName, eventPath, handler) {
                 dessert.isFunction(handler);
@@ -61,6 +62,7 @@ troop.promise(evan, 'EventSpace', /** @borrows init as evan.EventSpace.create */
              * @param {string} eventName Name of event to be triggered.
              * @param {string|string[]|evan.EventPath} eventPath Path on which to trigger event.
              * @param {function} [handler] Event handler function
+             * @return {evan.EventSpace}
              */
             off: function (eventName, eventPath, handler) {
                 dessert.isFunctionOptional(handler);
