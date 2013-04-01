@@ -93,7 +93,7 @@
     });
 
     test("Bubbling", function () {
-        expect(4);
+        expect(3);
 
         var eventSpace = /** @type {evan.EventSpace} */ EventSpace.create()
                 .on('myEvent', 'test.event', function (event, data) {
@@ -102,10 +102,6 @@
                 }),
             myEvent = eventSpace.createEvent('myEvent'),
             result;
-
-        raises(function () {
-            eventSpace.bubbleSync(myEvent);
-        }, "Event can't bubble");
 
         myEvent.originalPath = evan.EventPath.create('test.event');
         myEvent.currentPath = myEvent.originalPath.clone();
