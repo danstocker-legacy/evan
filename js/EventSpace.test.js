@@ -93,22 +93,28 @@
     });
 
     test("Bubbling", function () {
-        expect(2);
+        expect(4);
 
         var eventSpace = /** @type {evan.EventSpace} */ EventSpace.create()
                 .on('myEvent', 'test.event', function (event, data) {
                     strictEqual(event, myEvent, "Event instance passed to handler");
                     strictEqual(data, event.data, "Custom event data passed to handler");
                 }),
-            myEvent = eventSpace.createEvent('myEvent');
+            myEvent = eventSpace.createEvent('myEvent'),
+            result;
+
+        raises(function () {
+            eventSpace.bubbleSync(myEvent);
+        }, "Event can't bubble");
 
         myEvent.originalPath = evan.EventPath.create('test.event');
         myEvent.currentPath = myEvent.originalPath.clone();
 
-        strictEqual(eventSpace.bubbleSync(myEvent), eventSpace, "Bubbling returns event space");
+        result = eventSpace.bubbleSync(myEvent);
+        strictEqual(typeof result, 'undefined', "Bubbling returns event space");
     });
 
-    test("Bubbling", function () {
+    test("Bubbling with stop-propagation", function () {
         var eventSpace = /** @type {evan.EventSpace} */ EventSpace.create()
                 .on('event', 'test.event', function () {
                     return false;

@@ -90,6 +90,8 @@ troop.promise(evan, 'EventSpace', /** @borrows init as evan.EventSpace.create */
              * @see evan.Event.trigger
              */
             bubbleSync: function (event) {
+                dessert.assert(event.isBubbling(), "Event is not in bubbling state");
+
                 var handlers = evan.Path.create([event.currentPath.toString(), event.eventName])
                         .resolve(this.registry),
                     i, result;
