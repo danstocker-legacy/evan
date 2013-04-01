@@ -23,6 +23,26 @@ troop.promise(evan, 'Event', function () {
                 this.data = null;
 
                 return this;
+            },
+
+            /**
+             * Initializes event for triggering.
+             * @param {evan.EventPath|string|string[]} eventPath Path on which to trigger event.
+             * @param {*} [data] Extra data to be passed along with event to handlers.
+             * @return {evan.Event}
+             * @private
+             */
+            _initialize: function (eventPath, data) {
+                if (dessert.validators.isEventPath(eventPath)) {
+                    this.originalPath = eventPath;
+                } else {
+                    this.originalPath = evan.EventPath.create(eventPath);
+                }
+
+                this.currentPath = this.originalPath.clone();
+                this.data = data;
+
+                return this;
             }
         })
         .addMethod(/** @lends evan.Event */{
@@ -85,14 +105,8 @@ troop.promise(evan, 'Event', function () {
              * @return {evan.Event}
              */
             triggerSync: function (eventPath, data) {
-                if (dessert.validators.isEventPath(eventPath)) {
-                    this.originalPath = eventPath;
-                } else {
-                    this.originalPath = evan.EventPath.create(eventPath);
-                }
-
-                this.currentPath = this.originalPath.clone();
-                this.data = data;
+                // preparing event for triggering
+                this._initialize(eventPath, data);
 
                 while (this.currentPath.asArray.length) {
                     if (this.eventSpace.bubbleSync(this) === false) {
