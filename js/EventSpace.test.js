@@ -107,7 +107,7 @@
         myEvent.currentPath = myEvent.originalPath.clone();
 
         result = eventSpace.bubbleSync(myEvent);
-        strictEqual(typeof result, 'undefined', "Bubbling returns event space");
+        strictEqual(typeof result, 'undefined', "Bubbling returns undefined");
     });
 
     test("Bubbling with stop-propagation", function () {
