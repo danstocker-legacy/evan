@@ -3,7 +3,7 @@
  *
  * Events traverse within a confined event space.
  */
-/*global dessert, troop, evan */
+/*global dessert, troop, sntls, evan */
 troop.promise(evan, 'EventSpace', /** @borrows init as evan.EventSpace.create */ function () {
     var hOP = Object.prototype.hasOwnProperty;
 
@@ -19,9 +19,11 @@ troop.promise(evan, 'EventSpace', /** @borrows init as evan.EventSpace.create */
             init: function () {
                 this.addConstant(/** @lends evan.EventSpace */{
                     /**
-                     * Object serving as lookup for subscribed paths.
+                     * Lookup for subscribed event handlers.
+                     * Indexed by event path first, then event name.
+                     * Stores an array of functions on each leaf node.
                      */
-                    registry: {}
+                    eventHandlers: {}
                 });
             },
 
@@ -46,7 +48,7 @@ troop.promise(evan, 'EventSpace', /** @borrows init as evan.EventSpace.create */
                 dessert.isFunction(handler);
 
                 var handlers = evan.Path.create([eventPath.toString()])
-                    .resolveOrBuild(this.registry);
+                    .resolveOrBuild(this.eventHandlers);
 
                 if (hOP.call(handlers, eventName)) {
                     handlers[eventName].push(handler);
@@ -68,7 +70,7 @@ troop.promise(evan, 'EventSpace', /** @borrows init as evan.EventSpace.create */
                 dessert.isFunctionOptional(handler);
 
                 var handlers = evan.Path.create([eventPath.toString()])
-                    .resolve(this.registry);
+                    .resolve(this.eventHandlers);
 
                 if (handlers && hOP.call(handlers, eventName)) {
                     if (handler) {
@@ -93,7 +95,7 @@ troop.promise(evan, 'EventSpace', /** @borrows init as evan.EventSpace.create */
              */
             bubbleSync: function (event) {
                 var handlers = evan.Path.create([event.currentPath.toString(), event.eventName])
-                        .resolve(this.registry),
+                        .resolve(this.eventHandlers),
                     i, result;
 
                 if (handlers) {

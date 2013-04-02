@@ -4,7 +4,7 @@
 
     test("Instantiation", function () {
         var eventSpace = /** @type {evan.EventSpace} */ EventSpace.create();
-        deepEqual(eventSpace.registry, {}, "Event registry initialized");
+        deepEqual(eventSpace.eventHandlers, {}, "Event registry initialized");
     });
 
     test("Event creation", function () {
@@ -38,7 +38,7 @@
         eventSpace.on('myEvent', 'test.event.path', handler1);
 
         deepEqual(
-            eventSpace.registry,
+            eventSpace.eventHandlers,
             {
                 'test.event.path': {
                     myEvent: [handler1]
@@ -50,7 +50,7 @@
         eventSpace.on('myEvent', 'test.event.path', handler2);
 
         deepEqual(
-            eventSpace.registry,
+            eventSpace.eventHandlers,
             {
                 'test.event.path': {
                     myEvent: [handler1, handler2]
@@ -72,7 +72,7 @@
         eventSpace.off('myEvent', 'test.event.path', handler1);
 
         deepEqual(
-            eventSpace.registry,
+            eventSpace.eventHandlers,
             {
                 'test.event.path': {
                     myEvent: [handler2]
@@ -84,7 +84,7 @@
         eventSpace.off('myEvent', 'test.event.path');
 
         deepEqual(
-            eventSpace.registry,
+            eventSpace.eventHandlers,
             {
                 'test.event.path': {}
             },
