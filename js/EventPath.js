@@ -3,13 +3,13 @@
  *
  * Path that points to an event target.
  */
-/*global dessert, troop, evan */
+/*global dessert, troop, sntls, evan */
 troop.promise(evan, 'EventPath', function () {
     /**
      * @class evan.EventPath
-     * @extends evan.Path
+     * @extends sntls.Path
      */
-    evan.EventPath = evan.Path.extend()
+    evan.EventPath = sntls.Path.extend()
         .addMethod(/** @lends evan.EventPath */{
             /**
              * Clones event path instance

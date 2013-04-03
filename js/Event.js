@@ -81,7 +81,7 @@ troop.promise(evan, 'Event', function () {
                         currentPath: null,
 
                         /**
-                         * @type {evan.Path}
+                         * @type {sntls.Path}
                          */
                         originalPath: null
                     });

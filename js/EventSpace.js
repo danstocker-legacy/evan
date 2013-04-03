@@ -47,7 +47,7 @@ troop.promise(evan, 'EventSpace', /** @borrows init as evan.EventSpace.create */
             on: function (eventName, eventPath, handler) {
                 dessert.isFunction(handler);
 
-                var handlers = evan.Path.create([eventPath.toString()])
+                var handlers = sntls.Path.create([eventPath.toString()])
                     .resolveOrBuild(this.eventHandlers);
 
                 if (hOP.call(handlers, eventName)) {
@@ -69,7 +69,7 @@ troop.promise(evan, 'EventSpace', /** @borrows init as evan.EventSpace.create */
             off: function (eventName, eventPath, handler) {
                 dessert.isFunctionOptional(handler);
 
-                var handlers = evan.Path.create([eventPath.toString()])
+                var handlers = sntls.Path.create([eventPath.toString()])
                     .resolve(this.eventHandlers);
 
                 if (handlers && hOP.call(handlers, eventName)) {
@@ -94,7 +94,7 @@ troop.promise(evan, 'EventSpace', /** @borrows init as evan.EventSpace.create */
              * @see evan.Event.trigger
              */
             bubbleSync: function (event) {
-                var handlers = evan.Path.create([event.currentPath.toString(), event.eventName])
+                var handlers = sntls.Path.create([event.currentPath.toString(), event.eventName])
                         .resolve(this.eventHandlers),
                     i, result;
 
