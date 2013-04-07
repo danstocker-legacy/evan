@@ -10,7 +10,7 @@ troop.promise(evan, 'EventSpace', /** @borrows init as evan.EventSpace.create */
      * @extends troop.Base
      */
     evan.EventSpace = troop.Base.extend()
-        .addPrivateMethod({
+        .addPrivateMethod(/** @lends evan.EventSpace */{
             /**
              * Generates a stub for event handlers. (An empty array)
              * @return {Array}
@@ -118,13 +118,13 @@ troop.promise(evan, 'EventSpace', /** @borrows init as evan.EventSpace.create */
             },
 
             /**
-             * Triggers an event on a specific path in the current event space.
+             * Calls handlers associated with an event name and path.
              * Handlers are assumed to be synchronous.
              * @param {evan.Event} event
              * @return {*}
              * @see evan.Event.trigger
              */
-            bubbleSync: function (event) {
+            callHandlers: function (event) {
                 var handlers = this.eventRegistry.getNode([event.eventName, 'handlers', event.currentPath.toString()]),
                     i, result;
 
@@ -144,12 +144,12 @@ troop.promise(evan, 'EventSpace', /** @borrows init as evan.EventSpace.create */
             },
 
             /**
-             * Retrieves subscribed paths below the specified path.
+             * Retrieves subscribed paths under the specified path.
              * @param {string} eventName
              * @param {sntls.Path|string|string[]} path
              * @return {evan.PathCollection}
              */
-            getPathsBelow: function (eventName, path) {
+            getPathsUnder: function (eventName, path) {
                 var paths = /** @type sntls.OrderedStringList */ this.eventRegistry.getNode([eventName, 'paths']);
                 return evan.PathCollection.create(paths.getRangeByPrefix(path.toString()));
             }

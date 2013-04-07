@@ -1,9 +1,9 @@
 /*global sntls, evan, module, test, expect, ok, equal, strictEqual, deepEqual, raises */
-(function (EventSpace) {
+(function () {
     module("EventSpace");
 
     test("Instantiation", function () {
-        var eventSpace = /** @type {evan.EventSpace} */ EventSpace.create();
+        var eventSpace = /** @type {evan.EventSpace} */ evan.EventSpace.create();
         ok(eventSpace.eventRegistry.isA(sntls.Tree), "Event registry is a tree");
         deepEqual(eventSpace.eventRegistry.root, {}, "Event registry initialized");
     });
@@ -11,7 +11,7 @@
     test("Event creation", function () {
         expect(2);
 
-        var eventSpace = /** @type {evan.EventSpace} */ EventSpace.create();
+        var eventSpace = /** @type {evan.EventSpace} */ evan.EventSpace.create();
 
         evan.Event.addMock({
             create: function (es, eventName) {
@@ -26,7 +26,7 @@
     });
 
     test("Subscription", function () {
-        var eventSpace = /** @type {evan.EventSpace} */ EventSpace.create();
+        var eventSpace = /** @type {evan.EventSpace} */ evan.EventSpace.create();
 
         function handler1() {}
 
@@ -74,7 +74,7 @@
 
         function handler2() {}
 
-        var eventSpace = /** @type {evan.EventSpace} */ EventSpace.create()
+        var eventSpace = /** @type {evan.EventSpace} */ evan.EventSpace.create()
             .on('myEvent', 'test.event.path', handler1)
             .on('myEvent', 'test.event.path', handler2);
 
@@ -112,7 +112,7 @@
     test("Bubbling", function () {
         expect(3);
 
-        var eventSpace = /** @type {evan.EventSpace} */ EventSpace.create()
+        var eventSpace = /** @type {evan.EventSpace} */ evan.EventSpace.create()
                 .on('myEvent', 'test.event', function (event, data) {
                     strictEqual(event, myEvent, "Event instance passed to handler");
                     strictEqual(data, event.data, "Custom event data passed to handler");
@@ -123,12 +123,12 @@
         myEvent.originalPath = evan.EventPath.create('test.event');
         myEvent.currentPath = myEvent.originalPath.clone();
 
-        result = eventSpace.bubbleSync(myEvent);
+        result = eventSpace.callHandlers(myEvent);
         strictEqual(typeof result, 'undefined', "Bubbling returns undefined");
     });
 
     test("Bubbling with stop-propagation", function () {
-        var eventSpace = /** @type {evan.EventSpace} */ EventSpace.create()
+        var eventSpace = /** @type {evan.EventSpace} */ evan.EventSpace.create()
                 .on('event', 'test.event', function () {
                     return false;
                 }),
@@ -137,13 +137,13 @@
         event.originalPath = evan.EventPath.create('test.event');
         event.currentPath = event.originalPath.clone();
 
-        eventSpace.bubbleSync(event);
+        eventSpace.callHandlers(event);
 
-        equal(eventSpace.bubbleSync(event), false, "Propagation stopped by handler");
+        equal(eventSpace.callHandlers(event), false, "Propagation stopped by handler");
     });
 
     test("Path query", function () {
-        var eventSpace = /** @type {evan.EventSpace} */ EventSpace.create()
+        var eventSpace = /** @type {evan.EventSpace} */ evan.EventSpace.create()
             .on('myEvent', 'test.event', function () {})
             .on('myEvent', 'test.event.foo', function () {})
             .on('myEvent', 'test.event.foo.bar', function () {})
@@ -153,21 +153,21 @@
             .on('otherEvent', 'test.event.foo', function () {});
 
         deepEqual(
-            eventSpace.getPathsBelow('myEvent', 'test.event').items,
+            eventSpace.getPathsUnder('myEvent', 'test.event').items,
             ['test.event', 'test.event.foo', 'test.event.foo.bar', 'test.event.hello'],
             "Paths subscribed to 'myEvent' relative to 'test.event'"
         );
 
         deepEqual(
-            eventSpace.getPathsBelow('myEvent', 'test.foo').items,
+            eventSpace.getPathsUnder('myEvent', 'test.foo').items,
             ['test.foo.bar'],
             "Paths subscribed to 'myEvent' relative to 'test.foo'"
         );
 
         deepEqual(
-            eventSpace.getPathsBelow('otherEvent', 'test.event').items,
+            eventSpace.getPathsUnder('otherEvent', 'test.event').items,
             ['test.event', 'test.event.foo'],
             "Paths subscribed to 'otherEvent' relative to 'test.event'"
         );
     });
-}(evan.EventSpace));
+}());

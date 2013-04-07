@@ -112,7 +112,7 @@ troop.promise(evan, 'Event', function () {
                 }
 
                 while (this.currentPath.asArray.length) {
-                    if (this.eventSpace.bubbleSync(this) === false) {
+                    if (this.eventSpace.callHandlers(this) === false) {
                         // bubbling was deliberately stopped
                         break;
                     } else {
@@ -133,7 +133,7 @@ troop.promise(evan, 'Event', function () {
              */
             broadcastSync: function (path, data) {
                 var eventSpace = this.eventSpace,
-                    subscribedPaths = eventSpace.getPathsBelow(this.eventName, path),
+                    subscribedPaths = eventSpace.getPathsUnder(this.eventName, path),
                     broadcastEvents = subscribedPaths.map(
                         this._createPrepared.bind(this, data),
                         evan.EventCollection
@@ -158,11 +158,11 @@ troop.promise(evan, 'EventCollection', function () {
 
 dessert.addTypes(/** @lends dessert */{
     isEvent: function (expr) {
-        return evan.Event.isPrototypeOf(expr);
+        return evan.Event.isBaseOf(expr);
     },
 
     isEventOptional: function (expr) {
         return typeof expr === 'undefined' ||
-               evan.Event.isPrototypeOf(expr);
+               evan.Event.isBaseOf(expr);
     }
 });

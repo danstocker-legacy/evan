@@ -46,7 +46,7 @@
             i = 0;
 
         evan.EventSpace.addMock({
-            bubbleSync: function (event) {
+            callHandlers: function (event) {
                 equal(event.eventName, 'testEvent', "Event name");
                 equal(event.originalPath.toString(), 'test.path', "Original event path");
                 equal(event.currentPath.toString(), ['test.path', 'test'][i++], "Current event path");
@@ -69,7 +69,7 @@
         var event = /** @type evan.Event */ evan.Event.create(eventSpace, 'testEvent');
 
         evan.EventSpace.addMock({
-            bubbleSync: function (event) {
+            callHandlers: function (event) {
                 equal(event.currentPath.toString(), 'test.path', "Current event path");
 
                 // stops propagation after first bubbling
