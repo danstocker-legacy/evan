@@ -1,4 +1,4 @@
-/*global evan, module, test, expect, ok, equal, strictEqual, notStrictEqual, deepEqual, raises */
+/*global sntls, evan, module, test, expect, ok, equal, strictEqual, notStrictEqual, deepEqual, raises */
 (function (Event) {
     module("Event");
 
@@ -22,13 +22,16 @@
         equal(typeof event.data, 'undefined', "Data load");
     });
 
-    test("Initialization with path", function () {
+    test("Trigger preparation", function () {
         var event = /** @type evan.Event */ Event.create(eventSpace, 'testEvent');
         equal(typeof event.originalPath, 'undefined', "No original path initially");
         equal(typeof event.currentPath, 'undefined', "No current path initially");
         equal(typeof event.data, 'undefined', "No data initially");
 
         event.prepareTrigger('test.path', 'foo');
+
+        ok(event.originalPath.instanceOf(sntls.Path), "Original path is plain path");
+        ok(event.currentPath.instanceOf(evan.EventPath), "Current path is event specific path");
 
         notStrictEqual(event.originalPath, event.currentPath, "Original and current path different instances");
         deepEqual(event.originalPath.asArray, ['test', 'path'], "Original path set");

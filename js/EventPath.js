@@ -12,11 +12,17 @@ troop.promise(evan, 'EventPath', function () {
     evan.EventPath = sntls.Path.extend()
         .addMethod(/** @lends evan.EventPath */{
             /**
-             * Clones event path instance
-             * @return {evan.EventPath}
+             *
+             * @param {sntls.Path} [path]
              */
-            clone: function () {
-                return this.getBase().create(this.asArray.concat());
+            init: function (path) {
+                var asArray = path;
+
+                if (sntls.Path.isBaseOf(path)) {
+                    asArray = path.asArray.concat();
+                }
+
+                sntls.Path.init.call(this, asArray);
             },
 
             /**
@@ -29,13 +35,13 @@ troop.promise(evan, 'EventPath', function () {
         });
 });
 
-troop.promise(evan, 'EventPathCollection', function () {
+troop.promise(evan, 'PathCollection', function () {
     /**
-     * @class evan.EventPathCollection
+     * @class evan.PathCollection
      * @extends sntls.Collection
-     * @extends evan.EventPath
+     * @extends sntls.Path
      */
-    evan.EventPathCollection = sntls.Collection.of(evan.EventPath);
+    evan.PathCollection = sntls.Collection.of(sntls.Path);
 });
 
 dessert.addTypes(/** @lends dessert */{

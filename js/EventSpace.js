@@ -158,12 +158,12 @@ troop.promise(evan, 'EventSpace', /** @borrows init as evan.EventSpace.create */
             /**
              * Retrieves subscribed paths below the specified path.
              * @param {string} eventName
-             * @param {evan.EventPath|string|string[]} eventPath
-             * @return {evan.EventPathCollection}
+             * @param {sntls.Path|string|string[]} path
+             * @return {evan.PathCollection}
              */
-            getPathsBelow: function (eventName, eventPath) {
+            getPathsBelow: function (eventName, path) {
                 var paths = /** @type sntls.OrderedStringList */ this.eventRegistry.getNode([eventName, 'paths']);
-                return evan.EventPathCollection.create(paths.getRangeByPrefix(eventPath.toString()));
+                return evan.PathCollection.create(paths.getRangeByPrefix(path.toString()));
             },
 
             /**

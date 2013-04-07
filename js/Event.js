@@ -61,7 +61,7 @@ troop.promise(evan, 'Event', function () {
                         currentPath: undefined,
 
                         /**
-                         * @type {evan.EventPath}
+                         * @type {sntls.Path}
                          */
                         originalPath: undefined
                     });
@@ -69,18 +69,18 @@ troop.promise(evan, 'Event', function () {
 
             /**
              * Prepares event for triggering.
-             * @param {evan.EventPath|string|string[]} eventPath Path on which to trigger event.
+             * @param {sntls.Path|string|string[]} path Path on which to trigger event.
              * @param {*} [data] Extra data to be passed along with event to handlers.
              * @return {evan.Event}
              */
-            prepareTrigger: function (eventPath, data) {
-                if (evan.EventPath.isBaseOf(eventPath)) {
-                    this.originalPath = eventPath;
+            prepareTrigger: function (path, data) {
+                if (sntls.Path.isBaseOf(path)) {
+                    this.originalPath = path;
                 } else {
-                    this.originalPath = evan.EventPath.create(eventPath);
+                    this.originalPath = sntls.Path.create(path);
                 }
 
-                this.currentPath = this.originalPath.clone();
+                this.currentPath = evan.EventPath.create(this.originalPath);
                 this.data = data;
 
                 return this;
