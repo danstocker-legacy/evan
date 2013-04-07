@@ -172,14 +172,14 @@ troop.promise(evan, 'EventSpace', /** @borrows init as evan.EventSpace.create */
              * @param {evan.Event} event Event to be broadcast
              */
             broadcastSync: function (event) {
-                var eventPathCollection = this.getPathsBelow(event.eventName, event.originalPath),
-                    eventCollection = eventPathCollection.map(
+                var subscribedPaths = this.getPathsBelow(event.eventName, event.originalPath),
+                    broadcastEvents = subscribedPaths.map(
                         this._createPreparedEvent.bind(this, event),
                         evan.EventCollection
                     );
 
                 // triggering all affected events
-                eventCollection.triggerSync();
+                broadcastEvents.triggerSync();
 
                 return this;
             }
