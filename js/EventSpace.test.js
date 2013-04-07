@@ -46,6 +46,12 @@
             "Event handler added to registry"
         );
 
+        deepEqual(
+            eventSpace.eventRegistry.root.myEvent.paths.items,
+            ['test.event.path'],
+            "Event path added to registry"
+        );
+
         eventSpace.on('myEvent', 'test.event.path', handler2);
 
         deepEqual(
@@ -54,6 +60,12 @@
                 'test.event.path': [handler1, handler2]
             },
             "Event handler added to registry"
+        );
+
+        deepEqual(
+            eventSpace.eventRegistry.root.myEvent.paths.items,
+            ['test.event.path', 'test.event.path'],
+            "Event path added to registry"
         );
     });
 
@@ -76,12 +88,24 @@
             "Former handler unsubscribed"
         );
 
+        deepEqual(
+            eventSpace.eventRegistry.root.myEvent.paths.items,
+            ['test.event.path'],
+            "Former path unsubscribed"
+        );
+
         eventSpace.off('myEvent', 'test.event.path');
 
         deepEqual(
             eventSpace.eventRegistry.root.myEvent.handlers,
             {},
             "All handlers unsubscribed"
+        );
+
+        deepEqual(
+            eventSpace.eventRegistry.root.myEvent.paths.items,
+            [],
+            "All paths unsubscribed"
         );
     });
 

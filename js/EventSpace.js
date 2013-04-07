@@ -110,6 +110,10 @@ troop.promise(evan, 'EventSpace', /** @borrows init as evan.EventSpace.create */
                     }
                 }
 
+                // removing path from ordered path list
+                eventRegistry.getNode([eventName, 'paths'])
+                    .removeItem(eventPathString);
+
                 return this;
             },
 
