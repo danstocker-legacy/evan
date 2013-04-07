@@ -27,18 +27,6 @@ troop.promise(evan, 'EventSpace', /** @borrows init as evan.EventSpace.create */
              */
             _generatePathsStub: function () {
                 return sntls.OrderedStringList.create();
-            },
-
-            /**
-             * Creates a new event object based on the model event and
-             * initializes it with the specified path.
-             * @param {evan.Event} modelEvent
-             * @param {evan.EventPath} eventPath
-             * @private
-             */
-            _createPreparedEvent: function (modelEvent, eventPath) {
-                return evan.Event.create(this, modelEvent.eventName)
-                    .prepareTrigger(eventPath, modelEvent.data);
             }
         })
         .addMethod(/** @lends evan.EventSpace */{
@@ -164,24 +152,6 @@ troop.promise(evan, 'EventSpace', /** @borrows init as evan.EventSpace.create */
             getPathsBelow: function (eventName, path) {
                 var paths = /** @type sntls.OrderedStringList */ this.eventRegistry.getNode([eventName, 'paths']);
                 return evan.PathCollection.create(paths.getRangeByPrefix(path.toString()));
-            },
-
-            /**
-             * Broadcasts an event at the specified path by triggering events on all
-             * subscribed paths below.
-             * @param {evan.Event} event Event to be broadcast
-             */
-            broadcastSync: function (event) {
-                var subscribedPaths = this.getPathsBelow(event.eventName, event.originalPath),
-                    broadcastEvents = subscribedPaths.map(
-                        this._createPreparedEvent.bind(this, event),
-                        evan.EventCollection
-                    );
-
-                // triggering all affected events
-                broadcastEvents.triggerSync();
-
-                return this;
             }
         });
 });

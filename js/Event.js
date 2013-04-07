@@ -13,6 +13,18 @@ troop.promise(evan, 'Event', function () {
     evan.Event = troop.Base.extend()
         .addPrivateMethod(/** @lends evan.Event */{
             /**
+             * Creates a new event object based on the model event and
+             * initializes it with the specified path.
+             * @param {*} data
+             * @param {sntls.Path} path
+             * @private
+             */
+            _createPrepared: function (data, path) {
+                return evan.Event.create(this.eventSpace, this.eventName)
+                    .prepareTrigger(path, data);
+            },
+
+            /**
              * Resets event properties
              * @return {evan.Event}
              * @private
@@ -116,13 +128,19 @@ troop.promise(evan, 'Event', function () {
 
             /**
              * Broadcasts the event to all subscribed paths *below* the specified path.
-             * @param {evan.EventPath|string|string[]} eventPath Target root for broadcast
+             * @param {sntls.Path|string|string[]} path Target root for broadcast
              * @param {*} [data] Extra data to be passed along with event to handlers.
              */
-            broadcastSync: function (eventPath, data) {
-                this.prepareTrigger(eventPath, data);
-                this.eventSpace.broadcastSync(this);
-                this._reset();
+            broadcastSync: function (path, data) {
+                var eventSpace = this.eventSpace,
+                    subscribedPaths = eventSpace.getPathsBelow(this.eventName, path),
+                    broadcastEvents = subscribedPaths.map(
+                        this._createPrepared.bind(this, data),
+                        evan.EventCollection
+                    );
+
+                // triggering all affected events
+                broadcastEvents.triggerSync();
 
                 return this;
             }

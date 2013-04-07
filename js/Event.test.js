@@ -1,19 +1,19 @@
 /*global sntls, evan, module, test, expect, ok, equal, strictEqual, notStrictEqual, deepEqual, raises */
-(function (Event) {
+(function () {
     module("Event");
 
     var eventSpace = /** @type evan.EventSpace */ evan.EventSpace.create();
 
     test("Instantiation", function () {
         raises(function () {
-            Event.create('foo', 'testEvent');
+            evan.Event.create('foo', 'testEvent');
         }, "Invalid event space");
 
         raises(function () {
-            Event.create(eventSpace, 123);
+            evan.Event.create(eventSpace, 123);
         }, "Invalid event name");
 
-        var event = /** @type evan.Event */ Event.create(eventSpace, 'testEvent');
+        var event = /** @type evan.Event */ evan.Event.create(eventSpace, 'testEvent');
 
         equal(event.eventName, 'testEvent', "Event name");
         strictEqual(event.eventSpace, eventSpace, "Event space");
@@ -23,7 +23,7 @@
     });
 
     test("Trigger preparation", function () {
-        var event = /** @type evan.Event */ Event.create(eventSpace, 'testEvent');
+        var event = /** @type evan.Event */ evan.Event.create(eventSpace, 'testEvent');
         equal(typeof event.originalPath, 'undefined', "No original path initially");
         equal(typeof event.currentPath, 'undefined', "No current path initially");
         equal(typeof event.data, 'undefined', "No data initially");
@@ -42,7 +42,7 @@
     test("Triggering", function () {
         expect(11);
 
-        var event = /** @type evan.Event */ Event.create(eventSpace, 'testEvent'),
+        var event = /** @type evan.Event */ evan.Event.create(eventSpace, 'testEvent'),
             i = 0;
 
         evan.EventSpace.addMock({
@@ -66,7 +66,7 @@
     test("Triggering with stop-propagation", function () {
         expect(1);
 
-        var event = /** @type evan.Event */ Event.create(eventSpace, 'testEvent');
+        var event = /** @type evan.Event */ evan.Event.create(eventSpace, 'testEvent');
 
         evan.EventSpace.addMock({
             bubbleSync: function (event) {
@@ -83,21 +83,31 @@
     });
 
     test("Broadcast", function () {
-        var event = /** @type evan.Event */ Event.create(eventSpace, 'testEvent');
+        var triggeredPaths = [],
+            eventSpace = /** @type {evan.EventSpace} */ evan.EventSpace.create()
+                .on('myEvent', 'test.event', function () {})
+                .on('myEvent', 'test.event.foo', function () {})
+                .on('myEvent', 'test.event.foo.bar', function () {})
+                .on('myEvent', 'test.foo.bar', function () {})
+                .on('myEvent', 'test.event.hello', function () {})
+                .on('otherEvent', 'test.event', function () {})
+                .on('otherEvent', 'test.event.foo', function () {}),
+            event = eventSpace.createEvent('myEvent');
 
-        evan.EventSpace.addMock({
-            broadcastSync: function (event) {
-                deepEqual(event.originalPath.toString(), 'test.path', "Event path");
-                equal(event.data, 'foo', "Custom event data");
+        evan.Event.addMock({
+            triggerSync: function () {
+                triggeredPaths.push(this.originalPath.toString());
             }
         });
 
-        event.broadcastSync('test.path', 'foo');
+        event.broadcastSync('test.event', 'foo');
 
-        evan.EventSpace.removeMocks();
+        deepEqual(
+            triggeredPaths,
+            ['test.event', 'test.event.foo', 'test.event.foo.bar', 'test.event.hello'],
+            "Paths triggered by broadcast"
+        );
 
-        equal(typeof event.originalPath, 'undefined', "Original path reset");
-        equal(typeof event.currentPath, 'undefined', "Current path reset");
-        equal(typeof event.data, 'undefined', "Data load reset");
+        evan.Event.removeMocks();
     });
-}(evan.Event));
+}());
