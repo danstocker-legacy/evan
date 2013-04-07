@@ -29,6 +29,15 @@ troop.promise(evan, 'EventPath', function () {
         });
 });
 
+troop.promise(evan, 'EventPathCollection', function () {
+    /**
+     * @class evan.EventPathCollection
+     * @extends sntls.Collection
+     * @extends evan.EventPath
+     */
+    evan.EventPathCollection = sntls.Collection.of(evan.EventPath);
+});
+
 dessert.addTypes(/** @lends dessert */{
     isEventPath: function (expr) {
         return evan.EventPath.isBaseOf(expr);

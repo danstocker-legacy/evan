@@ -141,4 +141,63 @@
 
         equal(eventSpace.bubbleSync(event), false, "Propagation stopped by handler");
     });
+
+    test("Path query", function () {
+        var eventSpace = /** @type {evan.EventSpace} */ EventSpace.create()
+            .on('myEvent', 'test.event', function () {})
+            .on('myEvent', 'test.event.foo', function () {})
+            .on('myEvent', 'test.event.foo.bar', function () {})
+            .on('myEvent', 'test.foo.bar', function () {})
+            .on('myEvent', 'test.event.hello', function () {})
+            .on('otherEvent', 'test.event', function () {})
+            .on('otherEvent', 'test.event.foo', function () {});
+
+        deepEqual(
+            eventSpace.getPathsBelow('myEvent', 'test.event').items,
+            ['test.event', 'test.event.foo', 'test.event.foo.bar', 'test.event.hello'],
+            "Paths subscribed to 'myEvent' relative to 'test.event'"
+        );
+
+        deepEqual(
+            eventSpace.getPathsBelow('myEvent', 'test.foo').items,
+            ['test.foo.bar'],
+            "Paths subscribed to 'myEvent' relative to 'test.foo'"
+        );
+
+        deepEqual(
+            eventSpace.getPathsBelow('otherEvent', 'test.event').items,
+            ['test.event', 'test.event.foo'],
+            "Paths subscribed to 'otherEvent' relative to 'test.event'"
+        );
+    });
+
+    test("Broadcast", function () {
+        var triggeredPaths = [],
+            eventSpace = /** @type {evan.EventSpace} */ EventSpace.create()
+                .on('myEvent', 'test.event', function () {})
+                .on('myEvent', 'test.event.foo', function () {})
+                .on('myEvent', 'test.event.foo.bar', function () {})
+                .on('myEvent', 'test.foo.bar', function () {})
+                .on('myEvent', 'test.event.hello', function () {})
+                .on('otherEvent', 'test.event', function () {})
+                .on('otherEvent', 'test.event.foo', function () {}),
+            event = eventSpace.createEvent('myEvent')
+                .prepareTrigger('test.event', 'foo');
+
+        evan.Event.addMock({
+            triggerSync: function () {
+                triggeredPaths.push(this.originalPath.toString());
+            }
+        });
+
+        eventSpace.broadcastSync(event);
+
+        deepEqual(
+            triggeredPaths,
+            ['test.event', 'test.event.foo', 'test.event.foo.bar', 'test.event.hello'],
+            "Paths triggered by broadcast"
+        );
+
+        evan.Event.removeMocks();
+    });
 }(evan.EventSpace));

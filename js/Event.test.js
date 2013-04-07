@@ -1,4 +1,4 @@
-/*global evan, module, test, expect, ok, equal, strictEqual, deepEqual, raises */
+/*global evan, module, test, expect, ok, equal, strictEqual, notStrictEqual, deepEqual, raises */
 (function (Event) {
     module("Event");
 
@@ -17,9 +17,23 @@
 
         equal(event.eventName, 'testEvent', "Event name");
         strictEqual(event.eventSpace, eventSpace, "Event space");
-        strictEqual(event.originalPath, null, "Original path");
-        strictEqual(event.currentPath, null, "Current path");
-        strictEqual(event.data, null, "Data load");
+        equal(typeof event.originalPath, 'undefined', "Original path");
+        equal(typeof event.currentPath, 'undefined', "Current path");
+        equal(typeof event.data, 'undefined', "Data load");
+    });
+
+    test("Initialization with path", function () {
+        var event = /** @type evan.Event */ Event.create(eventSpace, 'testEvent');
+        equal(typeof event.originalPath, 'undefined', "No original path initially");
+        equal(typeof event.currentPath, 'undefined', "No current path initially");
+        equal(typeof event.data, 'undefined', "No data initially");
+
+        event.prepareTrigger('test.path', 'foo');
+
+        notStrictEqual(event.originalPath, event.currentPath, "Original and current path different instances");
+        deepEqual(event.originalPath.asArray, ['test', 'path'], "Original path set");
+        deepEqual(event.currentPath.asArray, ['test', 'path'], "Current path set");
+        equal(event.data, 'foo', "Custom data set");
     });
 
     test("Bubbling state", function () {
@@ -50,9 +64,9 @@
 
         event.triggerSync('test.path', {foo: 'bar'});
 
-        strictEqual(event.originalPath, null, "Original path reset");
-        strictEqual(event.currentPath, null, "Current path reset");
-        strictEqual(event.data, null, "Data load reset");
+        equal(typeof event.originalPath, 'undefined', "Original path reset");
+        equal(typeof event.currentPath, 'undefined', "Current path reset");
+        equal(typeof event.data, 'undefined', "Data load reset");
 
         evan.EventSpace.removeMocks();
     });
@@ -74,5 +88,24 @@
         event.triggerSync('test.path', {foo: 'bar'});
 
         evan.EventSpace.removeMocks();
+    });
+
+    test("Broadcast", function () {
+        var event = /** @type evan.Event */ Event.create(eventSpace, 'testEvent');
+
+        evan.EventSpace.addMock({
+            broadcastSync: function (event) {
+                deepEqual(event.originalPath.toString(), 'test.path', "Event path");
+                equal(event.data, 'foo', "Custom event data");
+            }
+        });
+
+        event.broadcastSync('test.path', 'foo');
+
+        evan.EventSpace.removeMocks();
+
+        equal(typeof event.originalPath, 'undefined', "Original path reset");
+        equal(typeof event.currentPath, 'undefined', "Current path reset");
+        equal(typeof event.data, 'undefined', "Data load reset");
     });
 }(evan.Event));
