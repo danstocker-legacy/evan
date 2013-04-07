@@ -68,15 +68,6 @@ troop.promise(evan, 'Event', function () {
             },
 
             /**
-             * Determines whether event is in bubbling state.
-             * @return {boolean}
-             * TODO: is this necessary?
-             */
-            isBubbling: function () {
-                return !!this.originalPath && !!this.currentPath;
-            },
-
-            /**
              * Prepares event for triggering.
              * @param {evan.EventPath|string|string[]} eventPath Path on which to trigger event.
              * @param {*} [data] Extra data to be passed along with event to handlers.

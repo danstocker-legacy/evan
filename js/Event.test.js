@@ -36,17 +36,6 @@
         equal(event.data, 'foo', "Custom data set");
     });
 
-    test("Bubbling state", function () {
-        var event = /** @type evan.Event */ Event.create(eventSpace, 'testEvent');
-
-        equal(event.isBubbling(), false, "New event is not bubbling");
-
-        event.originalPath = evan.EventPath.create('test.path');
-        event.currentPath = event.originalPath.clone();
-
-        equal(event.isBubbling(), true, "New event is not bubbling");
-    });
-
     test("Triggering", function () {
         expect(11);
 
