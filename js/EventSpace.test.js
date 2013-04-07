@@ -1,10 +1,11 @@
-/*global evan, module, test, expect, ok, equal, strictEqual, deepEqual, raises */
+/*global sntls, evan, module, test, expect, ok, equal, strictEqual, deepEqual, raises */
 (function (EventSpace) {
     module("EventSpace");
 
     test("Instantiation", function () {
         var eventSpace = /** @type {evan.EventSpace} */ EventSpace.create();
-        deepEqual(eventSpace.eventHandlers, {}, "Event registry initialized");
+        ok(eventSpace.eventRegistry.isA(sntls.Tree), "Event registry is a tree");
+        deepEqual(eventSpace.eventRegistry.root, {}, "Event registry initialized");
     });
 
     test("Event creation", function () {
@@ -38,11 +39,9 @@
         eventSpace.on('myEvent', 'test.event.path', handler1);
 
         deepEqual(
-            eventSpace.eventHandlers,
+            eventSpace.eventRegistry.root.myEvent.handlers,
             {
-                'test.event.path': {
-                    myEvent: [handler1]
-                }
+                'test.event.path': [handler1]
             },
             "Event handler added to registry"
         );
@@ -50,11 +49,9 @@
         eventSpace.on('myEvent', 'test.event.path', handler2);
 
         deepEqual(
-            eventSpace.eventHandlers,
+            eventSpace.eventRegistry.root.myEvent.handlers,
             {
-                'test.event.path': {
-                    myEvent: [handler1, handler2]
-                }
+                'test.event.path': [handler1, handler2]
             },
             "Event handler added to registry"
         );
@@ -72,11 +69,9 @@
         eventSpace.off('myEvent', 'test.event.path', handler1);
 
         deepEqual(
-            eventSpace.eventHandlers,
+            eventSpace.eventRegistry.root.myEvent.handlers,
             {
-                'test.event.path': {
-                    myEvent: [handler2]
-                }
+                'test.event.path': [handler2]
             },
             "Former handler unsubscribed"
         );
@@ -84,10 +79,8 @@
         eventSpace.off('myEvent', 'test.event.path');
 
         deepEqual(
-            eventSpace.eventHandlers,
-            {
-                'test.event.path': {}
-            },
+            eventSpace.eventRegistry.root.myEvent.handlers,
+            {},
             "All handlers unsubscribed"
         );
     });

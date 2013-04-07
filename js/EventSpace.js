@@ -5,13 +5,30 @@
  */
 /*global dessert, troop, sntls, evan */
 troop.promise(evan, 'EventSpace', /** @borrows init as evan.EventSpace.create */ function () {
-    var hOP = Object.prototype.hasOwnProperty;
-
     /**
      * @class evan.EventSpace
      * @extends troop.Base
      */
     evan.EventSpace = troop.Base.extend()
+        .addPrivateMethod({
+            /**
+             * Generates a stub for event handlers. (An empty array)
+             * @return {Array}
+             * @private
+             */
+            _generateHandlersStub: function () {
+                return [];
+            },
+
+            /**
+             * Generates a stub for empty paths buffer.
+             * @return {sntls.OrderedList}
+             * @private
+             */
+            _generatePathsStub: function () {
+                return sntls.OrderedList.create();
+            }
+        })
         .addMethod(/** @lends evan.EventSpace */{
             /**
              * Adds subscription registry.
@@ -20,10 +37,10 @@ troop.promise(evan, 'EventSpace', /** @borrows init as evan.EventSpace.create */
                 this.addConstant(/** @lends evan.EventSpace */{
                     /**
                      * Lookup for subscribed event handlers.
-                     * Indexed by event path first, then event name.
-                     * Stores an array of functions on each leaf node.
+                     * @type {sntls.Tree}
+                     * @example {myEvent: {handlers: {myPath: [func1, func2]}, paths: [myPath]}}
                      */
-                    eventHandlers: {}
+                    eventRegistry: sntls.Tree.create()
                 });
             },
 
@@ -47,14 +64,21 @@ troop.promise(evan, 'EventSpace', /** @borrows init as evan.EventSpace.create */
             on: function (eventName, eventPath, handler) {
                 dessert.isFunction(handler);
 
-                var handlers = sntls.Path.create([eventPath.toString()])
-                    .resolveOrBuild(this.eventHandlers);
+                var eventRegistry = this.eventRegistry,
+                    eventPathString = eventPath.toString(),
+                    handlers = /** @type {Array} */ eventRegistry.getSafeNode(
+                        [eventName, 'handlers', eventPathString],
+                        this._generateHandlersStub),
+                    paths = /** @type {sntls.OrderedList} */ eventRegistry.getSafeNode(
+                        [eventName, 'paths'],
+                        this._generatePathsStub
+                    );
 
-                if (hOP.call(handlers, eventName)) {
-                    handlers[eventName].push(handler);
-                } else {
-                    handlers[eventName] = [handler];
-                }
+                // adding handler to handlers
+                handlers.push(handler);
+
+                // adding paths to ordered path list
+                paths.addItem(eventPathString);
 
                 return this;
             },
@@ -69,17 +93,20 @@ troop.promise(evan, 'EventSpace', /** @borrows init as evan.EventSpace.create */
             off: function (eventName, eventPath, handler) {
                 dessert.isFunctionOptional(handler);
 
-                var handlers = sntls.Path.create([eventPath.toString()])
-                    .resolve(this.eventHandlers);
+                var eventRegistry = this.eventRegistry,
+                    eventPathString = eventPath.toString(),
+                    handlersPath = [eventName, 'handlers', eventPathString],
+                    handlers = eventRegistry.getNode(handlersPath);
 
-                if (handlers && hOP.call(handlers, eventName)) {
+                if (handlers) {
                     if (handler) {
                         // unsubscribing single handler from event on path
-                        handlers = handlers[eventName];
                         handlers.splice(handlers.indexOf(handler), 1);
-                    } else {
+                    }
+
+                    if (!handler || !handlers.length) {
                         // unsubscribing all handlers from event on path
-                        delete handlers[eventName];
+                        eventRegistry.unsetNode(handlersPath);
                     }
                 }
 
@@ -94,8 +121,7 @@ troop.promise(evan, 'EventSpace', /** @borrows init as evan.EventSpace.create */
              * @see evan.Event.trigger
              */
             bubbleSync: function (event) {
-                var handlers = sntls.Path.create([event.currentPath.toString(), event.eventName])
-                        .resolve(this.eventHandlers),
+                var handlers = this.eventRegistry.getNode([event.eventName, 'handlers', event.currentPath.toString()]),
                     i, result;
 
                 if (handlers) {
