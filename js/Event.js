@@ -40,6 +40,11 @@ troop.promise(evan, 'Event', function () {
         })
         .addMethod(/** @lends evan.Event */{
             /**
+             * @name evan.Event.create
+             * @return {evan.Event}
+             */
+
+            /**
              * @param {evan.EventSpace} eventSpace Event space associated with event
              * @param {string} eventName Event name
              */

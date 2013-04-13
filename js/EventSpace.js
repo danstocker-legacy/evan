@@ -31,7 +31,11 @@ troop.promise(evan, 'EventSpace', /** @borrows init as evan.EventSpace.create */
         })
         .addMethod(/** @lends evan.EventSpace */{
             /**
-             * Adds subscription registry.
+             * @name evan.EventSpace.create
+             * @return {evan.EventSpace}
+             */
+
+            /**
              */
             init: function () {
                 this.addConstant(/** @lends evan.EventSpace */{

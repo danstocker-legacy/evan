@@ -12,8 +12,12 @@ troop.promise(evan, 'EventPath', function () {
     evan.EventPath = sntls.Path.extend()
         .addMethod(/** @lends evan.EventPath */{
             /**
-             *
-             * @param {sntls.Path} [path]
+             * @name evan.EventPath.create
+             * @return {evan.EventPath}
+             */
+
+            /**
+             * @param {string|string[]|sntls.Path} [path]
              */
             init: function (path) {
                 var asArray = path;
@@ -36,6 +40,11 @@ troop.promise(evan, 'EventPath', function () {
 });
 
 troop.promise(evan, 'PathCollection', function () {
+    /**
+     * @name evan.PathCollection.create
+     * @return {evan.PathCollection}
+     */
+
     /**
      * @class evan.PathCollection
      * @extends sntls.Collection

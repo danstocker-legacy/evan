@@ -3,7 +3,7 @@
     module("EventSpace");
 
     test("Instantiation", function () {
-        var eventSpace = /** @type {evan.EventSpace} */ evan.EventSpace.create();
+        var eventSpace = evan.EventSpace.create();
         ok(eventSpace.eventRegistry.isA(sntls.Tree), "Event registry is a tree");
         deepEqual(eventSpace.eventRegistry.root, {}, "Event registry initialized");
     });
@@ -11,7 +11,7 @@
     test("Event creation", function () {
         expect(2);
 
-        var eventSpace = /** @type {evan.EventSpace} */ evan.EventSpace.create();
+        var eventSpace = evan.EventSpace.create();
 
         evan.Event.addMock({
             create: function (es, eventName) {
@@ -26,7 +26,7 @@
     });
 
     test("Subscription", function () {
-        var eventSpace = /** @type {evan.EventSpace} */ evan.EventSpace.create();
+        var eventSpace = evan.EventSpace.create();
 
         function handler1() {}
 
@@ -74,7 +74,7 @@
 
         function handler2() {}
 
-        var eventSpace = /** @type {evan.EventSpace} */ evan.EventSpace.create()
+        var eventSpace = evan.EventSpace.create()
             .on('myEvent', 'test.event.path', handler1)
             .on('myEvent', 'test.event.path', handler2);
 
@@ -112,7 +112,7 @@
     test("Bubbling", function () {
         expect(3);
 
-        var eventSpace = /** @type {evan.EventSpace} */ evan.EventSpace.create()
+        var eventSpace = evan.EventSpace.create()
                 .on('myEvent', 'test.event', function (event, data) {
                     strictEqual(event, myEvent, "Event instance passed to handler");
                     strictEqual(data, event.data, "Custom event data passed to handler");
@@ -128,7 +128,7 @@
     });
 
     test("Bubbling with stop-propagation", function () {
-        var eventSpace = /** @type {evan.EventSpace} */ evan.EventSpace.create()
+        var eventSpace = evan.EventSpace.create()
                 .on('event', 'test.event', function () {
                     return false;
                 }),
@@ -143,7 +143,7 @@
     });
 
     test("Path query", function () {
-        var eventSpace = /** @type {evan.EventSpace} */ evan.EventSpace.create()
+        var eventSpace = evan.EventSpace.create()
             .on('myEvent', 'test.event', function () {})
             .on('myEvent', 'test.event.foo', function () {})
             .on('myEvent', 'test.event.foo.bar', function () {})

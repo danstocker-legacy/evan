@@ -2,7 +2,7 @@
 (function () {
     module("Event");
 
-    var eventSpace = /** @type evan.EventSpace */ evan.EventSpace.create();
+    var eventSpace = evan.EventSpace.create();
 
     test("Instantiation", function () {
         raises(function () {
@@ -13,7 +13,7 @@
             evan.Event.create(eventSpace, 123);
         }, "Invalid event name");
 
-        var event = /** @type evan.Event */ evan.Event.create(eventSpace, 'testEvent');
+        var event = evan.Event.create(eventSpace, 'testEvent');
 
         equal(event.eventName, 'testEvent', "Event name");
         strictEqual(event.eventSpace, eventSpace, "Event space");
@@ -23,7 +23,7 @@
     });
 
     test("Trigger preparation", function () {
-        var event = /** @type evan.Event */ evan.Event.create(eventSpace, 'testEvent');
+        var event = evan.Event.create(eventSpace, 'testEvent');
         equal(typeof event.originalPath, 'undefined', "No original path initially");
         equal(typeof event.currentPath, 'undefined', "No current path initially");
         equal(typeof event.data, 'undefined', "No data initially");
@@ -42,7 +42,7 @@
     test("Triggering", function () {
         expect(11);
 
-        var event = /** @type evan.Event */ evan.Event.create(eventSpace, 'testEvent'),
+        var event = evan.Event.create(eventSpace, 'testEvent'),
             i = 0;
 
         evan.EventSpace.addMock({
@@ -66,7 +66,7 @@
     test("Triggering with stop-propagation", function () {
         expect(1);
 
-        var event = /** @type evan.Event */ evan.Event.create(eventSpace, 'testEvent');
+        var event = evan.Event.create(eventSpace, 'testEvent');
 
         evan.EventSpace.addMock({
             callHandlers: function (event) {
@@ -84,7 +84,7 @@
 
     test("Broadcast", function () {
         var triggeredPaths = [],
-            eventSpace = /** @type {evan.EventSpace} */ evan.EventSpace.create()
+            eventSpace = evan.EventSpace.create()
                 .on('myEvent', 'test.event', function () {})
                 .on('myEvent', 'test.event.foo', function () {})
                 .on('myEvent', 'test.event.foo.bar', function () {})
