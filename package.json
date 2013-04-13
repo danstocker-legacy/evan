@@ -11,7 +11,7 @@
     "dependencies": {
         "dessert": ">=0.2.4",
         "troop"  : ">=0.3.0",
-        "sntls"  : ">=0.3.1"
+        "sntls"  : ">=0.3.3"
     },
     "files"       : ["out/evan.js"],
     "main"        : "out/evan.js"
