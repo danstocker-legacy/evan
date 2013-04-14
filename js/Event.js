@@ -86,6 +86,26 @@ troop.promise(evan, 'Event', function () {
             },
 
             /**
+             * Clones event and sets its currentPath property to
+             * the one specified by the argument.
+             * @param {evan.EventPath} [currentPath]
+             * @return {evan.Event}
+             */
+            clone: function (currentPath) {
+                dessert.isEventPathOptional(currentPath, "Invalid current event path");
+
+                var result = evan.Event.create(this.eventSpace, this.eventName);
+
+                result.originalPath = this.originalPath;
+                result.currentPath = currentPath ?
+                    currentPath.clone() :
+                    this.currentPath.clone();
+                result.data = this.data;
+
+                return result;
+            },
+
+            /**
              * Prepares event for triggering.
              * Assigns paths and custom data to the event.
              * @param {sntls.Path} path Path on which to trigger event.

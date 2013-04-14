@@ -22,6 +22,28 @@
         equal(typeof event.data, 'undefined', "Data load");
     });
 
+    test("Cloning", function () {
+        var originalEvent = evan.Event.create(eventSpace, 'testEvent')
+            .prepareTrigger('test.path.hello.world'.toPath(), {foo: 'bar'}),
+            cloneEvent,
+            currentPath;
+
+        cloneEvent = originalEvent.clone();
+
+        strictEqual(originalEvent.eventSpace, cloneEvent.eventSpace, "Event spaces are the same");
+        equal(originalEvent.eventName, cloneEvent.eventName, "Event names are the same");
+        strictEqual(originalEvent.originalPath, cloneEvent.originalPath, "Original paths are the same");
+        notStrictEqual(originalEvent.currentPath, cloneEvent.currentPath, "Current paths are not the same...");
+        equal(originalEvent.currentPath.toString(), cloneEvent.currentPath.toString(), "...but they match");
+        strictEqual(originalEvent.data, cloneEvent.data, "Custom data is the same");
+
+        currentPath = 'test.path'.toEventPath();
+        cloneEvent = originalEvent.clone(currentPath);
+
+        notStrictEqual(cloneEvent.currentPath, currentPath, "Current path is not the same as specified...");
+        equal(cloneEvent.currentPath.toString(), 'test.path', "..but they match");
+    });
+
     test("Trigger preparation", function () {
         var event = evan.Event.create(eventSpace, 'testEvent');
         equal(typeof event.originalPath, 'undefined', "No original path initially");
