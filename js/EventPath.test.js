@@ -16,4 +16,18 @@
         var path = evan.EventPath.create(['test', 'path', 'it', 'is']);
         equal(path.toString(), 'test.path.it.is', "evan.EventPath does not override toString()");
     });
+
+    test("String conversion", function () {
+        var path = 'test.path.hello.world'.toEventPath();
+
+        ok(evan.EventPath.isBaseOf(path), "Path type");
+        deepEqual(path.asArray, ['test', 'path', 'hello', 'world'], "Path contents");
+    });
+
+    test("Array conversion", function () {
+        var path = ['test', 'path', 'hello', 'world'].toEventPath();
+
+        ok(evan.EventPath.isBaseOf(path), "Path type");
+        deepEqual(path.asArray, ['test', 'path', 'hello', 'world'], "Path contents");
+    });
 }());

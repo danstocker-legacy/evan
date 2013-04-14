@@ -50,3 +50,17 @@ dessert.addTypes(/** @lends dessert */{
                evan.EventPath.isBaseOf(expr);
     }
 });
+
+/**
+ * @return {evan.EventPath}
+ */
+String.prototype.toEventPath = function () {
+    return evan.EventPath.create(this);
+};
+
+/**
+ * @return {evan.EventPath}
+ */
+Array.prototype.toEventPath = function () {
+    return evan.EventPath.create(this);
+};
