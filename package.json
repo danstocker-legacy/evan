@@ -9,7 +9,7 @@
         "url" : "https://github.com/pdanstocker/evan.git"
     },
     "dependencies": {
-        "dessert": ">=0.2.4",
+        "dessert": ">=0.2.6",
         "troop"  : ">=0.3.0",
         "sntls"  : ">=0.3.3"
     },
