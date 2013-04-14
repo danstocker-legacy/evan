@@ -109,6 +109,31 @@
         );
     });
 
+    test("Delegation", function () {
+        expect(5);
+
+        var eventSpace = evan.EventSpace.create(),
+            result;
+
+        function handler(/** evan.Event */ event) {
+            equal(event.currentPath.toString(), 'test.event.path', "Event current path reflects delegated path");
+            equal(event.originalPath.toString(), 'test.event.path.foo', "Event current path reflects delegated path");
+        }
+
+        raises(function () {
+            eventSpace.delegate('myEvent', 'test.event'.toPath(), 'unrelated.path'.toEventPath(), handler);
+        }, "Unrelated paths");
+
+        raises(function () {
+            eventSpace.delegate('myEvent', 'test.event'.toPath(), 'test.event.path'.toEventPath(), 'non-function');
+        }, "Invalid event handler");
+
+        // delegating event to path 'test.event.path'
+        result = eventSpace.delegate('myEvent', 'test.event'.toPath(), 'test.event.path'.toEventPath(), handler);
+        strictEqual(result, eventSpace, "Delegation is chainable");
+        eventSpace.createEvent('myEvent').triggerSync('test.event.path.foo'.toPath());
+    });
+
     test("Bubbling", function () {
         expect(3);
 

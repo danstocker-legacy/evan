@@ -60,13 +60,13 @@ troop.promise(evan, 'EventSpace', /** @borrows init as evan.EventSpace.create */
             /**
              * Subscribes to event.
              * @param {string} eventName Name of event to be triggered.
-             * @param {sntls.Path} eventPath Path on which to trigger event.
+             * @param {sntls.Path} eventPath Path we're listening to
              * @param {function} handler Event handler function that is called when the event
              * is triggered on (or bubbles to) the specified path.
              * @return {evan.EventSpace}
              */
             on: function (eventName, eventPath, handler) {
-                dessert.isFunction(handler);
+                dessert.isFunction(handler, "Invalid event handler function");
 
                 var eventRegistry = this.eventRegistry,
                     eventPathString = eventPath.toString(),
@@ -90,12 +90,12 @@ troop.promise(evan, 'EventSpace', /** @borrows init as evan.EventSpace.create */
             /**
              * Unsubscribes from event.
              * @param {string} eventName Name of event to be triggered.
-             * @param {sntls.Path} eventPath Path on which to trigger event.
+             * @param {sntls.Path} eventPath Path we're listening to
              * @param {function} [handler] Event handler function
              * @return {evan.EventSpace}
              */
             off: function (eventName, eventPath, handler) {
-                dessert.isFunctionOptional(handler);
+                dessert.isFunctionOptional(handler, "Invalid event handler function");
 
                 var eventRegistry = this.eventRegistry,
                     eventPathString = eventPath.toString(),
@@ -117,6 +117,30 @@ troop.promise(evan, 'EventSpace', /** @borrows init as evan.EventSpace.create */
                 // removing path from ordered path list
                 eventRegistry.getNode([eventName, 'paths'])
                     .removeItem(eventPathString);
+
+                return this;
+            },
+
+            /**
+             * Delegates event capturing to a path closer to the root.
+             * @param {string} eventName
+             * @param {sntls.Path} capturePath Path where the event will actually subscribe
+             * @param {evan.EventPath} delegatePath Path we're listening to
+             * @param {function} handler Event handler function
+             * @return {evan.EventSpace}
+             */
+            delegate: function (eventName, capturePath, delegatePath, handler) {
+                dessert
+                    .assert(delegatePath.isRelativeTo(capturePath), "Delegate path is not relative to capture path")
+                    .isFunction(handler, "Invalid event handler function");
+
+                // subscribing delegate handler to capturing path
+                this.on(eventName, capturePath, function (/** evan.Event */ event, data) {
+                    if (event.originalPath.isRelativeTo(delegatePath)) {
+                        // triggering handler and passing forged current path set to delegatePath
+                        handler.call(this, event.clone(delegatePath), data);
+                    }
+                });
 
                 return this;
             },
