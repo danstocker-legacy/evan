@@ -134,6 +134,31 @@
         eventSpace.createEvent('myEvent').triggerSync('test.event.path.foo'.toPath());
     });
 
+    test("Un-delegation", function () {
+        var eventSpace = evan.EventSpace.create(),
+            delegateHandler;
+
+        function handler() {}
+
+        // delegating in a way that handler may be unsubscribed
+        delegateHandler = eventSpace.delegateHandler('test.event.path'.toEventPath(), handler);
+        eventSpace.on('myEvent', 'test.event'.toPath(), delegateHandler);
+
+        equal(
+            eventSpace.eventRegistry.root.myEvent.handlers['test.event'].length,
+            1,
+            "Delegate handler subscribed"
+        );
+
+        eventSpace.off('myEvent', 'test.event'.toPath(), delegateHandler);
+
+        equal(
+            eventSpace.eventRegistry.root.myEvent.handlers.hasOwnProperty('test.event'),
+            false,
+            "Delegate handler unsubscribed"
+        );
+    });
+
     test("Bubbling", function () {
         expect(3);
 

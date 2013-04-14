@@ -138,7 +138,19 @@ troop.promise(evan, 'EventSpace', /** @borrows init as evan.EventSpace.create */
             },
 
             /**
+             * Creates a delegate handler to be used in event subscriptions.
+             * Use it when a reference to the subscribed
+             * @param {evan.EventPath} delegatePath Path we're listening to
+             * @param {function} handler Event handler function
+             * @return {function}
+             */
+            delegateHandler: function (delegatePath, handler) {
+                return this._delegateHandler.bind(this, delegatePath, handler);
+            },
+
+            /**
              * Delegates event capturing to a path closer to the root.
+             * Handlers subscribed this way CANNOT be unsubscribed individually.
              * @param {string} eventName
              * @param {sntls.Path} capturePath Path where the event will actually subscribe
              * @param {evan.EventPath} delegatePath Path we're listening to
