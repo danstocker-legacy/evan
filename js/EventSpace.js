@@ -27,6 +27,22 @@ troop.promise(evan, 'EventSpace', /** @borrows init as evan.EventSpace.create */
              */
             _generatePathsStub: function () {
                 return sntls.OrderedStringList.create();
+            },
+
+            /**
+             * Handler wrapper for subscribing delegates
+             * @param {evan.EventPath} delegatePath The path being listened to
+             * @param {function} handler Real event handler function
+             * @param {evan.Event} event Event object passed down by the triggering process
+             * @param {*} data Custom event data
+             * @return {*} Whatever the user-defined handler returns (possibly a `false`)
+             * @private
+             */
+            _delegateHandler: function (delegatePath, handler, event, data) {
+                if (event.originalPath.isRelativeTo(delegatePath)) {
+                    // triggering handler and passing forged current path set to delegatePath
+                    return handler.call(this, event.clone(delegatePath), data);
+                }
             }
         })
         .addMethod(/** @lends evan.EventSpace */{
@@ -135,12 +151,7 @@ troop.promise(evan, 'EventSpace', /** @borrows init as evan.EventSpace.create */
                     .isFunction(handler, "Invalid event handler function");
 
                 // subscribing delegate handler to capturing path
-                this.on(eventName, capturePath, function (/** evan.Event */ event, data) {
-                    if (event.originalPath.isRelativeTo(delegatePath)) {
-                        // triggering handler and passing forged current path set to delegatePath
-                        handler.call(this, event.clone(delegatePath), data);
-                    }
-                });
+                this.on(eventName, capturePath, this._delegateHandler.bind(this, delegatePath, handler));
 
                 return this;
             },
