@@ -17,19 +17,6 @@ troop.promise(evan, 'EventPath', function () {
              */
 
             /**
-             * @param {string|string[]|sntls.Path} [path]
-             */
-            init: function (path) {
-                var asArray = path;
-
-                if (sntls.Path.isBaseOf(path)) {
-                    asArray = path.asArray.concat();
-                }
-
-                sntls.Path.init.call(this, asArray);
-            },
-
-            /**
              * Decreases path length by one.
              */
             shrink: function () {

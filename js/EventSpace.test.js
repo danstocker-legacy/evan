@@ -33,10 +33,10 @@
         function handler2() {}
 
         raises(function () {
-            eventSpace.on('myEvent', 'test.event.path', 123);
+            eventSpace.on('myEvent', 'test.event.path'.toPath(), 123);
         }, "Invalid event handler");
 
-        eventSpace.on('myEvent', 'test.event.path', handler1);
+        eventSpace.on('myEvent', 'test.event.path'.toPath(), handler1);
 
         deepEqual(
             eventSpace.eventRegistry.root.myEvent.handlers,
@@ -75,10 +75,10 @@
         function handler2() {}
 
         var eventSpace = evan.EventSpace.create()
-            .on('myEvent', 'test.event.path', handler1)
-            .on('myEvent', 'test.event.path', handler2);
+            .on('myEvent', 'test.event.path'.toPath(), handler1)
+            .on('myEvent', 'test.event.path'.toPath(), handler2);
 
-        eventSpace.off('myEvent', 'test.event.path', handler1);
+        eventSpace.off('myEvent', 'test.event.path'.toPath(), handler1);
 
         deepEqual(
             eventSpace.eventRegistry.root.myEvent.handlers,
@@ -94,7 +94,7 @@
             "Former path unsubscribed"
         );
 
-        eventSpace.off('myEvent', 'test.event.path');
+        eventSpace.off('myEvent', 'test.event.path'.toPath());
 
         deepEqual(
             eventSpace.eventRegistry.root.myEvent.handlers,
@@ -129,7 +129,7 @@
 
     test("Bubbling with stop-propagation", function () {
         var eventSpace = evan.EventSpace.create()
-                .on('event', 'test.event', function () {
+                .on('event', 'test.event'.toPath(), function () {
                     return false;
                 }),
             event = eventSpace.createEvent('event');
@@ -144,29 +144,39 @@
 
     test("Path query", function () {
         var eventSpace = evan.EventSpace.create()
-            .on('myEvent', 'test.event', function () {})
-            .on('myEvent', 'test.event.foo', function () {})
-            .on('myEvent', 'test.event.foo.bar', function () {})
-            .on('myEvent', 'test.foo.bar', function () {})
-            .on('myEvent', 'test.event.hello', function () {})
-            .on('otherEvent', 'test.event', function () {})
-            .on('otherEvent', 'test.event.foo', function () {});
+            .on('myEvent', 'test.event'.toPath(), function () {})
+            .on('myEvent', 'test.event.foo'.toPath(), function () {})
+            .on('myEvent', 'test.event.foo.bar'.toPath(), function () {})
+            .on('myEvent', 'test.foo.bar'.toPath(), function () {})
+            .on('myEvent', 'test.event.hello'.toPath(), function () {})
+            .on('otherEvent', 'test.event'.toPath(), function () {})
+            .on('otherEvent', 'test.event.foo'.toPath(), function () {});
 
         deepEqual(
-            eventSpace.getPathsUnder('myEvent', 'test.event').items,
-            ['test.event', 'test.event.foo', 'test.event.foo.bar', 'test.event.hello'],
+            eventSpace.getPathsUnder('myEvent', 'test.event'.toPath()).toString().items,
+            {
+                0: 'test.event',
+                1: 'test.event.foo',
+                2: 'test.event.foo.bar',
+                3: 'test.event.hello'
+            },
             "Paths subscribed to 'myEvent' relative to 'test.event'"
         );
 
         deepEqual(
-            eventSpace.getPathsUnder('myEvent', 'test.foo').items,
-            ['test.foo.bar'],
+            eventSpace.getPathsUnder('myEvent', 'test.foo'.toPath()).toString().items,
+            {
+                0: 'test.foo.bar'
+            },
             "Paths subscribed to 'myEvent' relative to 'test.foo'"
         );
 
         deepEqual(
-            eventSpace.getPathsUnder('otherEvent', 'test.event').items,
-            ['test.event', 'test.event.foo'],
+            eventSpace.getPathsUnder('otherEvent', 'test.event'.toPath()).toString().items,
+            {
+                0: 'test.event',
+                1: 'test.event.foo'
+            },
             "Paths subscribed to 'otherEvent' relative to 'test.event'"
         );
     });

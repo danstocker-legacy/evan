@@ -28,7 +28,11 @@
         equal(typeof event.currentPath, 'undefined', "No current path initially");
         equal(typeof event.data, 'undefined', "No data initially");
 
-        event.prepareTrigger('test.path', 'foo');
+        raises(function () {
+            event.prepareTrigger('test.path', 'foo');
+        }, "Invalid path");
+
+        event.prepareTrigger('test.path'.toPath(), 'foo');
 
         ok(event.originalPath.instanceOf(sntls.Path), "Original path is plain path");
         ok(event.currentPath.instanceOf(evan.EventPath), "Current path is event specific path");
@@ -54,7 +58,7 @@
             }
         });
 
-        event.triggerSync('test.path', {foo: 'bar'});
+        event.triggerSync('test.path'.toPath(), {foo: 'bar'});
 
         equal(typeof event.originalPath, 'undefined', "Original path reset");
         equal(typeof event.currentPath, 'undefined', "Current path reset");
@@ -77,7 +81,7 @@
             }
         });
 
-        event.triggerSync('test.path', {foo: 'bar'});
+        event.triggerSync('test.path'.toPath(), {foo: 'bar'});
 
         evan.EventSpace.removeMocks();
     });
@@ -85,13 +89,13 @@
     test("Broadcast", function () {
         var triggeredPaths = [],
             eventSpace = evan.EventSpace.create()
-                .on('myEvent', 'test.event', function () {})
-                .on('myEvent', 'test.event.foo', function () {})
-                .on('myEvent', 'test.event.foo.bar', function () {})
-                .on('myEvent', 'test.foo.bar', function () {})
-                .on('myEvent', 'test.event.hello', function () {})
-                .on('otherEvent', 'test.event', function () {})
-                .on('otherEvent', 'test.event.foo', function () {}),
+                .on('myEvent', 'test.event'.toPath(), function () {})
+                .on('myEvent', 'test.event.foo'.toPath(), function () {})
+                .on('myEvent', 'test.event.foo.bar'.toPath(), function () {})
+                .on('myEvent', 'test.foo.bar'.toPath(), function () {})
+                .on('myEvent', 'test.event.hello'.toPath(), function () {})
+                .on('otherEvent', 'test.event'.toPath(), function () {})
+                .on('otherEvent', 'test.event.foo'.toPath(), function () {}),
             event = eventSpace.createEvent('myEvent');
 
         evan.Event.addMock({
@@ -100,7 +104,7 @@
             }
         });
 
-        event.broadcastSync('test.event', 'foo');
+        event.broadcastSync('test.event'.toPath(), 'foo');
 
         deepEqual(
             triggeredPaths,

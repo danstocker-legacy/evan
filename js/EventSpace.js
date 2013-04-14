@@ -60,7 +60,7 @@ troop.promise(evan, 'EventSpace', /** @borrows init as evan.EventSpace.create */
             /**
              * Subscribes to event.
              * @param {string} eventName Name of event to be triggered.
-             * @param {string|string[]|evan.EventPath} eventPath Path on which to trigger event.
+             * @param {sntls.Path} eventPath Path on which to trigger event.
              * @param {function} handler Event handler function that is called when the event
              * is triggered on (or bubbles to) the specified path.
              * @return {evan.EventSpace}
@@ -73,7 +73,7 @@ troop.promise(evan, 'EventSpace', /** @borrows init as evan.EventSpace.create */
                     handlers = /** @type {Array} */ eventRegistry.getSafeNode(
                         [eventName, 'handlers', eventPathString],
                         this._generateHandlersStub),
-                    paths = /** @type {sntls.OrderedStringList} */ eventRegistry.getSafeNode(
+                    paths = eventRegistry.getSafeNode(
                         [eventName, 'paths'],
                         this._generatePathsStub
                     );
@@ -90,7 +90,7 @@ troop.promise(evan, 'EventSpace', /** @borrows init as evan.EventSpace.create */
             /**
              * Unsubscribes from event.
              * @param {string} eventName Name of event to be triggered.
-             * @param {string|string[]|evan.EventPath} eventPath Path on which to trigger event.
+             * @param {sntls.Path} eventPath Path on which to trigger event.
              * @param {function} [handler] Event handler function
              * @return {evan.EventSpace}
              */
@@ -150,14 +150,32 @@ troop.promise(evan, 'EventSpace', /** @borrows init as evan.EventSpace.create */
             /**
              * Retrieves subscribed paths under the specified path.
              * @param {string} eventName
-             * @param {sntls.Path|string|string[]} path
+             * @param {sntls.Path} path
              * @return {evan.PathCollection}
              */
             getPathsUnder: function (eventName, path) {
-                var paths = /** @type sntls.OrderedStringList */ this.eventRegistry.getNode([eventName, 'paths']);
-                return evan.PathCollection.create(paths.getRangeByPrefix(path.toString()));
+                var allPaths = /** @type sntls.OrderedStringList */ this.eventRegistry.getNode([eventName, 'paths']),
+                    matchingPaths = allPaths.getRangeByPrefix(path.toString());
+
+                return /** @type evan.PathCollection */ evan.StringCollection.create(matchingPaths)
+                    .toPath()
+                    .asType(evan.PathCollection);
             }
         });
+});
+
+troop.promise(evan, 'StringCollection', function () {
+    /**
+     * @name evan.StringCollection.create
+     * @return {evan.StringCollection}
+     */
+
+    /**
+     * @class evan.StringCollection
+     * @extends sntls.Collection
+     * @extends String
+     */
+    evan.StringCollection = sntls.Collection.of(String);
 });
 
 dessert.addTypes(/** @lends dessert */{

@@ -88,18 +88,13 @@ troop.promise(evan, 'Event', function () {
             /**
              * Prepares event for triggering.
              * Assigns paths and custom data to the event.
-             * @param {sntls.Path|string|string[]} path Path on which to trigger event.
+             * @param {sntls.Path} path Path on which to trigger event.
              * @param {*} [data] Extra data to be passed along with event to handlers.
              * @return {evan.Event}
              */
             prepareTrigger: function (path, data) {
-                if (sntls.Path.isBaseOf(path)) {
-                    this.originalPath = path;
-                } else {
-                    this.originalPath = sntls.Path.create(path);
-                }
-
-                this.currentPath = evan.EventPath.create(this.originalPath);
+                this.originalPath = path;
+                this.currentPath = evan.EventPath.create(path.clone().asArray);
                 this.data = data;
 
                 return this;
@@ -110,10 +105,12 @@ troop.promise(evan, 'Event', function () {
              * Event handlers are assumed to be synchronous. Event properties change
              * between stages of bubbling, hence holding on to an event instance in an async handler
              * may not reflect the current paths and data carried.
+             * @param {sntls.Path} path Path on which to trigger event.
+             * @param {*} [data] Extra data to be passed along with event to handlers.
              * @return {evan.Event}
              * @see evan.Event.prepareTrigger
              */
-            triggerSync: function () {
+            triggerSync: function (path, data) {
                 if (arguments.length) {
                     this.prepareTrigger.apply(this, arguments);
                 }
@@ -135,7 +132,7 @@ troop.promise(evan, 'Event', function () {
 
             /**
              * Broadcasts the event to all subscribed paths *below* the specified path.
-             * @param {sntls.Path|string|string[]} path Target root for broadcast
+             * @param {sntls.Path} path Target root for broadcast
              * @param {*} [data] Extra data to be passed along with event to handlers.
              */
             broadcastSync: function (path, data) {
@@ -155,6 +152,11 @@ troop.promise(evan, 'Event', function () {
 });
 
 troop.promise(evan, 'EventCollection', function () {
+    /**
+     * @name evan.EventCollection.create
+     * @return {evan.EventCollection}
+     */
+
     /**
      * @class evan.EventCollection
      * @extends sntls.Collection
