@@ -27,22 +27,6 @@ troop.promise(evan, 'EventSpace', /** @borrows init as evan.EventSpace.create */
              */
             _generatePathsStub: function () {
                 return sntls.OrderedStringList.create();
-            },
-
-            /**
-             * Handler wrapper for subscribing delegates
-             * @param {evan.EventPath} delegatePath The path being listened to
-             * @param {function} handler Real event handler function
-             * @param {evan.Event} event Event object passed down by the triggering process
-             * @param {*} data Custom event data
-             * @return {*} Whatever the user-defined handler returns (possibly a `false`)
-             * @private
-             */
-            _delegateHandler: function (delegatePath, handler, event, data) {
-                if (event.originalPath.isRelativeTo(delegatePath)) {
-                    // triggering handler and passing forged current path set to delegatePath
-                    return handler.call(this, event.clone(delegatePath), data);
-                }
             }
         })
         .addMethod(/** @lends evan.EventSpace */{
@@ -165,6 +149,7 @@ troop.promise(evan, 'EventSpace', /** @borrows init as evan.EventSpace.create */
                  * after the first trigger.
                  * @param {evan.Event} event
                  * @param {*} data
+                 * @return {*} Whatever the user-defined handler returns (possibly a `false`)
                  */
                 function oneHandler(event, data) {
                     handler.call(this, event, data);
@@ -178,34 +163,36 @@ troop.promise(evan, 'EventSpace', /** @borrows init as evan.EventSpace.create */
             },
 
             /**
-             * Creates a delegate handler to be used in event subscriptions.
-             * Use it when a reference to the subscribed
-             * @param {evan.EventPath} delegatePath Path we're listening to
-             * @param {function} handler Event handler function
-             * @return {function}
-             */
-            delegateHandler: function (delegatePath, handler) {
-                return this._delegateHandler.bind(this, delegatePath, handler);
-            },
-
-            /**
              * Delegates event capturing to a path closer to the root.
              * Handlers subscribed this way CANNOT be unsubscribed individually.
              * @param {string} eventName
              * @param {sntls.Path} capturePath Path where the event will actually subscribe
              * @param {evan.EventPath} delegatePath Path we're listening to
              * @param {function} handler Event handler function
-             * @return {evan.EventSpace}
+             * @return {function} Event handler actually subscribed. Use this for unsubscribing.
              */
             delegate: function (eventName, capturePath, delegatePath, handler) {
                 dessert
                     .assert(delegatePath.isRelativeTo(capturePath), "Delegate path is not relative to capture path")
                     .isFunction(handler, "Invalid event handler function");
 
-                // subscribing delegate handler to capturing path
-                this.on(eventName, capturePath, this._delegateHandler.bind(this, delegatePath, handler));
+                /**
+                 * Handler wrapper for subscribing delegates
+                 * @param {evan.Event} event Event object passed down by the triggering process
+                 * @param {*} data Custom event data
+                 * @return {*} Whatever the user-defined handler returns (possibly a `false`)
+                 */
+                function delegateHandler(event, data) {
+                    if (event.originalPath.isRelativeTo(delegatePath)) {
+                        // triggering handler and passing forged current path set to delegatePath
+                        return handler.call(this, event.clone(delegatePath), data);
+                    }
+                }
 
-                return this;
+                // subscribing delegate handler to capturing path
+                this.on(eventName, capturePath, delegateHandler);
+
+                return delegateHandler;
             },
 
             /**

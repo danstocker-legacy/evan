@@ -206,7 +206,7 @@
 
         // delegating event to path 'test.event.path'
         result = eventSpace.delegate('myEvent', 'test.event'.toPath(), 'test.event.path'.toEventPath(), handler);
-        strictEqual(result, eventSpace, "Delegation is chainable");
+        equal(typeof result, 'function', "Delegation returns wrapped handler");
         eventSpace.createEvent('myEvent').triggerSync('test.event.path.foo'.toPath());
     });
 
@@ -217,8 +217,7 @@
         function handler() {}
 
         // delegating in a way that handler may be unsubscribed
-        delegateHandler = eventSpace.delegateHandler('test.event.path'.toEventPath(), handler);
-        eventSpace.on('myEvent', 'test.event'.toPath(), delegateHandler);
+        delegateHandler = eventSpace.delegate('myEvent', 'test.event'.toPath(), 'test.event.path'.toEventPath(), handler);
 
         equal(
             eventSpace.eventRegistry.root.myEvent.handlers['test.event'].length,
