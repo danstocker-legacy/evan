@@ -89,7 +89,7 @@ troop.promise(evan, 'EventSpace', /** @borrows init as evan.EventSpace.create */
                     handlers = /** @type {Array} */ eventRegistry.getSafeNode(
                         [eventName, 'handlers', eventPathString],
                         this._generateHandlersStub),
-                    paths = eventRegistry.getSafeNode(
+                    pathList = eventRegistry.getSafeNode(
                         [eventName, 'paths'],
                         this._generatePathsStub
                     );
@@ -98,7 +98,7 @@ troop.promise(evan, 'EventSpace', /** @borrows init as evan.EventSpace.create */
                 handlers.push(handler);
 
                 // adding paths to ordered path list
-                paths.addItem(eventPathString);
+                pathList.addItem(eventPathString);
 
                 return this;
             },
@@ -116,23 +116,37 @@ troop.promise(evan, 'EventSpace', /** @borrows init as evan.EventSpace.create */
                 var eventRegistry = this.eventRegistry,
                     eventPathString = eventPath.toString(),
                     handlersPath = [eventName, 'handlers', eventPathString],
-                    handlers = eventRegistry.getNode(handlersPath);
+                    handlers = eventRegistry.getNode(handlersPath),
+                    handlerIndex,
+                    pathsPath, pathList;
 
                 if (handlers) {
-                    if (handler) {
-                        // unsubscribing single handler from event on path
-                        handlers.splice(handlers.indexOf(handler), 1);
-                    }
+                    pathsPath = [eventName, 'paths'];
+                    pathList = /** @type {sntls.OrderedStringList} */ eventRegistry.getNode(pathsPath);
 
-                    if (!handler || !handlers.length) {
-                        // unsubscribing all handlers from event on path
+                    if (handler) {
+                        // obtaining handler index
+                        handlerIndex = handlers.indexOf(handler);
+                        if (handlerIndex > -1) {
+                            // unsubscribing one specific handler
+                            handlers.splice(handlerIndex, 1);
+
+                            // removing path from ordered path list
+                            pathList.removeItem(eventPathString);
+                        }
+
+                        if (!handlers.length) {
+                            // removing handlers stub
+                            eventRegistry.unsetNode(handlersPath);
+                        }
+                    } else {
+                        // unsubscribing all handlers from event name / path
                         eventRegistry.unsetNode(handlersPath);
+
+                        // removing all items pointing to this path
+                        pathList.removeAll(eventPathString);
                     }
                 }
-
-                // removing path from ordered path list
-                eventRegistry.getNode([eventName, 'paths'])
-                    .removeItem(eventPathString);
 
                 return this;
             },

@@ -69,7 +69,7 @@
         );
     });
 
-    test("Unsubscription", function () {
+    test("Unsubscription / one by one", function () {
         function handler1() {}
 
         function handler2() {}
@@ -93,6 +93,47 @@
             ['test.event.path'],
             "Former path unsubscribed"
         );
+
+        // attempting to unsubscribe non-existing handler
+        eventSpace.off('myEvent', 'test.event.path'.toPath(), handler1);
+
+        deepEqual(
+            eventSpace.eventRegistry.root.myEvent.handlers,
+            {
+                'test.event.path': [handler2]
+            },
+            "Handlers untouched"
+        );
+
+        deepEqual(
+            eventSpace.eventRegistry.root.myEvent.paths.items,
+            ['test.event.path'],
+            "Paths untouched"
+        );
+
+        eventSpace.off('myEvent', 'test.event.path'.toPath(), handler2);
+
+        deepEqual(
+            eventSpace.eventRegistry.root.myEvent.handlers,
+            {},
+            "Former handler unsubscribed"
+        );
+
+        deepEqual(
+            eventSpace.eventRegistry.root.myEvent.paths.items,
+            [],
+            "Former path unsubscribed"
+        );
+    });
+
+    test("Unsubscription / all at once", function () {
+        function handler1() {}
+
+        function handler2() {}
+
+        var eventSpace = evan.EventSpace.create()
+            .on('myEvent', 'test.event.path'.toPath(), handler1)
+            .on('myEvent', 'test.event.path'.toPath(), handler2);
 
         eventSpace.off('myEvent', 'test.event.path'.toPath());
 
