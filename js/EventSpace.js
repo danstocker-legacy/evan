@@ -152,6 +152,32 @@ troop.promise(evan, 'EventSpace', /** @borrows init as evan.EventSpace.create */
             },
 
             /**
+             * Subscribes to event and unsubscribes after first trigger.
+             * @param {string} eventName Name of event to be triggered.
+             * @param {sntls.Path} eventPath Path we're listening to
+             * @param {function} handler Event handler function that is called when the event
+             * is triggered on (or bubbles to) the specified path.
+             * @return {function} Event handler actually subscribed. Use this for unsubscribing.
+             */
+            one: function (eventName, eventPath, handler) {
+                /**
+                 * Handler wrapper for events that automatically unsubscribe
+                 * after the first trigger.
+                 * @param {evan.Event} event
+                 * @param {*} data
+                 */
+                function oneHandler(event, data) {
+                    handler.call(this, event, data);
+                    return event.eventSpace.off(event.eventName, event.currentPath, oneHandler);
+                }
+
+                // subscribing delegate handler to capturing path
+                this.on(eventName, eventPath, oneHandler);
+
+                return oneHandler;
+            },
+
+            /**
              * Creates a delegate handler to be used in event subscriptions.
              * Use it when a reference to the subscribed
              * @param {evan.EventPath} delegatePath Path we're listening to

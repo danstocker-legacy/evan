@@ -150,6 +150,41 @@
         );
     });
 
+    test("One time subscription", function () {
+        function handler() {}
+
+        var eventSpace = evan.EventSpace.create(),
+            result;
+
+        result = eventSpace.one('myEvent', 'test.event.path'.toPath(), handler);
+
+        equal(typeof result, 'function', "Returns wrapped handler");
+        equal(
+            eventSpace.eventRegistry.root.myEvent.handlers['test.event.path'].length,
+            1,
+            "One time handler subscribed"
+        );
+
+        // unsubscribing event before triggering
+        eventSpace.off('myEvent', 'test.event.path'.toPath(), result);
+
+        equal(
+            eventSpace.eventRegistry.root.myEvent.handlers.hasOwnProperty('test.event.path'),
+            false,
+            "One time handler subscribed"
+        );
+
+        // re binding and triggering event
+        eventSpace.one('myEvent', 'test.event.path'.toPath(), handler);
+        eventSpace.createEvent('myEvent').triggerSync('test.event.path'.toPath());
+
+        equal(
+            eventSpace.eventRegistry.root.myEvent.handlers.hasOwnProperty('test.event.path'),
+            false,
+            "One time handler subscribed"
+        );
+    });
+
     test("Delegation", function () {
         expect(5);
 
