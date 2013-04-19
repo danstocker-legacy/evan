@@ -53,7 +53,7 @@ troop.promise(evan, 'EventSpace', /** @borrows init as evan.EventSpace.create */
              * @param {string} eventName Event name
              * @return {evan.Event} New event instance
              */
-            createEvent: function (eventName) {
+            spawnEvent: function (eventName) {
                 return evan.Event.create(this, eventName);
             },
 

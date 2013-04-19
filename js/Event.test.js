@@ -118,7 +118,7 @@
                 .on('myEvent', 'test.event.hello'.toPath(), function () {})
                 .on('otherEvent', 'test.event'.toPath(), function () {})
                 .on('otherEvent', 'test.event.foo'.toPath(), function () {}),
-            event = eventSpace.createEvent('myEvent');
+            event = eventSpace.spawnEvent('myEvent');
 
         evan.Event.addMock({
             triggerSync: function () {

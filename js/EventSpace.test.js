@@ -20,7 +20,7 @@
             }
         });
 
-        eventSpace.createEvent('myEvent');
+        eventSpace.spawnEvent('myEvent');
 
         evan.Event.removeMocks();
     });
@@ -176,7 +176,7 @@
 
         // re binding and triggering event
         eventSpace.one('myEvent', 'test.event.path'.toPath(), handler);
-        eventSpace.createEvent('myEvent').triggerSync('test.event.path'.toPath());
+        eventSpace.spawnEvent('myEvent').triggerSync('test.event.path'.toPath());
 
         equal(
             eventSpace.eventRegistry.root.myEvent.handlers.hasOwnProperty('test.event.path'),
@@ -207,7 +207,7 @@
         // delegating event to path 'test.event.path'
         result = eventSpace.delegate('myEvent', 'test.event'.toPath(), 'test.event.path'.toEventPath(), handler);
         equal(typeof result, 'function', "Delegation returns wrapped handler");
-        eventSpace.createEvent('myEvent').triggerSync('test.event.path.foo'.toPath());
+        eventSpace.spawnEvent('myEvent').triggerSync('test.event.path.foo'.toPath());
     });
 
     test("Un-delegation", function () {
@@ -242,7 +242,7 @@
                     strictEqual(event, myEvent, "Event instance passed to handler");
                     strictEqual(data, event.data, "Custom event data passed to handler");
                 }),
-            myEvent = eventSpace.createEvent('myEvent'),
+            myEvent = eventSpace.spawnEvent('myEvent'),
             result;
 
         myEvent.originalPath = evan.EventPath.create('test.event');
@@ -257,7 +257,7 @@
                 .on('event', 'test.event'.toPath(), function () {
                     return false;
                 }),
-            event = eventSpace.createEvent('event');
+            event = eventSpace.spawnEvent('event');
 
         event.originalPath = evan.EventPath.create('test.event');
         event.currentPath = event.originalPath.clone();
