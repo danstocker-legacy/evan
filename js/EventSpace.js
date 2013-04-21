@@ -73,10 +73,10 @@ troop.promise(evan, 'EventSpace', /** @borrows init as evan.EventSpace.create */
                 var eventRegistry = this.eventRegistry,
                     eventPathString = eventPath.toString(),
                     handlers = /** @type {Array} */ eventRegistry.getSafeNode(
-                        [eventName, 'handlers', eventPathString],
+                        [eventName, 'handlers', eventPathString].toPath(),
                         this._generateHandlersStub),
                     pathList = eventRegistry.getSafeNode(
-                        [eventName, 'paths'],
+                        [eventName, 'paths'].toPath(),
                         this._generatePathsStub
                     );
 
@@ -101,13 +101,13 @@ troop.promise(evan, 'EventSpace', /** @borrows init as evan.EventSpace.create */
 
                 var eventRegistry = this.eventRegistry,
                     eventPathString = eventPath.toString(),
-                    handlersPath = [eventName, 'handlers', eventPathString],
+                    handlersPath = [eventName, 'handlers', eventPathString].toPath(),
                     handlers = eventRegistry.getNode(handlersPath),
                     handlerIndex,
                     pathsPath, pathList;
 
                 if (handlers) {
-                    pathsPath = [eventName, 'paths'];
+                    pathsPath = [eventName, 'paths'].toPath();
                     pathList = /** @type {sntls.OrderedStringList} */ eventRegistry.getNode(pathsPath);
 
                     if (handler) {
@@ -207,7 +207,8 @@ troop.promise(evan, 'EventSpace', /** @borrows init as evan.EventSpace.create */
              * @see evan.Event.trigger
              */
             callHandlers: function (event) {
-                var handlers = this.eventRegistry.getNode([event.eventName, 'handlers', event.currentPath.toString()]),
+                var handlersPath = [event.eventName, 'handlers', event.currentPath.toString()].toPath(),
+                    handlers = this.eventRegistry.getNode(handlersPath),
                     i, result;
 
                 if (handlers) {
@@ -232,7 +233,7 @@ troop.promise(evan, 'EventSpace', /** @borrows init as evan.EventSpace.create */
              * @return {evan.PathCollection}
              */
             getPathsUnder: function (eventName, path) {
-                var allPaths = /** @type sntls.OrderedStringList */ this.eventRegistry.getNode([eventName, 'paths']),
+                var allPaths = /** @type sntls.OrderedStringList */ this.eventRegistry.getNode([eventName, 'paths'].toPath()),
                     matchingPaths = allPaths.getRangeByPrefix(path.toString());
 
                 return /** @type evan.PathCollection */ evan.StringCollection.create(matchingPaths)
