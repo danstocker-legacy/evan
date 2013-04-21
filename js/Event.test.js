@@ -19,6 +19,9 @@
 
         equal(event.eventName, 'testEvent', "Event name");
         strictEqual(event.eventSpace, eventSpace, "Event space");
+
+        equal(event.canBubble, true, "Event can bubble by default");
+
         equal(typeof event.originalPath, 'undefined', "Original path");
         equal(typeof event.currentPath, 'undefined', "Current path");
         equal(typeof event.data, 'undefined', "Data load");
@@ -110,6 +113,23 @@
 
                 // stops propagation after first bubbling
                 return false;
+            }
+        });
+
+        event.triggerSync('test.path'.toPath(), {foo: 'bar'});
+
+        evan.EventSpace.removeMocks();
+    });
+
+    test("Triggering without bubbling at all", function () {
+        expect(1);
+
+        var event = evan.Event.create(eventSpace, 'testEvent')
+            .allowBubbling(false);
+
+        evan.EventSpace.addMock({
+            callHandlers: function (event) {
+                equal(event.currentPath.toString(), 'test.path', "Current event path");
             }
         });
 

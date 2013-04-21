@@ -72,6 +72,12 @@ troop.promise(evan, 'Event', function () {
                     })
                     .addPublic(/** @lends evan.Event */{
                         /**
+                         * Whether the current event can bubble
+                         * @type {boolean}
+                         */
+                        canBubble: true,
+
+                        /**
                          * Custom user data to be carried by the event
                          * @type {*}
                          */
@@ -109,6 +115,17 @@ troop.promise(evan, 'Event', function () {
                 result.data = this.data;
 
                 return result;
+            },
+
+            /**
+             * Sets whether the event can bubble
+             * @param {boolean} value Bubbling flag
+             * @return {evan.Event}
+             */
+            allowBubbling: function (value) {
+                dessert.isBoolean(value);
+                this.canBubble = value;
+                return this;
             },
 
             /**
@@ -156,8 +173,9 @@ troop.promise(evan, 'Event', function () {
 
                 // bubbling and calling handlers
                 while (this.currentPath.asArray.length) {
-                    if (this.eventSpace.callHandlers(this) === false) {
-                        // bubbling was deliberately stopped
+                    if (this.eventSpace.callHandlers(this) === false ||
+                        !this.canBubble) {
+                        // bubbling was deliberately stopped or event can't bubble
                         break;
                     } else {
                         this.currentPath.shrink();
