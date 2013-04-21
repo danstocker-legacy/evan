@@ -19,12 +19,13 @@ troop.promise(evan, 'Event', function () {
              * initializes it with the specified path.
              * @param {*} data Custom event data - first argument  because its bound
              * version is used in collection mapping.
-             * @param {sntls.Path} path
+             * @param {sntls.Path} originalPath
              * @private
              */
-            _clonePrepared: function (data, path) {
+            _spawnBroadcastEvent: function (data, originalPath) {
                 return evan.Event.create(this.eventSpace, this.eventName)
-                    .prepareTrigger(path, data);
+                    .setTargetPath(originalPath)
+                    .setData(data);
             },
 
             /**
@@ -71,16 +72,19 @@ troop.promise(evan, 'Event', function () {
                     })
                     .addPublic(/** @lends evan.Event */{
                         /**
+                         * Custom user data to be carried by the event
                          * @type {*}
                          */
                         data: undefined,
 
                         /**
+                         * Path reflecting current state of bubbling
                          * @type {evan.EventPath}
                          */
                         currentPath: undefined,
 
                         /**
+                         * Path on which the event was originally triggered
                          * @type {sntls.Path}
                          */
                         originalPath: undefined
@@ -108,17 +112,26 @@ troop.promise(evan, 'Event', function () {
             },
 
             /**
-             * Prepares event for triggering.
-             * Assigns paths and custom data to the event.
-             * @param {sntls.Path} path Path on which to trigger event.
+             * Assigns paths to the event.
+             * @param {sntls.Path} targetPath Path on which to trigger event.
+             * @return {evan.Event}
+             */
+            setTargetPath: function (targetPath) {
+                dessert.isPath(targetPath, "Invalid target path");
+
+                this.originalPath = targetPath;
+                this.currentPath = targetPath.clone().asArray.toEventPath();
+
+                return this;
+            },
+
+            /**
+             * Assigns custom data to the event.
              * @param {*} [data] Extra data to be passed along with event to handlers.
              * @return {evan.Event}
              */
-            prepareTrigger: function (path, data) {
-                this.originalPath = path;
-                this.currentPath = evan.EventPath.create(path.clone().asArray);
+            setData: function (data) {
                 this.data = data;
-
                 return this;
             },
 
@@ -127,16 +140,21 @@ troop.promise(evan, 'Event', function () {
              * Event handlers are assumed to be synchronous. Event properties change
              * between stages of bubbling, hence holding on to an event instance in an async handler
              * may not reflect the current paths and data carried.
-             * @param {sntls.Path} path Path on which to trigger event.
+             * @param {sntls.Path} targetPath Path on which to trigger event.
              * @param {*} [data] Extra data to be passed along with event to handlers.
              * @return {evan.Event}
-             * @see evan.Event.prepareTrigger
              */
-            triggerSync: function (path, data) {
-                if (arguments.length) {
-                    this.prepareTrigger.apply(this, arguments);
+            triggerSync: function (targetPath, data) {
+                // preparing event for trigger
+                if (targetPath) {
+                    this
+                        .setTargetPath(targetPath)
+                        .setData(data);
                 }
 
+                dessert.assert(this.currentPath, "Event is not ready to be triggered");
+
+                // bubbling and calling handlers
                 while (this.currentPath.asArray.length) {
                     if (this.eventSpace.callHandlers(this) === false) {
                         // bubbling was deliberately stopped
@@ -154,14 +172,14 @@ troop.promise(evan, 'Event', function () {
 
             /**
              * Broadcasts the event to all subscribed paths *below* the specified path.
-             * @param {sntls.Path} path Target root for broadcast
+             * @param {sntls.Path} broadcastPath Target root for broadcast
              * @param {*} [data] Extra data to be passed along with event to handlers.
              */
-            broadcastSync: function (path, data) {
+            broadcastSync: function (broadcastPath, data) {
                 var eventSpace = this.eventSpace,
-                    subscribedPaths = eventSpace.getPathsUnder(this.eventName, path),
+                    subscribedPaths = eventSpace.getPathsUnder(this.eventName, broadcastPath),
                     broadcastEvents = subscribedPaths.map(
-                        this._clonePrepared.bind(this, data),
+                        this._spawnBroadcastEvent.bind(this, data),
                         evan.EventCollection
                     );
 

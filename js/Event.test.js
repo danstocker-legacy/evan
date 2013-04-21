@@ -26,7 +26,8 @@
 
     test("Cloning", function () {
         var originalEvent = evan.Event.create(eventSpace, 'testEvent')
-            .prepareTrigger('test.path.hello.world'.toPath(), {foo: 'bar'}),
+                .setTargetPath('test.path.hello.world'.toPath())
+                .setData({foo: 'bar'}),
             cloneEvent,
             currentPath;
 
@@ -46,17 +47,16 @@
         equal(cloneEvent.currentPath.toString(), 'test.path', "..but they match");
     });
 
-    test("Trigger preparation", function () {
+    test("Setting path", function () {
         var event = evan.Event.create(eventSpace, 'testEvent');
         equal(typeof event.originalPath, 'undefined', "No original path initially");
         equal(typeof event.currentPath, 'undefined', "No current path initially");
-        equal(typeof event.data, 'undefined', "No data initially");
 
         raises(function () {
-            event.prepareTrigger('test.path', 'foo');
+            event.setTargetPath('test.path');
         }, "Invalid path");
 
-        event.prepareTrigger('test.path'.toPath(), 'foo');
+        event.setTargetPath('test.path'.toPath());
 
         ok(event.originalPath.instanceOf(sntls.Path), "Original path is plain path");
         ok(event.currentPath.instanceOf(evan.EventPath), "Current path is event specific path");
@@ -64,6 +64,14 @@
         notStrictEqual(event.originalPath, event.currentPath, "Original and current path different instances");
         deepEqual(event.originalPath.asArray, ['test', 'path'], "Original path set");
         deepEqual(event.currentPath.asArray, ['test', 'path'], "Current path set");
+    });
+
+    test("Setting custom data", function () {
+        var event = evan.Event.create(eventSpace, 'testEvent');
+        equal(typeof event.data, 'undefined', "No data initially");
+
+        event.setData('foo');
+
         equal(event.data, 'foo', "Custom data set");
     });
 
