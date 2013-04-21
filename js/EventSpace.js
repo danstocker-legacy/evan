@@ -154,6 +154,7 @@ troop.promise(evan, 'EventSpace', /** @borrows init as evan.EventSpace.create */
                  * @return {*} Whatever the user-defined handler returns (possibly a `false`)
                  */
                 function oneHandler(event, data) {
+                    /*jshint validthis: true */
                     handler.call(this, event, data);
                     return event.eventSpace.off(event.eventName, event.currentPath, oneHandler);
                 }
@@ -185,6 +186,7 @@ troop.promise(evan, 'EventSpace', /** @borrows init as evan.EventSpace.create */
                  * @return {*} Whatever the user-defined handler returns (possibly a `false`)
                  */
                 function delegateHandler(event, data) {
+                    /*jshint validthis: true */
                     if (event.originalPath.isRelativeTo(delegatePath)) {
                         // triggering handler and passing forged current path set to delegatePath
                         return handler.call(this, event.clone(delegatePath), data);
