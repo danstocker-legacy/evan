@@ -5,6 +5,8 @@
  */
 /*global dessert, troop, sntls, evan */
 troop.promise(evan, 'EventSpace', /** @borrows init as evan.EventSpace.create */ function () {
+    "use strict";
+
     /**
      * @class evan.EventSpace
      * @extends troop.Base
@@ -239,6 +241,8 @@ troop.promise(evan, 'EventSpace', /** @borrows init as evan.EventSpace.create */
 });
 
 troop.promise(evan, 'StringCollection', function () {
+    "use strict";
+
     /**
      * @name evan.StringCollection.create
      * @return {evan.StringCollection}
@@ -252,13 +256,17 @@ troop.promise(evan, 'StringCollection', function () {
     evan.StringCollection = sntls.Collection.of(String);
 });
 
-dessert.addTypes(/** @lends dessert */{
-    isEventSpace: function (expr) {
-        return evan.EventSpace.isPrototypeOf(expr);
-    },
+(function () {
+    "use strict";
 
-    isEventSpaceOptional: function (expr) {
-        return typeof expr === 'undefined' ||
-               evan.EventSpace.isPrototypeOf(expr);
-    }
-});
+    dessert.addTypes(/** @lends dessert */{
+        isEventSpace: function (expr) {
+            return evan.EventSpace.isPrototypeOf(expr);
+        },
+
+        isEventSpaceOptional: function (expr) {
+            return typeof expr === 'undefined' ||
+                   evan.EventSpace.isPrototypeOf(expr);
+        }
+    });
+}());

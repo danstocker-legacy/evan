@@ -1,5 +1,7 @@
 /*global sntls, evan, module, test, expect, ok, equal, strictEqual, notStrictEqual, deepEqual, raises */
 (function () {
+    "use strict";
+
     module("Event");
 
     var eventSpace = evan.EventSpace.create();

@@ -5,6 +5,8 @@
  */
 /*global dessert, troop, sntls, evan */
 troop.promise(evan, 'EventPath', function () {
+    "use strict";
+
     /**
      * @class evan.EventPath
      * @extends sntls.Path
@@ -27,6 +29,8 @@ troop.promise(evan, 'EventPath', function () {
 });
 
 troop.promise(evan, 'PathCollection', function () {
+    "use strict";
+
     /**
      * @name evan.PathCollection.create
      * @return {evan.PathCollection}
@@ -40,27 +44,31 @@ troop.promise(evan, 'PathCollection', function () {
     evan.PathCollection = sntls.Collection.of(sntls.Path);
 });
 
-dessert.addTypes(/** @lends dessert */{
-    isEventPath: function (expr) {
-        return evan.EventPath.isBaseOf(expr);
-    },
+(function () {
+    "use strict";
 
-    isEventPathOptional: function (expr) {
-        return typeof expr === 'undefined' ||
-               evan.EventPath.isBaseOf(expr);
-    }
-});
+    dessert.addTypes(/** @lends dessert */{
+        isEventPath: function (expr) {
+            return evan.EventPath.isBaseOf(expr);
+        },
 
-/**
- * @return {evan.EventPath}
- */
-String.prototype.toEventPath = function () {
-    return evan.EventPath.create(this);
-};
+        isEventPathOptional: function (expr) {
+            return typeof expr === 'undefined' ||
+                   evan.EventPath.isBaseOf(expr);
+        }
+    });
 
-/**
- * @return {evan.EventPath}
- */
-Array.prototype.toEventPath = function () {
-    return evan.EventPath.create(this);
-};
+    /**
+     * @return {evan.EventPath}
+     */
+    String.prototype.toEventPath = function () {
+        return evan.EventPath.create(this);
+    };
+
+    /**
+     * @return {evan.EventPath}
+     */
+    Array.prototype.toEventPath = function () {
+        return evan.EventPath.create(this);
+    };
+}());

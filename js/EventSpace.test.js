@@ -1,5 +1,7 @@
 /*global sntls, evan, module, test, expect, ok, equal, strictEqual, deepEqual, raises */
 (function () {
+    "use strict";
+
     module("EventSpace");
 
     test("Instantiation", function () {

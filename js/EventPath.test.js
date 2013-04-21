@@ -1,5 +1,7 @@
 /*global sntls, evan, module, test, expect, ok, equal, notStrictEqual, deepEqual, raises */
 (function () {
+    "use strict";
+
     module("EventPath");
 
     test("Shrink", function () {

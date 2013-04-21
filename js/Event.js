@@ -6,6 +6,8 @@
  */
 /*global dessert, troop, sntls, evan */
 troop.promise(evan, 'Event', function () {
+    "use strict";
+
     /**
      * @class evan.Event
      * @extends troop.Base
@@ -172,6 +174,8 @@ troop.promise(evan, 'Event', function () {
 });
 
 troop.promise(evan, 'EventCollection', function () {
+    "use strict";
+
     /**
      * @name evan.EventCollection.create
      * @return {evan.EventCollection}
@@ -185,13 +189,17 @@ troop.promise(evan, 'EventCollection', function () {
     evan.EventCollection = sntls.Collection.of(evan.Event);
 });
 
-dessert.addTypes(/** @lends dessert */{
-    isEvent: function (expr) {
-        return evan.Event.isBaseOf(expr);
-    },
+(function () {
+    "use strict";
 
-    isEventOptional: function (expr) {
-        return typeof expr === 'undefined' ||
-               evan.Event.isBaseOf(expr);
-    }
-});
+    dessert.addTypes(/** @lends dessert */{
+        isEvent: function (expr) {
+            return evan.Event.isBaseOf(expr);
+        },
+
+        isEventOptional: function (expr) {
+            return typeof expr === 'undefined' ||
+                   evan.Event.isBaseOf(expr);
+        }
+    });
+}());
