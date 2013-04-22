@@ -187,7 +187,15 @@ troop.promise(evan, 'EventSpace', /** @borrows init as evan.EventSpace.create */
                  */
                 function delegateHandler(event, data) {
                     /*jshint validthis: true */
-                    if (event.originalPath.isRelativeTo(delegatePath)) {
+                    var originalPath = event.originalPath,
+                        broadcastPath = event.broadcastPath;
+
+                    if (originalPath.isRelativeTo(delegatePath) ||
+                        broadcastPath && (
+                            capturePath.isRelativeTo(broadcastPath) ||
+                            delegatePath.isRelativeTo(broadcastPath)
+                            )
+                        ) {
                         // triggering handler and passing forged current path set to delegatePath
                         return handler.call(this, event.clone(delegatePath), data);
                     }
@@ -230,11 +238,12 @@ troop.promise(evan, 'EventSpace', /** @borrows init as evan.EventSpace.create */
              * Retrieves subscribed paths under the specified path.
              * @param {string} eventName
              * @param {sntls.Path} path
-             * @return {evan.PathCollection}
+             * @return {evan.PathCollection} Collection of paths under (not including) `path`
              */
             getPathsUnder: function (eventName, path) {
-                var allPaths = /** @type sntls.OrderedStringList */ this.eventRegistry.getNode([eventName, 'paths'].toPath()),
-                    matchingPaths = allPaths.getRangeByPrefix(path.toString());
+                var allPaths = /** @type sntls.OrderedStringList */ this.eventRegistry
+                        .getNode([eventName, 'paths'].toPath()),
+                    matchingPaths = allPaths.getRangeByPrefix(path.toString(), true);
 
                 return /** @type evan.PathCollection */ evan.StringCollection.create(matchingPaths)
                     .toPath()

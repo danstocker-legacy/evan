@@ -160,10 +160,26 @@
 
         deepEqual(
             triggeredPaths,
-            ['test.event', 'test.event.foo', 'test.event.foo.bar', 'test.event.hello'],
+            ['test.event.foo', 'test.event.foo.bar', 'test.event.hello', 'test.event'],
             "Paths triggered by broadcast"
         );
 
         evan.Event.removeMocks();
+    });
+
+    test("Broadcasting w/ delegation", function () {
+        expect(2);
+
+        var eventSpace = evan.EventSpace.create(),
+            event = eventSpace.spawnEvent('myEvent');
+
+        eventSpace.delegate('myEvent', 'a.b'.toPath(), 'a.b.c.d'.toEventPath(), function () {
+            ok(true, "Delegate triggered");
+        });
+
+        event
+            .broadcastSync('a'.toPath())
+            .broadcastSync('a.b.c'.toPath());
+
     });
 }());

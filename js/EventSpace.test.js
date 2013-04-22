@@ -282,10 +282,9 @@
         deepEqual(
             eventSpace.getPathsUnder('myEvent', 'test.event'.toPath()).toString().items,
             {
-                0: 'test.event',
-                1: 'test.event.foo',
-                2: 'test.event.foo.bar',
-                3: 'test.event.hello'
+                0: 'test.event.foo',
+                1: 'test.event.foo.bar',
+                2: 'test.event.hello'
             },
             "Paths subscribed to 'myEvent' relative to 'test.event'"
         );
@@ -301,8 +300,7 @@
         deepEqual(
             eventSpace.getPathsUnder('otherEvent', 'test.event'.toPath()).toString().items,
             {
-                0: 'test.event',
-                1: 'test.event.foo'
+                0: 'test.event.foo'
             },
             "Paths subscribed to 'otherEvent' relative to 'test.event'"
         );
