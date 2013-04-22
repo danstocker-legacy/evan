@@ -15,8 +15,8 @@ troop.promise(evan, 'Event', function () {
     evan.Event = troop.Base.extend()
         .addPrivateMethod(/** @lends evan.Event */{
             /**
-             * Creates a new event object based on the model event and
-             * initializes it with the specified path.
+             * Creates a new event instance and prepares it to be broadcast.
+             * Broadcast events do not bubble.
              * @param {*} data Custom event data - first argument  because its bound
              * version is used in collection mapping.
              * @param {sntls.Path} originalPath
@@ -24,6 +24,7 @@ troop.promise(evan, 'Event', function () {
              */
             _spawnBroadcastEvent: function (data, originalPath) {
                 return evan.Event.create(this.eventSpace, this.eventName)
+                    .allowBubbling(false)
                     .setTargetPath(originalPath)
                     .setData(data);
             },
