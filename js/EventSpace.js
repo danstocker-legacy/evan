@@ -4,7 +4,7 @@
  * Events traverse within a confined event space.
  */
 /*global dessert, troop, sntls, evan */
-troop.promise(evan, 'EventSpace', /** @borrows init as evan.EventSpace.create */ function () {
+troop.promise(evan, 'EventSpace', function () {
     "use strict";
 
     /**
