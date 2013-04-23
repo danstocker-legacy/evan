@@ -170,7 +170,7 @@ troop.promise(evan, 'EventSpace', /** @borrows init as evan.EventSpace.create */
              * Handlers subscribed this way CANNOT be unsubscribed individually.
              * @param {string} eventName
              * @param {sntls.Path} capturePath Path where the event will actually subscribe
-             * @param {evan.EventPath} delegatePath Path we're listening to
+             * @param {sntls.Path} delegatePath Path we're listening to
              * @param {function} handler Event handler function
              * @return {function} Event handler actually subscribed. Use this for unsubscribing.
              */

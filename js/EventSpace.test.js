@@ -199,15 +199,15 @@
         }
 
         raises(function () {
-            eventSpace.delegate('myEvent', 'test.event'.toPath(), 'unrelated.path'.toEventPath(), handler);
+            eventSpace.delegate('myEvent', 'test.event'.toPath(), 'unrelated.path'.toPath(), handler);
         }, "Unrelated paths");
 
         raises(function () {
-            eventSpace.delegate('myEvent', 'test.event'.toPath(), 'test.event.path'.toEventPath(), 'non-function');
+            eventSpace.delegate('myEvent', 'test.event'.toPath(), 'test.event.path'.toPath(), 'non-function');
         }, "Invalid event handler");
 
         // delegating event to path 'test.event.path'
-        result = eventSpace.delegate('myEvent', 'test.event'.toPath(), 'test.event.path'.toEventPath(), handler);
+        result = eventSpace.delegate('myEvent', 'test.event'.toPath(), 'test.event.path'.toPath(), handler);
         equal(typeof result, 'function', "Delegation returns wrapped handler");
         eventSpace.spawnEvent('myEvent').triggerSync('test.event.path.foo'.toPath());
     });
@@ -219,7 +219,7 @@
         function handler() {}
 
         // delegating in a way that handler may be unsubscribed
-        delegateHandler = eventSpace.delegate('myEvent', 'test.event'.toPath(), 'test.event.path'.toEventPath(), handler);
+        delegateHandler = eventSpace.delegate('myEvent', 'test.event'.toPath(), 'test.event.path'.toPath(), handler);
 
         equal(
             eventSpace.eventRegistry.root.myEvent.handlers['test.event'].length,
@@ -319,7 +319,7 @@
             .on('myEvent', 'a.b'.toPath(), handler)
             .on('myEvent', 'a.b.other path'.toPath(), handler);
 
-        eventSpace.delegate('myEvent', 'a.b'.toPath(), 'a.b.c.d'.toEventPath(), handler);
+        eventSpace.delegate('myEvent', 'a.b'.toPath(), 'a.b.c.d'.toPath(), handler);
 
         triggeredPaths = {};
         event.broadcastSync('a'.toPath()); // triggers due to broadcast path < capture path

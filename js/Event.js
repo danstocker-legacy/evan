@@ -126,18 +126,18 @@ troop.promise(evan, 'Event', function () {
             /**
              * Clones event and sets its currentPath property to
              * the one specified by the argument.
-             * @param {evan.EventPath} [currentPath]
+             * @param {sntls.Path} [currentPath]
              * @return {evan.Event}
              */
             clone: function (currentPath) {
-                dessert.isEventPathOptional(currentPath, "Invalid current event path");
+                dessert.isPathOptional(currentPath, "Invalid current event path");
 
                 var /**evan.Event*/ result = evan.Event.create(this.eventSpace, this.eventName);
 
                 result.originalPath = this.originalPath;
                 result.currentPath = currentPath ?
-                    currentPath.clone() :
-                    this.currentPath.clone();
+                    currentPath.clone().asArray.toEventPath() : // must be EventPath
+                    this.currentPath.clone(); // already EventPath
                 result.broadcastPath = this.broadcastPath;
                 result.data = this.data;
 
