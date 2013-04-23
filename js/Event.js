@@ -224,7 +224,10 @@ troop.promise(evan, 'Event', function () {
             },
 
             /**
-             * Broadcasts the event to all subscribed paths *below* the specified path.
+             * Broadcasts the event to all subscribed paths branching from the specified path.
+             * Events spawned by a broadcast do not bubble except for the one that is triggered
+             * on the specified broadcast path. It is necessary for delegates to react to
+             * broadcasts.
              * @param {sntls.Path} broadcastPath Target root for broadcast
              * @param {*} [data] Extra data to be passed along with event to handlers.
              */
