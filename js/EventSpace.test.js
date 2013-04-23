@@ -305,4 +305,57 @@
             "Paths subscribed to 'otherEvent' relative to 'test.event'"
         );
     });
+
+    test("Broadcast w/ delegation", function () {
+        var eventSpace = evan.EventSpace.create(),
+            event = eventSpace.spawnEvent('myEvent'),
+            triggeredPaths;
+
+        function handler(event) {
+            triggeredPaths[event.currentPath.toString()] = true;
+        }
+
+        eventSpace
+            .on('myEvent', 'a.b'.toPath(), handler)
+            .on('myEvent', 'a.b.other path'.toPath(), handler);
+
+        eventSpace.delegate('myEvent', 'a.b'.toPath(), 'a.b.c.d'.toEventPath(), handler);
+
+        triggeredPaths = {};
+        event.broadcastSync('a'.toPath()); // triggers due to broadcast path < capture path
+
+        deepEqual(
+            triggeredPaths,
+            {
+                "a.b"           : true,
+                "a.b.other path": true,
+                "a.b.c.d"       : true
+            },
+            "Broadcast below fork (trunk)"
+        );
+
+        triggeredPaths = {};
+        event.broadcastSync('a.b.c'.toPath()); // triggers due to broadcast path < delegate path
+
+        deepEqual(
+            triggeredPaths,
+            {
+                "a.b"    : true, // hit b/c BC bubbles
+                "a.b.c.d": true // hit b/c BC bubbles & triggers delegates
+            },
+            "Broadcast above fork"
+        );
+
+        triggeredPaths = {};
+        event.broadcastSync('a.b.c.d.e'.toPath()); // triggers due to bubbling of main event
+
+        deepEqual(
+            triggeredPaths,
+            {
+                "a.b"    : true,
+                "a.b.c.d": true
+            },
+            "Broadcast above leaf"
+        );
+    });
 }());
