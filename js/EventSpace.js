@@ -191,11 +191,7 @@ troop.promise(evan, 'EventSpace', /** @borrows init as evan.EventSpace.create */
                         broadcastPath = event.broadcastPath;
 
                     if (originalPath.isRelativeTo(delegatePath) ||
-                        broadcastPath && (
-                            capturePath.isRelativeTo(broadcastPath) ||
-                            delegatePath.isRelativeTo(broadcastPath)
-                            )
-                        ) {
+                        broadcastPath && delegatePath.isRelativeTo(broadcastPath)) {
                         // triggering handler and passing forged current path set to delegatePath
                         return handler.call(this, event.clone(delegatePath), data);
                     }
