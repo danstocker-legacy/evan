@@ -21,7 +21,7 @@ troop.promise(evan, 'Event', function () {
              * @return {evan.Event}
              * @private
              */
-            _spawnPreparedEvent: function (data, targetPath) {
+            _spawnMainBroadcastEvent: function (data, targetPath) {
                 return evan.Event.create(this.eventSpace, this.eventName)
                     .setBroadcastPath(targetPath)
                     .setTargetPath(targetPath)
@@ -230,6 +230,7 @@ troop.promise(evan, 'Event', function () {
              * broadcasts.
              * @param {sntls.Path} broadcastPath Target root for broadcast
              * @param {*} [data] Extra data to be passed along with event to handlers.
+             * @return {evan.Event}
              */
             broadcastSync: function (broadcastPath, data) {
                 var eventSpace = this.eventSpace,
@@ -238,11 +239,11 @@ troop.promise(evan, 'Event', function () {
                         this._spawnBroadcastEvent.bind(this, data, broadcastPath),
                         evan.EventCollection
                     ),
-                    leadEvent = this._spawnPreparedEvent(data, broadcastPath);
+                    mainEvent = this._spawnMainBroadcastEvent(data, broadcastPath);
 
                 // triggering all affected events
                 broadcastEvents
-                    .setItem('lead', leadEvent)
+                    .setItem('main', mainEvent)
                     .triggerSync();
 
                 return this;
