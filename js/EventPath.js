@@ -19,6 +19,11 @@ troop.promise(evan, 'EventPath', function () {
              */
 
             /**
+             * @name evan.EventPath.clone
+             * @return {evan.EventPath}
+             */
+
+            /**
              * Decreases path length by one.
              */
             shrink: function () {

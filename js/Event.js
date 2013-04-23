@@ -132,7 +132,7 @@ troop.promise(evan, 'Event', function () {
             clone: function (currentPath) {
                 dessert.isEventPathOptional(currentPath, "Invalid current event path");
 
-                var result = evan.Event.create(this.eventSpace, this.eventName);
+                var /**evan.Event*/ result = evan.Event.create(this.eventSpace, this.eventName);
 
                 result.originalPath = this.originalPath;
                 result.currentPath = currentPath ?
