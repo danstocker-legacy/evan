@@ -168,6 +168,7 @@ troop.promise(evan, 'EventSpace', function () {
             /**
              * Delegates event capturing to a path closer to the root.
              * Handlers subscribed this way CANNOT be unsubscribed individually.
+             * TODO: make `delegatePath` into a query
              * @param {string} eventName
              * @param {sntls.Path} capturePath Path where the event will actually subscribe
              * @param {sntls.Path} delegatePath Path we're listening to
