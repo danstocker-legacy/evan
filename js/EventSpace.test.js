@@ -7,7 +7,7 @@
     test("Instantiation", function () {
         var eventSpace = evan.EventSpace.create();
         ok(eventSpace.eventRegistry.isA(sntls.Tree), "Event registry is a tree");
-        deepEqual(eventSpace.eventRegistry.root, {}, "Event registry initialized");
+        deepEqual(eventSpace.eventRegistry.items, {}, "Event registry initialized");
     });
 
     test("Event creation", function () {
@@ -41,7 +41,7 @@
         eventSpace.on('myEvent', 'test.event.path'.toPath(), handler1);
 
         deepEqual(
-            eventSpace.eventRegistry.root.myEvent.handlers,
+            eventSpace.eventRegistry.items.myEvent.handlers,
             {
                 'test.event.path': [handler1]
             },
@@ -49,7 +49,7 @@
         );
 
         deepEqual(
-            eventSpace.eventRegistry.root.myEvent.paths.items,
+            eventSpace.eventRegistry.items.myEvent.paths.items,
             ['test.event.path'],
             "Event path added to registry"
         );
@@ -57,7 +57,7 @@
         eventSpace.on('myEvent', 'test.event.path', handler2);
 
         deepEqual(
-            eventSpace.eventRegistry.root.myEvent.handlers,
+            eventSpace.eventRegistry.items.myEvent.handlers,
             {
                 'test.event.path': [handler1, handler2]
             },
@@ -65,7 +65,7 @@
         );
 
         deepEqual(
-            eventSpace.eventRegistry.root.myEvent.paths.items,
+            eventSpace.eventRegistry.items.myEvent.paths.items,
             ['test.event.path', 'test.event.path'],
             "Event path added to registry"
         );
@@ -83,7 +83,7 @@
         eventSpace.off('myEvent', 'test.event.path'.toPath(), handler1);
 
         deepEqual(
-            eventSpace.eventRegistry.root.myEvent.handlers,
+            eventSpace.eventRegistry.items.myEvent.handlers,
             {
                 'test.event.path': [handler2]
             },
@@ -91,7 +91,7 @@
         );
 
         deepEqual(
-            eventSpace.eventRegistry.root.myEvent.paths.items,
+            eventSpace.eventRegistry.items.myEvent.paths.items,
             ['test.event.path'],
             "Former path unsubscribed"
         );
@@ -100,7 +100,7 @@
         eventSpace.off('myEvent', 'test.event.path'.toPath(), handler1);
 
         deepEqual(
-            eventSpace.eventRegistry.root.myEvent.handlers,
+            eventSpace.eventRegistry.items.myEvent.handlers,
             {
                 'test.event.path': [handler2]
             },
@@ -108,7 +108,7 @@
         );
 
         deepEqual(
-            eventSpace.eventRegistry.root.myEvent.paths.items,
+            eventSpace.eventRegistry.items.myEvent.paths.items,
             ['test.event.path'],
             "Paths untouched"
         );
@@ -116,13 +116,13 @@
         eventSpace.off('myEvent', 'test.event.path'.toPath(), handler2);
 
         deepEqual(
-            eventSpace.eventRegistry.root.myEvent.handlers,
+            eventSpace.eventRegistry.items.myEvent.handlers,
             {},
             "Former handler unsubscribed"
         );
 
         deepEqual(
-            eventSpace.eventRegistry.root.myEvent.paths.items,
+            eventSpace.eventRegistry.items.myEvent.paths.items,
             [],
             "Former path unsubscribed"
         );
@@ -140,13 +140,13 @@
         eventSpace.off('myEvent', 'test.event.path'.toPath());
 
         deepEqual(
-            eventSpace.eventRegistry.root.myEvent.handlers,
+            eventSpace.eventRegistry.items.myEvent.handlers,
             {},
             "All handlers unsubscribed"
         );
 
         deepEqual(
-            eventSpace.eventRegistry.root.myEvent.paths.items,
+            eventSpace.eventRegistry.items.myEvent.paths.items,
             [],
             "All paths unsubscribed"
         );
@@ -162,7 +162,7 @@
 
         equal(typeof result, 'function', "Returns wrapped handler");
         equal(
-            eventSpace.eventRegistry.root.myEvent.handlers['test.event.path'].length,
+            eventSpace.eventRegistry.items.myEvent.handlers['test.event.path'].length,
             1,
             "One time handler subscribed"
         );
@@ -171,7 +171,7 @@
         eventSpace.off('myEvent', 'test.event.path'.toPath(), result);
 
         equal(
-            eventSpace.eventRegistry.root.myEvent.handlers.hasOwnProperty('test.event.path'),
+            eventSpace.eventRegistry.items.myEvent.handlers.hasOwnProperty('test.event.path'),
             false,
             "One time handler subscribed"
         );
@@ -181,7 +181,7 @@
         eventSpace.spawnEvent('myEvent').triggerSync('test.event.path'.toPath());
 
         equal(
-            eventSpace.eventRegistry.root.myEvent.handlers.hasOwnProperty('test.event.path'),
+            eventSpace.eventRegistry.items.myEvent.handlers.hasOwnProperty('test.event.path'),
             false,
             "One time handler subscribed"
         );
@@ -222,7 +222,7 @@
         delegateHandler = eventSpace.delegate('myEvent', 'test.event'.toPath(), 'test.event.path'.toPath(), handler);
 
         equal(
-            eventSpace.eventRegistry.root.myEvent.handlers['test.event'].length,
+            eventSpace.eventRegistry.items.myEvent.handlers['test.event'].length,
             1,
             "Delegate handler subscribed"
         );
@@ -230,7 +230,7 @@
         eventSpace.off('myEvent', 'test.event'.toPath(), delegateHandler);
 
         equal(
-            eventSpace.eventRegistry.root.myEvent.handlers.hasOwnProperty('test.event'),
+            eventSpace.eventRegistry.items.myEvent.handlers.hasOwnProperty('test.event'),
             false,
             "Delegate handler unsubscribed"
         );
