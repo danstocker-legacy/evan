@@ -75,52 +75,48 @@ troop.promise(evan, 'Event', function () {
                     .isEventSpace(eventSpace)
                     .isString(eventName);
 
-                this
-                    .addConstant(/** @lends evan.Event */{
-                        /**
-                         * @type {string}
-                         * @constant
-                         */
-                        eventName: eventName,
+                /**
+                 * @type {string}
+                 * @constant
+                 */
+                this.eventName = eventName;
 
-                        /**
-                         * @type {evan.EventSpace}
-                         * @constant
-                         */
-                        eventSpace: eventSpace
-                    })
-                    .addPublic(/** @lends evan.Event */{
-                        /**
-                         * Whether the current event can bubble
-                         * @type {boolean}
-                         */
-                        canBubble: true,
+                /**
+                 * @type {evan.EventSpace}
+                 * @constant
+                 */
+                this.eventSpace = eventSpace;
 
-                        /**
-                         * Custom user data to be carried by the event
-                         * @type {*}
-                         */
-                        data: undefined,
+                /**
+                 * Whether the current event can bubble
+                 * @type {boolean}
+                 */
+                this.canBubble = true;
 
-                        /**
-                         * Path reflecting current state of bubbling
-                         * @type {evan.EventPath}
-                         */
-                        currentPath: undefined,
+                /**
+                 * Custom user data to be carried by the event
+                 * @type {*}
+                 */
+                this.data = undefined;
 
-                        /**
-                         * Path on which the event was originally triggered
-                         * @type {sntls.Path}
-                         */
-                        originalPath: undefined,
+                /**
+                 * Path reflecting current state of bubbling
+                 * @type {evan.EventPath}
+                 */
+                this.currentPath = undefined;
 
-                        /**
-                         * Reference to the original target path if
-                         * the event was triggered as part of a broadcast.
-                         * @type {sntls.Path}
-                         */
-                        broadcastPath: undefined
-                    });
+                /**
+                 * Path on which the event was originally triggered
+                 * @type {sntls.Path}
+                 */
+                this.originalPath = undefined;
+
+                /**
+                 * Reference to the original target path if
+                 * the event was triggered as part of a broadcast.
+                 * @type {sntls.Path}
+                 */
+                this.broadcastPath = undefined;
             },
 
             /**

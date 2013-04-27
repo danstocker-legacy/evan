@@ -40,14 +40,13 @@ troop.promise(evan, 'EventSpace', function () {
             /**
              */
             init: function () {
-                this.addConstant(/** @lends evan.EventSpace */{
-                    /**
-                     * Lookup for subscribed event handlers.
-                     * @type {sntls.Tree}
-                     * @example {myEvent: {handlers: {myPath: [func1, func2]}, paths: [myPath]}}
-                     */
-                    eventRegistry: sntls.Tree.create()
-                });
+                /**
+                 * Lookup for subscribed event handlers.
+                 * @type {sntls.Tree}
+                 * @constant
+                 * @example {myEvent: {handlers: {myPath: [func1, func2]}, paths: [myPath]}}
+                 */
+                this.eventRegistry = sntls.Tree.create();
             },
 
             /**
