@@ -167,10 +167,9 @@ troop.promise(evan, 'EventSpace', function () {
             /**
              * Delegates event capturing to a path closer to the root.
              * Handlers subscribed this way CANNOT be unsubscribed individually.
-             * TODO: make `delegatePath` into a query
              * @param {string} eventName
              * @param {sntls.Path} capturePath Path where the event will actually subscribe
-             * @param {sntls.Path} delegatePath Path we're listening to
+             * @param {sntls.Path} delegatePath Path we're listening to. (Could be derived, eg. Query)
              * @param {function} handler Event handler function
              * @return {function} Event handler actually subscribed. Use this for unsubscribing.
              */
@@ -235,6 +234,8 @@ troop.promise(evan, 'EventSpace', function () {
              * @param {string} eventName
              * @param {sntls.Path} path
              * @return {evan.PathCollection} Collection of paths relative to (not including) `path`
+             * TODO: sntls.Hash could implement something like .toStringCollection().
+             * Question is which lib/class should delegate the method.
              */
             getPathsRelativeTo: function (eventName, path) {
                 return /** @type evan.PathCollection */ this.eventRegistry
