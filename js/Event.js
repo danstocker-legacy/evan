@@ -229,17 +229,20 @@ troop.promise(evan, 'Event', function () {
              * @return {evan.Event}
              */
             broadcastSync: function (broadcastPath, data) {
-                var eventSpace = this.eventSpace,
-                    subscribedPaths = eventSpace.getPathsUnder(this.eventName, broadcastPath),
-                    broadcastEvents = subscribedPaths.map(
-                        this._spawnBroadcastEvent.bind(this, data, broadcastPath),
-                        evan.EventCollection
-                    ),
-                    mainEvent = this._spawnMainBroadcastEvent(data, broadcastPath);
+                var mainEvent = this._spawnMainBroadcastEvent(data, broadcastPath);
 
                 // triggering all affected events
-                broadcastEvents
+                this.eventSpace
+                    // obtaining subscribed paths relative to broadcast path
+                    .getPathsRelativeTo(this.eventName, broadcastPath)
+
+                    // spawning an event for each subscribed path
+                    .map(this._spawnBroadcastEvent.bind(this, data, broadcastPath), evan.EventCollection)
+
+                    // adding main event
                     .setItem('main', mainEvent)
+
+                    // triggering all events
                     .triggerSync();
 
                 return this;

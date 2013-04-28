@@ -280,7 +280,7 @@
             .on('otherEvent', 'test.event.foo'.toPath(), function () {});
 
         deepEqual(
-            eventSpace.getPathsUnder('myEvent', 'test.event'.toPath()).toString().items,
+            eventSpace.getPathsRelativeTo('myEvent', 'test.event'.toPath()).toString().items,
             {
                 0: 'test.event.foo',
                 1: 'test.event.foo.bar',
@@ -290,7 +290,7 @@
         );
 
         deepEqual(
-            eventSpace.getPathsUnder('myEvent', 'test.foo'.toPath()).toString().items,
+            eventSpace.getPathsRelativeTo('myEvent', 'test.foo'.toPath()).toString().items,
             {
                 0: 'test.foo.bar'
             },
@@ -298,7 +298,7 @@
         );
 
         deepEqual(
-            eventSpace.getPathsUnder('otherEvent', 'test.event'.toPath()).toString().items,
+            eventSpace.getPathsRelativeTo('otherEvent', 'test.event'.toPath()).toString().items,
             {
                 0: 'test.event.foo'
             },

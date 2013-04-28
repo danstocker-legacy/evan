@@ -231,19 +231,22 @@ troop.promise(evan, 'EventSpace', function () {
             },
 
             /**
-             * Retrieves subscribed paths under the specified path.
+             * Retrieves subscribed paths that are relative to the specified path.
              * @param {string} eventName
              * @param {sntls.Path} path
-             * @return {evan.PathCollection} Collection of paths under (not including) `path`
+             * @return {evan.PathCollection} Collection of paths relative to (not including) `path`
              */
-            getPathsUnder: function (eventName, path) {
-                var allPaths = /** @type sntls.OrderedStringList */ this.eventRegistry
-                        .getNode([eventName, 'paths'].toPath()),
-                    matchingPaths = allPaths.getRangeByPrefix(path.toString(), true);
+            getPathsRelativeTo: function (eventName, path) {
+                return /** @type evan.PathCollection */ this.eventRegistry
+                    // obtaining all paths associated with event name
+                    .getNode([eventName, 'paths'].toPath())
 
-                return /** @type evan.PathCollection */ evan.StringCollection.create(matchingPaths)
-                    .toPath()
-                    .asType(evan.PathCollection);
+                    // querying collection of strings that are relative to `path`
+                    .getRangeByPrefixAsHash(path.toString(), true)
+                    .toCollection().asType(evan.StringCollection)
+
+                    // converting them to a collection of paths
+                    .toPath().asType(evan.PathCollection);
             }
         });
 });
