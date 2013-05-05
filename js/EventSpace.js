@@ -129,7 +129,7 @@ troop.promise(evan, 'EventSpace', function () {
                         eventRegistry.unsetNode(handlersPath);
 
                         // removing all items pointing to this path
-                        pathList.removeAll(eventPathString);
+                        pathList.removeEvery(eventPathString);
                     }
                 }
 

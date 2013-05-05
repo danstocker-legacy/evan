@@ -9,9 +9,9 @@
         "url" : "https://github.com/pdanstocker/evan.git"
     },
     "dependencies": {
-        "dessert": ">=0.2.7",
-        "troop"  : ">=0.3.3",
-        "sntls"  : ">=0.4.0"
+        "dessert": "~0.2.7",
+        "troop"  : "~0.3.3",
+        "sntls"  : "~0.5.0"
     },
     "files"       : ["out/evan.js"],
     "main"        : "out/evan.js"

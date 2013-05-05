@@ -237,7 +237,7 @@ troop.promise(evan, 'Event', function () {
                     .getPathsRelativeTo(this.eventName, broadcastPath)
 
                     // spawning an event for each subscribed path
-                    .map(this._spawnBroadcastEvent.bind(this, data, broadcastPath), evan.EventCollection)
+                    .mapContents(this._spawnBroadcastEvent.bind(this, data, broadcastPath), evan.EventCollection)
 
                     // adding main event
                     .setItem('main', mainEvent)
