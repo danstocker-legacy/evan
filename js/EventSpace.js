@@ -234,7 +234,6 @@ troop.promise(evan, 'EventSpace', function () {
              * @param {string} eventName
              * @param {sntls.Path} path
              * @return {evan.PathCollection} Collection of paths relative to (not including) `path`
-             * TODO: sntls.Hash could implement something like .toStringCollection().
              * Question is which lib/class should delegate the method.
              */
             getPathsRelativeTo: function (eventName, path) {
@@ -244,7 +243,7 @@ troop.promise(evan, 'EventSpace', function () {
 
                     // querying collection of strings that are relative to `path`
                     .getRangeByPrefixAsHash(path.toString(), true)
-                    .toCollection().asType(evan.StringCollection)
+                    .toStringCollection()
 
                     // converting them to a collection of paths
                     .toPath().asType(evan.PathCollection);
