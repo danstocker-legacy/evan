@@ -102,6 +102,27 @@ troop.promise(evan, 'Query', function () {
                 }
 
                 return base.create(result);
+            },
+
+            toString: function () {
+                var asArray = this._encodeURI(this.asArray),
+                    result = [],
+                    i, key;
+
+                for (i = 0; i < asArray.length; i++) {
+                    key = asArray[i];
+                    if (key instanceof Array) {
+                        // optional keys
+                        result.push(key.join('<'));
+                    } else if (key instanceof Object) {
+                        // wildcard key
+                        result.push(key.symbol);
+                    } else {
+                        result.push(key);
+                    }
+                }
+
+                return result.join('>');
             }
         });
 });
