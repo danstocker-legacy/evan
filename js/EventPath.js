@@ -69,13 +69,13 @@ troop.promise(evan, 'PathCollection', function () {
      * @return {evan.EventPath}
      */
     String.prototype.toEventPath = function () {
-        return evan.EventPath.create(this);
+        return EventPath.create(this);
     };
 
     /**
      * @return {evan.EventPath}
      */
     Array.prototype.toEventPath = function () {
-        return evan.EventPath.create(this);
+        return EventPath.create(this);
     };
 }());
