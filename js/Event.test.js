@@ -43,11 +43,11 @@
         equal(originalEvent.currentPath.toString(), cloneEvent.currentPath.toString(), "...but they match");
         strictEqual(originalEvent.data, cloneEvent.data, "Custom data is the same");
 
-        currentPath = 'test.path'.toEventPath();
+        currentPath = 'test>path'.toEventPath();
         cloneEvent = originalEvent.clone(currentPath);
 
         notStrictEqual(cloneEvent.currentPath, currentPath, "Current path is not the same as specified...");
-        equal(cloneEvent.currentPath.toString(), 'test.path', "..but they match");
+        equal(cloneEvent.currentPath.toString(), 'test>path', "..but they match");
     });
 
     test("Setting path", function () {
@@ -56,10 +56,10 @@
         equal(typeof event.currentPath, 'undefined', "No current path initially");
 
         raises(function () {
-            event.setTargetPath('test.path');
+            event.setTargetPath('test>path');
         }, "Invalid path");
 
-        event.setTargetPath('test.path'.toPath());
+        event.setTargetPath('test>path'.toPath());
 
         ok(event.originalPath.instanceOf(sntls.Path), "Original path is plain path");
         ok(event.currentPath.instanceOf(evan.EventPath), "Current path is event specific path");
@@ -87,13 +87,13 @@
         evan.EventSpace.addMock({
             callHandlers: function (event) {
                 equal(event.eventName, 'testEvent', "Event name");
-                equal(event.originalPath.toString(), 'test.path', "Original event path");
-                equal(event.currentPath.toString(), ['test.path', 'test'][i++], "Current event path");
+                equal(event.originalPath.toString(), 'test>path', "Original event path");
+                equal(event.currentPath.toString(), ['test>path', 'test'][i++], "Current event path");
                 deepEqual(event.data, {foo: 'bar'}, "Custom event data");
             }
         });
 
-        event.triggerSync('test.path'.toPath(), {foo: 'bar'});
+        event.triggerSync('test>path'.toPath(), {foo: 'bar'});
 
         equal(typeof event.originalPath, 'undefined', "Original path reset");
         equal(typeof event.currentPath, 'undefined', "Current path reset");
@@ -109,14 +109,14 @@
 
         evan.EventSpace.addMock({
             callHandlers: function (event) {
-                equal(event.currentPath.toString(), 'test.path', "Current event path");
+                equal(event.currentPath.toString(), 'test>path', "Current event path");
 
                 // stops propagation after first bubbling
                 return false;
             }
         });
 
-        event.triggerSync('test.path'.toPath(), {foo: 'bar'});
+        event.triggerSync('test>path'.toPath(), {foo: 'bar'});
 
         evan.EventSpace.removeMocks();
     });
@@ -129,11 +129,11 @@
 
         evan.EventSpace.addMock({
             callHandlers: function (event) {
-                equal(event.currentPath.toString(), 'test.path', "Current event path");
+                equal(event.currentPath.toString(), 'test>path', "Current event path");
             }
         });
 
-        event.triggerSync('test.path'.toPath(), {foo: 'bar'});
+        event.triggerSync('test>path'.toPath(), {foo: 'bar'});
 
         evan.EventSpace.removeMocks();
     });

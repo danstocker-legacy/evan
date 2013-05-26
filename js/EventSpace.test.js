@@ -35,38 +35,38 @@
         function handler2() {}
 
         raises(function () {
-            eventSpace.on('myEvent', 'test.event.path'.toPath(), 123);
+            eventSpace.on('myEvent', 'test>event>path'.toPath(), 123);
         }, "Invalid event handler");
 
-        eventSpace.on('myEvent', 'test.event.path'.toPath(), handler1);
+        eventSpace.on('myEvent', 'test>event>path'.toPath(), handler1);
 
         deepEqual(
             eventSpace.eventRegistry.items.myEvent.handlers,
             {
-                'test.event.path': [handler1]
+                'test>event>path': [handler1]
             },
             "Event handler added to registry"
         );
 
         deepEqual(
             eventSpace.eventRegistry.items.myEvent.paths.items,
-            ['test.event.path'],
+            ['test>event>path'],
             "Event path added to registry"
         );
 
-        eventSpace.on('myEvent', 'test.event.path', handler2);
+        eventSpace.on('myEvent', 'test>event>path', handler2);
 
         deepEqual(
             eventSpace.eventRegistry.items.myEvent.handlers,
             {
-                'test.event.path': [handler1, handler2]
+                'test>event>path': [handler1, handler2]
             },
             "Event handler added to registry"
         );
 
         deepEqual(
             eventSpace.eventRegistry.items.myEvent.paths.items,
-            ['test.event.path', 'test.event.path'],
+            ['test>event>path', 'test>event>path'],
             "Event path added to registry"
         );
     });
@@ -77,43 +77,43 @@
         function handler2() {}
 
         var eventSpace = evan.EventSpace.create()
-            .on('myEvent', 'test.event.path'.toPath(), handler1)
-            .on('myEvent', 'test.event.path'.toPath(), handler2);
+            .on('myEvent', 'test>event>path'.toPath(), handler1)
+            .on('myEvent', 'test>event>path'.toPath(), handler2);
 
-        eventSpace.off('myEvent', 'test.event.path'.toPath(), handler1);
+        eventSpace.off('myEvent', 'test>event>path'.toPath(), handler1);
 
         deepEqual(
             eventSpace.eventRegistry.items.myEvent.handlers,
             {
-                'test.event.path': [handler2]
+                'test>event>path': [handler2]
             },
             "Former handler unsubscribed"
         );
 
         deepEqual(
             eventSpace.eventRegistry.items.myEvent.paths.items,
-            ['test.event.path'],
+            ['test>event>path'],
             "Former path unsubscribed"
         );
 
         // attempting to unsubscribe non-existing handler
-        eventSpace.off('myEvent', 'test.event.path'.toPath(), handler1);
+        eventSpace.off('myEvent', 'test>event>path'.toPath(), handler1);
 
         deepEqual(
             eventSpace.eventRegistry.items.myEvent.handlers,
             {
-                'test.event.path': [handler2]
+                'test>event>path': [handler2]
             },
             "Handlers untouched"
         );
 
         deepEqual(
             eventSpace.eventRegistry.items.myEvent.paths.items,
-            ['test.event.path'],
+            ['test>event>path'],
             "Paths untouched"
         );
 
-        eventSpace.off('myEvent', 'test.event.path'.toPath(), handler2);
+        eventSpace.off('myEvent', 'test>event>path'.toPath(), handler2);
 
         deepEqual(
             eventSpace.eventRegistry.items.myEvent.handlers,
@@ -134,10 +134,10 @@
         function handler2() {}
 
         var eventSpace = evan.EventSpace.create()
-            .on('myEvent', 'test.event.path'.toPath(), handler1)
-            .on('myEvent', 'test.event.path'.toPath(), handler2);
+            .on('myEvent', 'test>event>path'.toPath(), handler1)
+            .on('myEvent', 'test>event>path'.toPath(), handler2);
 
-        eventSpace.off('myEvent', 'test.event.path'.toPath());
+        eventSpace.off('myEvent', 'test>event>path'.toPath());
 
         deepEqual(
             eventSpace.eventRegistry.items.myEvent.handlers,
@@ -158,30 +158,30 @@
         var eventSpace = evan.EventSpace.create(),
             result;
 
-        result = eventSpace.one('myEvent', 'test.event.path'.toPath(), handler);
+        result = eventSpace.one('myEvent', 'test>event>path'.toPath(), handler);
 
         equal(typeof result, 'function', "Returns wrapped handler");
         equal(
-            eventSpace.eventRegistry.items.myEvent.handlers['test.event.path'].length,
+            eventSpace.eventRegistry.items.myEvent.handlers['test>event>path'].length,
             1,
             "One time handler subscribed"
         );
 
         // unsubscribing event before triggering
-        eventSpace.off('myEvent', 'test.event.path'.toPath(), result);
+        eventSpace.off('myEvent', 'test>event>path'.toPath(), result);
 
         equal(
-            eventSpace.eventRegistry.items.myEvent.handlers.hasOwnProperty('test.event.path'),
+            eventSpace.eventRegistry.items.myEvent.handlers.hasOwnProperty('test>event>path'),
             false,
             "One time handler subscribed"
         );
 
         // re binding and triggering event
-        eventSpace.one('myEvent', 'test.event.path'.toPath(), handler);
-        eventSpace.spawnEvent('myEvent').triggerSync('test.event.path'.toPath());
+        eventSpace.one('myEvent', 'test>event>path'.toPath(), handler);
+        eventSpace.spawnEvent('myEvent').triggerSync('test>event>path'.toPath());
 
         equal(
-            eventSpace.eventRegistry.items.myEvent.handlers.hasOwnProperty('test.event.path'),
+            eventSpace.eventRegistry.items.myEvent.handlers.hasOwnProperty('test>event>path'),
             false,
             "One time handler subscribed"
         );
@@ -194,22 +194,22 @@
             result;
 
         function handler(/** evan.Event */ event) {
-            equal(event.currentPath.toString(), 'test.event.path', "Event current path reflects delegated path");
-            equal(event.originalPath.toString(), 'test.event.path.foo', "Event current path reflects delegated path");
+            equal(event.currentPath.toString(), 'test>event>path', "Event current path reflects delegated path");
+            equal(event.originalPath.toString(), 'test>event>path>foo', "Event current path reflects delegated path");
         }
 
         raises(function () {
-            eventSpace.delegate('myEvent', 'test.event'.toPath(), 'unrelated.path'.toPath(), handler);
+            eventSpace.delegate('myEvent', 'test>event'.toPath(), 'unrelated.path'.toPath(), handler);
         }, "Unrelated paths");
 
         raises(function () {
-            eventSpace.delegate('myEvent', 'test.event'.toPath(), 'test.event.path'.toPath(), 'non-function');
+            eventSpace.delegate('myEvent', 'test>event'.toPath(), 'test>event>path'.toPath(), 'non-function');
         }, "Invalid event handler");
 
-        // delegating event to path 'test.event.path'
-        result = eventSpace.delegate('myEvent', 'test.event'.toPath(), 'test.event.path'.toPath(), handler);
+        // delegating event to path 'test>event>path'
+        result = eventSpace.delegate('myEvent', 'test>event'.toPath(), 'test>event>path'.toPath(), handler);
         equal(typeof result, 'function', "Delegation returns wrapped handler");
-        eventSpace.spawnEvent('myEvent').triggerSync('test.event.path.foo'.toPath());
+        eventSpace.spawnEvent('myEvent').triggerSync('test>event>path>foo'.toPath());
     });
 
     test("Un-delegation", function () {
@@ -219,18 +219,18 @@
         function handler() {}
 
         // delegating in a way that handler may be unsubscribed
-        delegateHandler = eventSpace.delegate('myEvent', 'test.event'.toPath(), 'test.event.path'.toPath(), handler);
+        delegateHandler = eventSpace.delegate('myEvent', 'test>event'.toPath(), 'test>event>path'.toPath(), handler);
 
         equal(
-            eventSpace.eventRegistry.items.myEvent.handlers['test.event'].length,
+            eventSpace.eventRegistry.items.myEvent.handlers['test>event'].length,
             1,
             "Delegate handler subscribed"
         );
 
-        eventSpace.off('myEvent', 'test.event'.toPath(), delegateHandler);
+        eventSpace.off('myEvent', 'test>event'.toPath(), delegateHandler);
 
         equal(
-            eventSpace.eventRegistry.items.myEvent.handlers.hasOwnProperty('test.event'),
+            eventSpace.eventRegistry.items.myEvent.handlers.hasOwnProperty('test>event'),
             false,
             "Delegate handler unsubscribed"
         );
@@ -240,14 +240,14 @@
         expect(3);
 
         var eventSpace = evan.EventSpace.create()
-                .on('myEvent', 'test.event', function (event, data) {
+                .on('myEvent', 'test>event', function (event, data) {
                     strictEqual(event, myEvent, "Event instance passed to handler");
                     strictEqual(data, event.data, "Custom event data passed to handler");
                 }),
             myEvent = eventSpace.spawnEvent('myEvent'),
             result;
 
-        myEvent.originalPath = evan.EventPath.create('test.event');
+        myEvent.originalPath = evan.EventPath.create('test>event');
         myEvent.currentPath = myEvent.originalPath.clone();
 
         result = eventSpace.callHandlers(myEvent);
@@ -256,12 +256,12 @@
 
     test("Bubbling with stop-propagation", function () {
         var eventSpace = evan.EventSpace.create()
-                .on('event', 'test.event'.toPath(), function () {
+                .on('event', 'test>event'.toPath(), function () {
                     return false;
                 }),
             event = eventSpace.spawnEvent('event');
 
-        event.originalPath = evan.EventPath.create('test.event');
+        event.originalPath = evan.EventPath.create('test>event');
         event.currentPath = event.originalPath.clone();
 
         eventSpace.callHandlers(event);
@@ -271,34 +271,34 @@
 
     test("Path query", function () {
         var eventSpace = evan.EventSpace.create()
-            .on('myEvent', 'test.event'.toPath(), function () {})
-            .on('myEvent', 'test.event.foo'.toPath(), function () {})
-            .on('myEvent', 'test.event.foo.bar'.toPath(), function () {})
-            .on('myEvent', 'test.foo.bar'.toPath(), function () {})
-            .on('myEvent', 'test.event.hello'.toPath(), function () {})
-            .on('otherEvent', 'test.event'.toPath(), function () {})
-            .on('otherEvent', 'test.event.foo'.toPath(), function () {});
+            .on('myEvent', 'test>event'.toPath(), function () {})
+            .on('myEvent', 'test>event>foo'.toPath(), function () {})
+            .on('myEvent', 'test>event>foo>bar'.toPath(), function () {})
+            .on('myEvent', 'test>foo>bar'.toPath(), function () {})
+            .on('myEvent', 'test>event>hello'.toPath(), function () {})
+            .on('otherEvent', 'test>event'.toPath(), function () {})
+            .on('otherEvent', 'test>event>foo'.toPath(), function () {});
 
         deepEqual(
-            eventSpace.getPathsRelativeTo('myEvent', 'test.event'.toPath()).toString().items,
+            eventSpace.getPathsRelativeTo('myEvent', 'test>event'.toPath()).toString().items,
             [
-                'test.event.foo',
-                'test.event.foo.bar',
-                'test.event.hello'
+                'test>event>foo',
+                'test>event>foo>bar',
+                'test>event>hello'
             ],
-            "Paths subscribed to 'myEvent' relative to 'test.event'"
+            "Paths subscribed to 'myEvent' relative to 'test>event'"
         );
 
         deepEqual(
-            eventSpace.getPathsRelativeTo('myEvent', 'test.foo'.toPath()).toString().items,
-            ['test.foo.bar'],
-            "Paths subscribed to 'myEvent' relative to 'test.foo'"
+            eventSpace.getPathsRelativeTo('myEvent', 'test>foo'.toPath()).toString().items,
+            ['test>foo>bar'],
+            "Paths subscribed to 'myEvent' relative to 'test>foo'"
         );
 
         deepEqual(
-            eventSpace.getPathsRelativeTo('otherEvent', 'test.event'.toPath()).toString().items,
-            ['test.event.foo'],
-            "Paths subscribed to 'otherEvent' relative to 'test.event'"
+            eventSpace.getPathsRelativeTo('otherEvent', 'test>event'.toPath()).toString().items,
+            ['test>event>foo'],
+            "Paths subscribed to 'otherEvent' relative to 'test>event'"
         );
     });
 
@@ -312,10 +312,10 @@
         }
 
         eventSpace
-            .on('myEvent', 'a.b'.toPath(), handler)
-            .on('myEvent', 'a.b.other path'.toPath(), handler);
+            .on('myEvent', 'a>b'.toPath(), handler)
+            .on('myEvent', 'a>b>other path'.toPath(), handler);
 
-        eventSpace.delegate('myEvent', 'a.b'.toPath(), 'a.b.c.d'.toPath(), handler);
+        eventSpace.delegate('myEvent', 'a>b'.toPath(), 'a>b>c>d'.toPath(), handler);
 
         triggeredPaths = {};
         event.broadcastSync('a'.toPath()); // triggers due to broadcast path < capture path
@@ -323,33 +323,33 @@
         deepEqual(
             triggeredPaths,
             {
-                "a.b"           : true,
-                "a.b.other path": true,
-                "a.b.c.d"       : true
+                "a>b"             : true,
+                "a>b>other%20path": true,
+                "a>b>c>d"         : true
             },
             "Broadcast below fork (trunk)"
         );
 
         triggeredPaths = {};
-        event.broadcastSync('a.b.c'.toPath()); // triggers due to broadcast path < delegate path
+        event.broadcastSync('a>b>c'.toPath()); // triggers due to broadcast path < delegate path
 
         deepEqual(
             triggeredPaths,
             {
-                "a.b"    : true, // hit b/c BC bubbles
-                "a.b.c.d": true // hit b/c BC bubbles & triggers delegates
+                "a>b"    : true, // hit b/c BC bubbles
+                "a>b>c>d": true // hit b/c BC bubbles & triggers delegates
             },
             "Broadcast above fork"
         );
 
         triggeredPaths = {};
-        event.broadcastSync('a.b.c.d.e'.toPath()); // triggers due to bubbling of main event
+        event.broadcastSync('a>b>c>d>e'.toPath()); // triggers due to bubbling of main event
 
         deepEqual(
             triggeredPaths,
             {
-                "a.b"    : true,
-                "a.b.c.d": true
+                "a>b"    : true,
+                "a>b>c>d": true
             },
             "Broadcast above leaf"
         );

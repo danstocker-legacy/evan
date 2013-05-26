@@ -5,7 +5,7 @@
     module("EventPath");
 
     test("Shrink", function () {
-        var path = evan.EventPath.create('test.path.it.is');
+        var path = evan.EventPath.create('test>path>it>is');
 
         path.shrink();
         equal(path.asArray.length, 3, "Path shrunk");
@@ -16,11 +16,11 @@
 
     test("Serialization", function () {
         var path = evan.EventPath.create(['test', 'path', 'it', 'is']);
-        equal(path.toString(), 'test.path.it.is', "evan.EventPath does not override toString()");
+        equal(path.toString(), 'test>path>it>is', "evan.EventPath does not override toString()");
     });
 
     test("String conversion", function () {
-        var path = 'test.path.hello.world'.toEventPath();
+        var path = 'test>path>hello>world'.toEventPath();
 
         ok(evan.EventPath.isBaseOf(path), "Path type");
         deepEqual(path.asArray, ['test', 'path', 'hello', 'world'], "Path contents");
