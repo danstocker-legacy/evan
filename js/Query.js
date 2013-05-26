@@ -16,9 +16,18 @@ troop.promise(evan, 'Query', function () {
              */
             RE_QUERY_VALIDATOR: /^[^><]+(<[^><]+)*(>[^><]+(<[^><]+)*)*$/,
 
-            ASTERISK: {symbol: '|'},
+            /**
+             * Wildcard matching any key on a single level.
+             * @type {object}
+             */
+            WILDCARD_ASTERISK: {symbol: '|'},
 
-            CONTINUATION: {symbol: '\\'}
+            /**
+             * Wildcard for matching any key on this level
+             * and any following levels until the next key is matched.
+             * @type {object}
+             */
+            WILDCARD_CONTINUATION: {symbol: '\\'}
         })
         .addPrivateMethod(/** @lends evan.Query */{
             /**
@@ -67,6 +76,11 @@ troop.promise(evan, 'Query', function () {
         })
         .addMethod(/** @lends evan.Query */{
             /**
+             * @name evan.Query.create
+             * @return {evan.Query}
+             */
+
+            /**
              * Extracts the longest fixed stem path from the query.
              * The stem may not contain any wildcards, or other
              * query expressions, only specific keys.
@@ -76,6 +90,8 @@ troop.promise(evan, 'Query', function () {
                 var asArray = this.asArray,
                     result = [],
                     i, key;
+
+                // stopping at first non-string key
                 for (i = 0; i < asArray.length; i++) {
                     key = asArray[i];
                     if (typeof key === 'string') {
@@ -84,7 +100,8 @@ troop.promise(evan, 'Query', function () {
                         break;
                     }
                 }
-                return Path.create(result);
+
+                return base.create(result);
             }
         });
 });

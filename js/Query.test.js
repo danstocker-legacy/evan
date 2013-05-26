@@ -19,4 +19,15 @@
             "Query structure decoded"
         );
     });
+
+    test("Stem extraction", function () {
+        var Query = evan.Query,
+            query = Query.create(['foo', 'bar', ['hello', 'world'], Query.WILDCARD_ASTERISK]),
+            result;
+
+        result = query.getStemPath();
+
+        ok(result.instanceOf(sntls.Path), "Stem path is class Path");
+        deepEqual(result.asArray, ['foo', 'bar'], "Stem path buffer");
+    });
 }());
