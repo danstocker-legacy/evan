@@ -52,14 +52,16 @@ troop.promise(evan, 'PathCollection', function () {
 (function () {
     "use strict";
 
+    var EventPath = evan.EventPath;
+
     dessert.addTypes(/** @lends dessert */{
         isEventPath: function (expr) {
-            return evan.EventPath.isBaseOf(expr);
+            return EventPath.isBaseOf(expr);
         },
 
         isEventPathOptional: function (expr) {
             return typeof expr === 'undefined' ||
-                   evan.EventPath.isBaseOf(expr);
+                   EventPath.isBaseOf(expr);
         }
     });
 

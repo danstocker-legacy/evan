@@ -8,11 +8,14 @@
 troop.promise(evan, 'Event', function () {
     "use strict";
 
+    var base = troop.Base,
+        self = base.extend();
+
     /**
      * @class evan.Event
      * @extends troop.Base
      */
-    evan.Event = troop.Base.extend()
+    evan.Event = self
         .addPrivateMethod(/** @lends evan.Event */{
             /**
              * Creates a new event instance and prepares it to be triggered.
@@ -22,7 +25,7 @@ troop.promise(evan, 'Event', function () {
              * @private
              */
             _spawnMainBroadcastEvent: function (data, targetPath) {
-                return evan.Event.create(this.eventSpace, this.eventName)
+                return self.create(this.eventSpace, this.eventName)
                     .setBroadcastPath(targetPath)
                     .setTargetPath(targetPath)
                     .setData(data);
@@ -39,7 +42,7 @@ troop.promise(evan, 'Event', function () {
              * @private
              */
             _spawnBroadcastEvent: function (data, broadcastPath, targetPath) {
-                return evan.Event.create(this.eventSpace, this.eventName)
+                return self.create(this.eventSpace, this.eventName)
                     .allowBubbling(false)
                     .setBroadcastPath(broadcastPath)
                     .setTargetPath(targetPath)
@@ -128,7 +131,7 @@ troop.promise(evan, 'Event', function () {
             clone: function (currentPath) {
                 dessert.isPathOptional(currentPath, "Invalid current event path");
 
-                var /**evan.Event*/ result = evan.Event.create(this.eventSpace, this.eventName);
+                var /**evan.Event*/ result = self.create(this.eventSpace, this.eventName);
 
                 result.originalPath = this.originalPath;
                 result.currentPath = currentPath ?
@@ -266,14 +269,16 @@ troop.promise(evan, 'EventCollection', function () {
 (function () {
     "use strict";
 
+    var Event = evan.Event;
+
     dessert.addTypes(/** @lends dessert */{
         isEvent: function (expr) {
-            return evan.Event.isBaseOf(expr);
+            return Event.isBaseOf(expr);
         },
 
         isEventOptional: function (expr) {
             return typeof expr === 'undefined' ||
-                   evan.Event.isBaseOf(expr);
+                   Event.isBaseOf(expr);
         }
     });
 }());

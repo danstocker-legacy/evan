@@ -7,6 +7,8 @@
 troop.promise(evan, 'EventSpace', function () {
     "use strict";
 
+    var Event = evan.Event;
+
     /**
      * @class evan.EventSpace
      * @extends troop.Base
@@ -55,7 +57,7 @@ troop.promise(evan, 'EventSpace', function () {
              * @return {evan.Event} New event instance
              */
             spawnEvent: function (eventName) {
-                return evan.Event.create(this, eventName);
+                return Event.create(this, eventName);
             },
 
             /**
@@ -251,33 +253,19 @@ troop.promise(evan, 'EventSpace', function () {
         });
 });
 
-troop.promise(evan, 'StringCollection', function () {
-    "use strict";
-
-    /**
-     * @name evan.StringCollection.create
-     * @return {evan.StringCollection}
-     */
-
-    /**
-     * @class evan.StringCollection
-     * @extends sntls.Collection
-     * @extends String
-     */
-    evan.StringCollection = sntls.Collection.of(String);
-});
-
 (function () {
     "use strict";
 
+    var EventSpace = evan.EventSpace;
+
     dessert.addTypes(/** @lends dessert */{
         isEventSpace: function (expr) {
-            return evan.EventSpace.isPrototypeOf(expr);
+            return EventSpace.isPrototypeOf(expr);
         },
 
         isEventSpaceOptional: function (expr) {
             return typeof expr === 'undefined' ||
-                   evan.EventSpace.isPrototypeOf(expr);
+                   EventSpace.isPrototypeOf(expr);
         }
     });
 }());
