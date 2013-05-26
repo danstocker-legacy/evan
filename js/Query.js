@@ -72,6 +72,36 @@ troop.promise(evan, 'Query', function () {
                     }
                 }
                 return result;
+            },
+
+            /**
+             * Parses string representation of query and returns an array.
+             * @param {string} query
+             * @return {Array}
+             * @private
+             */
+            _parseString: function (query) {
+                var result = query.split('>'),
+                    i, key;
+
+                for (i = 0; i < result.length; i++) {
+                    key = result[i];
+                    switch (key) {
+                    case '|':
+                        result[i] = this.WILDCARD_ASTERISK;
+                        break;
+                    case '\\':
+                        result[i] = this.WILDCARD_CONTINUATION;
+                        break;
+                    default:
+                        if (key.indexOf('<') > -1) {
+                            result[i] = key.split('<');
+                        }
+                        break;
+                    }
+                }
+
+                return result;
             }
         })
         .addMethod(/** @lends evan.Query */{

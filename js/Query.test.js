@@ -36,6 +36,17 @@
         );
     });
 
+    test("Parsing", function () {
+        var Query = evan.Query,
+            query = 'foo>\\>bar>hello<world>|';
+
+        deepEqual(
+            evan.Query._parseString(query),
+            ['foo', Query.WILDCARD_CONTINUATION, 'bar', ['hello', 'world'], Query.WILDCARD_ASTERISK],
+            "Query parsed"
+        );
+    });
+
     test("Stem extraction", function () {
         var Query = evan.Query,
             query = Query.create(['foo', 'bar', ['hello', 'world'], Query.WILDCARD_ASTERISK]),
