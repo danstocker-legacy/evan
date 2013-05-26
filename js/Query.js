@@ -111,6 +111,19 @@ troop.promise(evan, 'Query', function () {
              */
 
             /**
+             * @param {Array|string} query
+             */
+            init: function (query) {
+                var asArray = dessert.validators.isString(query) ?
+                    this._parseString(query) :
+                    query;
+
+                // calling base w/ array only
+                // base class handles assertions
+                base.init.call(this, asArray);
+            },
+
+            /**
              * Extracts the longest fixed stem path from the query.
              * The stem may not contain any wildcards, or other
              * query expressions, only specific keys.
@@ -177,4 +190,18 @@ troop.promise(evan, 'Query', function () {
                    Query.isBaseOf(expr);
         }
     });
+
+    /**
+     * @return {evan.Query}
+     */
+    String.prototype.toQuery = function () {
+        return Query.create(this);
+    };
+
+    /**
+     * @return {evan.Query}
+     */
+    Array.prototype.toQuery = function () {
+        return Query.create(this);
+    };
 }());

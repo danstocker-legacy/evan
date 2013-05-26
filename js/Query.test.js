@@ -47,6 +47,46 @@
         );
     });
 
+    test("Instantiation", function () {
+        var query;
+
+        raises(function () {
+            evan.Query.create(5);
+        }, "Invalid query");
+
+        query = evan.Query.create(['hello', evan.Query.WILDCARD_ASTERISK, ['you', 'all']]);
+        deepEqual(
+            query.asArray,
+            ['hello', evan.Query.WILDCARD_ASTERISK, ['you', 'all']],
+            "Query initialized w/ array"
+        );
+
+        query = evan.Query.create('hello>|>you<all');
+        deepEqual(
+            query.asArray,
+            ['hello', evan.Query.WILDCARD_ASTERISK, ['you', 'all']],
+            "Query initialized w/ string"
+        );
+    });
+
+    test("Type conversion", function () {
+        var query;
+
+        query = ['hello', evan.Query.WILDCARD_ASTERISK, ['you', 'all']].toQuery();
+        deepEqual(
+            query.asArray,
+            ['hello', evan.Query.WILDCARD_ASTERISK, ['you', 'all']],
+            "Query initialized from array"
+        );
+
+        query = 'hello>|>you<all'.toQuery();
+        deepEqual(
+            query.asArray,
+            ['hello', evan.Query.WILDCARD_ASTERISK, ['you', 'all']],
+            "Query initialized from string"
+        );
+    });
+
     test("Stem extraction", function () {
         var Query = evan.Query,
             query = Query.create(['foo', 'bar', ['hello', 'world'], Query.WILDCARD_ASTERISK]),
