@@ -1,5 +1,4 @@
-/out/
-/node_modules/
-/lib/
 /.idea/
+/node_modules/
+/out/
 /*.tgz
