@@ -280,7 +280,7 @@
             .on('otherEvent', 'test>event>foo'.toPath(), function () {});
 
         deepEqual(
-            eventSpace.getPathsRelativeTo('myEvent', 'test>event'.toPath()).toString().items,
+            eventSpace.getPathsRelativeTo('myEvent', 'test>event'.toPath()).callOnEachItem('toString').items,
             [
                 'test>event>foo',
                 'test>event>foo>bar',
@@ -290,13 +290,13 @@
         );
 
         deepEqual(
-            eventSpace.getPathsRelativeTo('myEvent', 'test>foo'.toPath()).toString().items,
+            eventSpace.getPathsRelativeTo('myEvent', 'test>foo'.toPath()).callOnEachItem('toString').items,
             ['test>foo>bar'],
             "Paths subscribed to 'myEvent' relative to 'test>foo'"
         );
 
         deepEqual(
-            eventSpace.getPathsRelativeTo('otherEvent', 'test>event'.toPath()).toString().items,
+            eventSpace.getPathsRelativeTo('otherEvent', 'test>event'.toPath()).callOnEachItem('toString').items,
             ['test>event>foo'],
             "Paths subscribed to 'otherEvent' relative to 'test>event'"
         );
