@@ -20,14 +20,14 @@ troop.promise(evan, 'Query', function () {
              * Wildcard matching any key on a single level.
              * @type {object}
              */
-            WILDCARD_ASTERISK: {symbol: '|'},
+            PATTERN_ASTERISK: {symbol: '|'},
 
             /**
              * Wildcard for matching any key on this level
              * and any following levels until the next key is matched.
              * @type {object}
              */
-            WILDCARD_CONTINUATION: {symbol: '\\'}
+            PATTERN_CONTINUATION: {symbol: '\\'}
         })
         .addPrivateMethod(/** @lends evan.Query */{
             /**
@@ -88,10 +88,10 @@ troop.promise(evan, 'Query', function () {
                     key = result[i];
                     switch (key) {
                     case '|':
-                        result[i] = this.WILDCARD_ASTERISK;
+                        result[i] = this.PATTERN_ASTERISK;
                         break;
                     case '\\':
-                        result[i] = this.WILDCARD_CONTINUATION;
+                        result[i] = this.PATTERN_CONTINUATION;
                         break;
                     default:
                         if (key.indexOf('<') > -1) {
@@ -102,6 +102,32 @@ troop.promise(evan, 'Query', function () {
                 }
 
                 return result;
+            },
+
+            /**
+             * Matches a path key to a query pattern
+             * @param {string} key
+             * @param {string|object|string[]} pattern
+             * @return {Boolean}
+             * @private
+             */
+            _matchKeyToPattern: function (key, pattern) {
+                if (pattern instanceof Array) {
+                    // expression is list of choices
+                    return pattern.indexOf(key) > -1;
+                } else if (dessert.validators.isString(pattern)) {
+                    // expression is string, must match by value
+                    return pattern === key;
+                } else if (pattern instanceof Object) {
+                    // expression is wildcard object
+                    switch (pattern.symbol) {
+                    case '|':
+                        return true;
+                    default:
+                        return false;
+                    }
+                }
+                return false;
             }
         })
         .addMethod(/** @lends evan.Query */{
@@ -145,6 +171,52 @@ troop.promise(evan, 'Query', function () {
                 }
 
                 return base.create(result);
+            },
+
+            /**
+             * Determines whether query matches specified path
+             * @param {sntls.Path} path
+             * @return {boolean}
+             */
+            matchesPath: function (path) {
+                var queryAsArray = this.asArray,
+                    pathAsArray = path.asArray,
+                    i, currentKey,
+                    j, currentPattern,
+                    inSkipMode = false;
+
+                for (i = 0, j = 0; i < pathAsArray.length && j < queryAsArray.length; i++) {
+                    currentKey = pathAsArray[i];
+                    currentPattern = queryAsArray[j];
+
+                    if (currentPattern.symbol === '\\') {
+                        inSkipMode = true;
+                        if (j === queryAsArray.length - 1) {
+                            return true;
+                        } else {
+                            i--;
+                            j++;
+                        }
+                    } else {
+                        if (this._matchKeyToPattern(currentKey, currentPattern)) {
+                            if (inSkipMode) {
+                                // in skip mode and current key matched
+                                // turning skip mode off
+                                inSkipMode = false;
+                            }
+                            j++;
+                        } else if (!inSkipMode) {
+                            // key not matched by pattern and not in skip mode
+                            // matching failed
+                            return false;
+                        }
+                    }
+                }
+
+                // matching was successful when both query
+                // and path were fully processed
+                return i === pathAsArray.length &&
+                       j === queryAsArray.length;
             },
 
             toString: function () {
