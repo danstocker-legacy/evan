@@ -86,6 +86,16 @@
         ok(query.matchesPath('test>path>foo>bar'.toPath()), "Query w/ skipping at end matched by path");
     });
 
+    test("Complex query matching", function () {
+        var query;
+
+        query = 'test>\\>|>path>|>foo>\\'.toQuery();
+        ok(query.matchesPath('test>hello>path>world>foo>some>more>keys'.toPath()), "Query matched");
+
+        query = '\\>test>\\>path>foo>bar'.toQuery();
+        ok(query.matchesPath('hello>world>test>path>foo>bar'.toPath()), "Query matched");
+    });
+
     test("Instantiation", function () {
         var query;
 
