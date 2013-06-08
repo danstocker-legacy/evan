@@ -175,7 +175,7 @@ troop.promise(evan, 'Query', function () {
              * @return {boolean}
              */
             matchesPath: function (path) {
-                var PATTERN_CONTINUATION = this.PATTERN_SKIP,
+                var PATTERN_SKIP = this.PATTERN_SKIP,
                     queryAsArray = this.asArray,
                     pathAsArray = path.asArray,
                     i = 0, currentKey,
@@ -186,18 +186,15 @@ troop.promise(evan, 'Query', function () {
                     currentKey = pathAsArray[i];
                     currentPattern = queryAsArray[j];
 
-                    if (currentPattern === PATTERN_CONTINUATION) {
+                    if (currentPattern === PATTERN_SKIP) {
                         // current pattern indicates skip mode 'on'
                         inSkipMode = true;
                         j++;
                     } else {
                         if (this._matchKeyToPattern(currentKey, currentPattern)) {
                             // current key matches current pattern
-                            if (inSkipMode) {
-                                // in skip mode and current key matched
-                                // turning skip mode off
-                                inSkipMode = false;
-                            }
+                            // turning skip mode off
+                            inSkipMode = false;
                             j++;
                         } else if (!inSkipMode) {
                             // current key does not match current pattern and not in skip mode
@@ -213,7 +210,7 @@ troop.promise(evan, 'Query', function () {
                 // matching was successful when query was fully processed
                 // and path was either fully processed or last pattern was continuation
                 return j === queryAsArray.length &&
-                       (i === pathAsArray.length || currentPattern === PATTERN_CONTINUATION);
+                       (i === pathAsArray.length || currentPattern === PATTERN_SKIP);
             },
 
             toString: function () {
