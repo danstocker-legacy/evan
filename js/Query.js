@@ -17,17 +17,18 @@ troop.promise(evan, 'Query', function () {
             RE_QUERY_VALIDATOR: /^[^><]+(<[^><]+)*(>[^><]+(<[^><]+)*)*$/,
 
             /**
-             * Wildcard matching any key on a single level.
+             * Pattern that matches any key on a single level.
              * @type {object}
              */
             PATTERN_ASTERISK: {symbol: '|'},
 
             /**
-             * Wildcard for matching any key on this level
-             * and any following levels until the next key is matched.
+             * Pattern indicating skip mode. In skip mode, keys are skipped
+             * in the path between the previous key and the nearest key matched
+             * by the next pattern in the query.
              * @type {object}
              */
-            PATTERN_CONTINUATION: {symbol: '\\'}
+            PATTERN_SKIP: {symbol: '\\'}
         })
         .addPrivateMethod(/** @lends evan.Query */{
             /**
@@ -91,7 +92,7 @@ troop.promise(evan, 'Query', function () {
                         result[i] = this.PATTERN_ASTERISK;
                         break;
                     case '\\':
-                        result[i] = this.PATTERN_CONTINUATION;
+                        result[i] = this.PATTERN_SKIP;
                         break;
                     default:
                         if (key.indexOf('<') > -1) {
@@ -120,12 +121,7 @@ troop.promise(evan, 'Query', function () {
                     return pattern === key;
                 } else if (pattern instanceof Object) {
                     // expression is wildcard object
-                    switch (pattern.symbol) {
-                    case '|':
-                        return true;
-                    default:
-                        return false;
-                    }
+                    return pattern === this.PATTERN_ASTERISK;
                 }
                 return false;
             }
@@ -179,26 +175,24 @@ troop.promise(evan, 'Query', function () {
              * @return {boolean}
              */
             matchesPath: function (path) {
-                var queryAsArray = this.asArray,
+                var PATTERN_CONTINUATION = this.PATTERN_SKIP,
+                    queryAsArray = this.asArray,
                     pathAsArray = path.asArray,
-                    i, currentKey,
-                    j, currentPattern,
+                    i = 0, currentKey,
+                    j = 0, currentPattern,
                     inSkipMode = false;
 
-                for (i = 0, j = 0; i < pathAsArray.length && j < queryAsArray.length; i++) {
+                while (i < pathAsArray.length && j < queryAsArray.length) {
                     currentKey = pathAsArray[i];
                     currentPattern = queryAsArray[j];
 
-                    if (currentPattern.symbol === '\\') {
+                    if (currentPattern === PATTERN_CONTINUATION) {
+                        // current pattern indicates skip mode 'on'
                         inSkipMode = true;
-                        if (j === queryAsArray.length - 1) {
-                            return true;
-                        } else {
-                            i--;
-                            j++;
-                        }
+                        j++;
                     } else {
                         if (this._matchKeyToPattern(currentKey, currentPattern)) {
+                            // current key matches current pattern
                             if (inSkipMode) {
                                 // in skip mode and current key matched
                                 // turning skip mode off
@@ -206,17 +200,20 @@ troop.promise(evan, 'Query', function () {
                             }
                             j++;
                         } else if (!inSkipMode) {
-                            // key not matched by pattern and not in skip mode
+                            // current key does not match current pattern and not in skip mode
                             // matching failed
                             return false;
                         }
+
+                        // proceeding to next key in path
+                        i++;
                     }
                 }
 
-                // matching was successful when both query
-                // and path were fully processed
-                return i === pathAsArray.length &&
-                       j === queryAsArray.length;
+                // matching was successful when query was fully processed
+                // and path was either fully processed or last pattern was continuation
+                return j === queryAsArray.length &&
+                       (i === pathAsArray.length || currentPattern === PATTERN_CONTINUATION);
             },
 
             toString: function () {

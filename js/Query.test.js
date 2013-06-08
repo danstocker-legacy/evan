@@ -42,7 +42,7 @@
 
         deepEqual(
             evan.Query._parseString(query),
-            ['foo', Query.PATTERN_CONTINUATION, 'bar', ['hello', 'world'], Query.PATTERN_ASTERISK],
+            ['foo', Query.PATTERN_SKIP, 'bar', ['hello', 'world'], Query.PATTERN_ASTERISK],
             "Query parsed"
         );
     });
@@ -51,7 +51,7 @@
         ok(evan.Query._matchKeyToPattern('hello', 'hello'), "Key matches string");
         ok(!evan.Query._matchKeyToPattern('hello', 'foo'), "Key doesn't match different string");
 
-        ok(evan.Query._matchKeyToPattern('hello', {symbol:'|'}), "Key matches wildcard");
+        ok(evan.Query._matchKeyToPattern('hello', evan.Query.PATTERN_ASTERISK), "Key matches wildcard");
         ok(!evan.Query._matchKeyToPattern('hello', {}), "Key doesn't match unknown wildcard");
 
         ok(evan.Query._matchKeyToPattern('hello', ['hello', 'world']), "Key matches choices");
@@ -140,7 +140,7 @@
     test("Serialization", function () {
         var Query = evan.Query,
             query = Query.create([
-                'foo', Query.PATTERN_CONTINUATION, 'bar', ['hello', 'world'], Query.PATTERN_ASTERISK
+                'foo', Query.PATTERN_SKIP, 'bar', ['hello', 'world'], Query.PATTERN_ASTERISK
             ]);
 
         equal(query.toString(), 'foo>\\>bar>hello<world>|', "Query in string form");
