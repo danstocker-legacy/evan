@@ -269,16 +269,14 @@ troop.promise(evan, 'EventCollection', function () {
 (function () {
     "use strict";
 
-    var Event = evan.Event;
-
     dessert.addTypes(/** @lends dessert */{
         isEvent: function (expr) {
-            return Event.isBaseOf(expr);
+            return evan.Event.isBaseOf(expr);
         },
 
         isEventOptional: function (expr) {
             return typeof expr === 'undefined' ||
-                   Event.isBaseOf(expr);
+                   evan.Event.isBaseOf(expr);
         }
     });
 }());

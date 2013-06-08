@@ -241,6 +241,7 @@ troop.promise(evan, 'EventSpace', function () {
             getPathsRelativeTo: function (eventName, path) {
                 return /** @type evan.PathCollection */ this.eventRegistry
                     // obtaining all paths associated with event name
+                    // node holds an OrderedStringList
                     .getNode([eventName, 'paths'].toPath())
 
                     // querying collection of strings that are relative to `path`
@@ -256,16 +257,14 @@ troop.promise(evan, 'EventSpace', function () {
 (function () {
     "use strict";
 
-    var EventSpace = evan.EventSpace;
-
     dessert.addTypes(/** @lends dessert */{
         isEventSpace: function (expr) {
-            return EventSpace.isPrototypeOf(expr);
+            return evan.EventSpace.isPrototypeOf(expr);
         },
 
         isEventSpaceOptional: function (expr) {
             return typeof expr === 'undefined' ||
-                   EventSpace.isPrototypeOf(expr);
+                   evan.EventSpace.isPrototypeOf(expr);
         }
     });
 }());

@@ -52,16 +52,14 @@ troop.promise(evan, 'PathCollection', function () {
 (function () {
     "use strict";
 
-    var EventPath = evan.EventPath;
-
     dessert.addTypes(/** @lends dessert */{
         isEventPath: function (expr) {
-            return EventPath.isBaseOf(expr);
+            return evan.EventPath.isBaseOf(expr);
         },
 
         isEventPathOptional: function (expr) {
             return typeof expr === 'undefined' ||
-                   EventPath.isBaseOf(expr);
+                   evan.EventPath.isBaseOf(expr);
         }
     });
 
@@ -69,13 +67,13 @@ troop.promise(evan, 'PathCollection', function () {
      * @return {evan.EventPath}
      */
     String.prototype.toEventPath = function () {
-        return EventPath.create(this);
+        return evan.EventPath.create(this);
     };
 
     /**
      * @return {evan.EventPath}
      */
     Array.prototype.toEventPath = function () {
-        return EventPath.create(this);
+        return evan.EventPath.create(this);
     };
 }());
