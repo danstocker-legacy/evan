@@ -3,9 +3,9 @@ Evan
 
 *Custom events*
 
-Evan implements a general eventing system in which any object that can be represented by a path (typically in a hierarchical, tree-like structure like to the DOM) may trigger and capture events.
+Evan implements a general eventing system in which any object that can be represented by a path (typically in an hierarchical, tree-like structure like the DOM) may trigger and capture events.
 
-Evan is based on [Troop](https://github.com/production-minds/troop) for OOP and [Sntls](https://github.com/danstocker/sntls) .
+Evan is based on [Troop](https://github.com/production-minds/troop) for OOP and [Sntls](https://github.com/danstocker/sntls) for collections.
 
 Features
 --------
@@ -14,7 +14,7 @@ Features
 - Event bubbling
 - Delegation (capturing closer to the root than the actually observed node)
 - Broadcasting (triggering many subscribed paths at once)
-- Evented behavior to be assigned to classes and instances. Most of the event management will be done though this, as the tutorial below shows.
+- Evented behavior to be assigned to classes and instances. Most of the event management will be done through this, as the tutorial below illustrates.
 
 Tutorial
 --------
