@@ -20,11 +20,25 @@ troop.promise(evan, 'Evented', function () {
              * Event space may be both class level or instance level,
              * hence the instance level assignment.
              * @param {evan.EventSpace} eventSpace Event space the listener is working with.
+             * @param {sntls.Path} eventPath Path representing this instance in the event space.
              */
-            initEvented: function (eventSpace) {
-                dessert.isEventSpace(eventSpace);
+            initEvented: function (eventSpace, eventPath) {
+                dessert
+                    .isEventSpace(eventSpace, "Invalid event space")
+                    .isPathOptional(eventPath, "invalid event path");
 
+                /**
+                 * Event space associated with instance or class.
+                 * @type {evan.EventSpace}
+                 */
                 this.eventSpace = eventSpace;
+
+                /**
+                 * Event path assigned to the current instance or class
+                 * in the context of the current event space.
+                 * @type {sntls.Path}
+                 */
+                this.eventPath = eventPath;
 
                 return this;
             },
@@ -32,38 +46,35 @@ troop.promise(evan, 'Evented', function () {
             /**
              * Subscribes to event.
              * @param {string} eventName Name of event to be triggered.
-             * @param {sntls.Path} eventPath Path we're listening to
              * @param {function} handler Event handler function that is called when the event
              * is triggered on (or bubbles to) the specified path.
              * @return {evan.Evented}
              */
-            on: function (eventName, eventPath, handler) {
-                this.eventSpace.on.apply(this.eventSpace, arguments);
+            on: function (eventName, handler) {
+                this.eventSpace.on(eventName, this.eventPath, handler);
                 return this;
             },
 
             /**
              * Unsubscribes from event.
              * @param {string} eventName Name of event to be triggered.
-             * @param {sntls.Path} eventPath Path we're listening to
              * @param {function} [handler] Event handler function
              * @return {evan.Evented}
              */
-            off: function (eventName, eventPath, handler) {
-                this.eventSpace.off.apply(this.eventSpace, arguments);
+            off: function (eventName, handler) {
+                this.eventSpace.off(eventName, this.eventPath, handler);
                 return this;
             },
 
             /**
              * Subscribes to event and unsubscribes after first trigger.
              * @param {string} eventName Name of event to be triggered.
-             * @param {sntls.Path} eventPath Path we're listening to
              * @param {function} handler Event handler function that is called when the event
              * is triggered on (or bubbles to) the specified path.
              * @return {evan.Evented}
              */
-            one: function (eventName, eventPath, handler) {
-                this.eventSpace.one.apply(this.eventSpace, arguments);
+            one: function (eventName, handler) {
+                this.eventSpace.one(eventName, this.eventPath, handler);
                 return this;
             },
 
@@ -71,13 +82,12 @@ troop.promise(evan, 'Evented', function () {
              * Delegates event capturing to a path closer to the root.
              * Handlers subscribed this way CANNOT be unsubscribed individually.
              * @param {string} eventName
-             * @param {sntls.Path} capturePath Path where the event will actually subscribe
              * @param {sntls.Path} delegatePath Path we're listening to. (Could be derived, eg. Query)
              * @param {function} handler Event handler function
              * @return {evan.Evented}
              */
-            delegate: function (eventName, capturePath, delegatePath, handler) {
-                this.eventSpace.delegate.apply(this.eventSpace, arguments);
+            delegate: function (eventName, delegatePath, handler) {
+                this.eventSpace.delegate(eventName, this.eventPath, delegatePath, handler);
                 return this;
             },
 
@@ -85,13 +95,12 @@ troop.promise(evan, 'Evented', function () {
              * Shorthand for **triggering** an event in the event space
              * associated with the instance / class.
              * @param {string} eventName
-             * @param {sntls.Path} path
              * @param {*} data
              * @return {evan.Evented}
              */
-            triggerSync: function (eventName, path, data) {
+            triggerSync: function (eventName, data) {
                 this.eventSpace.spawnEvent(eventName)
-                    .triggerSync(path, data);
+                    .triggerSync(this.eventPath, data);
                 return this;
             },
 
@@ -99,13 +108,12 @@ troop.promise(evan, 'Evented', function () {
              * Shorthand for **broadcasting** an event in the event space
              * associated with the instance / class.
              * @param {string} eventName
-             * @param {sntls.Path} path
              * @param {*} data
              * @return {evan.Evented}
              */
-            broadcastSync: function (eventName, path, data) {
+            broadcastSync: function (eventName, data) {
                 this.eventSpace.spawnEvent(eventName)
-                    .broadcastSync(path, data);
+                    .broadcastSync(this.eventPath, data);
                 return this;
             }
         });

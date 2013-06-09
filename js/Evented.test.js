@@ -4,131 +4,233 @@
 
     module("Evented");
 
-    var EventedClass = troop.Base.extend()
-        .addTrait(evan.Evented)
-        .addConstant({
-            eventSpace: evan.EventSpace.create()
-        })
-        .addMethod({
-            init: function () {}
-        });
+    var eventSpace = evan.EventSpace.create(),
 
-    test("Subscription", function () {
+        EventedStaticClass = troop.Base.extend()
+            .addTrait(evan.Evented)
+            .initEvented(eventSpace, 'test>path'.toPath())
+            .addMethod({
+                init: function (path) {
+                    this.initEvented(eventSpace, path);
+                }
+            }),
+
+        EventedClass = troop.Base.extend()
+            .addTrait(evan.Evented)
+            .addMethod({
+                init: function (path) {
+                    this.initEvented(evan.EventSpace.create(), path);
+                }
+            });
+
+    test("Static subscription", function () {
         expect(3);
 
-        var evented = EventedClass.create();
-
-        function eventHandler () {}
+        function eventHandler() {}
 
         evan.EventSpace.addMock({
             on: function (eventName, eventPath, handler) {
                 equal(eventName, 'myEvent', "Event name");
-                ok(eventPath.equals('this.is.a.path'.toPath()), "Event path");
+                ok(eventPath.equals('test>path'.toPath()), "Event path");
                 strictEqual(handler, eventHandler, "Event handler");
             }
         });
 
-        evented.on('myEvent', 'this.is.a.path'.toPath(), eventHandler);
+        EventedStaticClass.on('myEvent', eventHandler);
 
-        evan.Event.removeMocks();
+        evan.EventSpace.removeMocks();
+    });
+
+    test("Instance level subscription", function () {
+        expect(3);
+
+        var evented = EventedClass.create('test>path>foo>bar'.toPath());
+
+        function eventHandler() {}
+
+        evan.EventSpace.addMock({
+            on: function (eventName, eventPath, handler) {
+                equal(eventName, 'myEvent', "Event name");
+                ok(eventPath.equals('test>path>foo>bar'.toPath()), "Event path");
+                strictEqual(handler, eventHandler, "Event handler");
+            }
+        });
+
+        evented.on('myEvent', eventHandler);
+
+        evan.EventSpace.removeMocks();
     });
 
     test("Unsubscription", function () {
         expect(3);
 
-        var evented = EventedClass.create();
-
-        function eventHandler () {}
+        function eventHandler() {}
 
         evan.EventSpace.addMock({
             off: function (eventName, eventPath, handler) {
                 equal(eventName, 'myEvent', "Event name");
-                ok(eventPath.equals('this.is.a.path'.toPath()), "Event path");
+                ok(eventPath.equals('test>path'.toPath()), "Event path");
                 strictEqual(handler, eventHandler, "Event handler");
             }
         });
 
-        evented.off('myEvent', 'this.is.a.path'.toPath(), eventHandler);
+        EventedStaticClass.off('myEvent', eventHandler);
 
-        evan.Event.removeMocks();
+        evan.EventSpace.removeMocks();
     });
 
-    test("One time subscription", function () {
+    test("Instance level unsubscription", function () {
         expect(3);
 
-        var evented = EventedClass.create();
+        var evented = EventedClass.create('test>path>foo>bar'.toPath());
 
-        function eventHandler () {}
+        function eventHandler() {}
+
+        evan.EventSpace.addMock({
+            off: function (eventName, eventPath, handler) {
+                equal(eventName, 'myEvent', "Event name");
+                ok(eventPath.equals('test>path>foo>bar'.toPath()), "Event path");
+                strictEqual(handler, eventHandler, "Event handler");
+            }
+        });
+
+        evented.off('myEvent', eventHandler);
+
+        evan.EventSpace.removeMocks();
+    });
+
+    test("Static one time subscription", function () {
+        expect(3);
+
+        function eventHandler() {}
 
         evan.EventSpace.addMock({
             one: function (eventName, eventPath, handler) {
                 equal(eventName, 'myEvent', "Event name");
-                ok(eventPath.equals('this.is.a.path'.toPath()), "Event path");
+                ok(eventPath.equals('test>path'.toPath()), "Event path");
                 strictEqual(handler, eventHandler, "Event handler");
             }
         });
 
-        evented.one('myEvent', 'this.is.a.path'.toPath(), eventHandler);
+        EventedStaticClass.one('myEvent', eventHandler);
 
         evan.EventSpace.removeMocks();
     });
 
-    test("Delegation", function () {
+    test("Instance level one time subscription", function () {
+        expect(3);
+
+        var evented = EventedClass.create('test>path>foo>bar'.toPath());
+
+        function eventHandler() {}
+
+        evan.EventSpace.addMock({
+            one: function (eventName, eventPath, handler) {
+                equal(eventName, 'myEvent', "Event name");
+                ok(eventPath.equals('test>path>foo>bar'.toPath()), "Event path");
+                strictEqual(handler, eventHandler, "Event handler");
+            }
+        });
+
+        evented.one('myEvent', eventHandler);
+
+        evan.EventSpace.removeMocks();
+    });
+
+    test("Static delegation", function () {
         expect(4);
 
-        var evented = EventedClass.create();
-
-        function eventHandler () {}
+        function eventHandler() {}
 
         evan.EventSpace.addMock({
             delegate: function (eventName, capturePath, delegatePath, handler) {
                 equal(eventName, 'myEvent', "Event name");
-                ok(capturePath.equals('this'.toPath()), "Capture path");
-                ok(delegatePath.equals('this.is.a.path'.toPath()), "Delegate path");
+                ok(capturePath.equals('test>path'.toPath()), "Capture path");
+                ok(delegatePath.equals('test>path>foo'.toPath()), "Delegate path");
                 strictEqual(handler, eventHandler, "Event handler");
             }
         });
 
-        evented.delegate('myEvent', 'this'.toPath(), 'this.is.a.path'.toPath(), eventHandler);
+        EventedStaticClass.delegate('myEvent', 'test>path>foo'.toPath(), eventHandler);
 
         evan.EventSpace.removeMocks();
     });
 
-    test("Triggering", function () {
+    test("Instance level delegation", function () {
         expect(4);
 
-        var evented = EventedClass.create();
+        var evented = EventedClass.create('test>path>foo>bar'.toPath());
 
-        evan.Event.addMock({
-            triggerSync: function (path) {
-                equal(this.eventName, 'myEvent', "Event name");
-                strictEqual(this.eventSpace, EventedClass.eventSpace, "Event operates on class' event space");
-                ok(path.equals('this.is.a.path'.toPath()), "Target path");
-                ok(true, "Event triggered");
+        function eventHandler() {}
+
+        evan.EventSpace.addMock({
+            delegate: function (eventName, capturePath, delegatePath, handler) {
+                equal(eventName, 'myEvent', "Event name");
+                ok(capturePath.equals('test>path>foo>bar'.toPath()), "Capture path");
+                ok(delegatePath.equals('test>path>foo>bar>hello>world'.toPath()), "Delegate path");
+                strictEqual(handler, eventHandler, "Event handler");
             }
         });
 
-        evented.triggerSync('myEvent', 'this.is.a.path'.toPath());
+        evented.delegate('myEvent', 'test>path>foo>bar>hello>world'.toPath(), eventHandler);
 
-        evan.Event.removeMocks();
+        evan.EventSpace.removeMocks();
+    });
+
+    test("Triggering events", function () {
+        var triggeredPaths = [],
+            evented = EventedStaticClass.create('test>path>foo'.toPath());
+
+        // subscribing handlers
+        function eventHandler(event) {
+            triggeredPaths.push(event.currentPath.toString());
+        }
+
+        EventedStaticClass.on('myEvent', eventHandler);
+        evented.on('myEvent', eventHandler);
+
+        evented.triggerSync('myEvent');
+
+        deepEqual(triggeredPaths, ['test>path>foo', 'test>path'], "Event hits both static and instance subscriptions");
+
+        EventedStaticClass.off('myEvent');
+        evented.off('myEvent');
     });
 
     test("Broadcasting", function () {
-        expect(4);
+        var triggeredPaths,
+            evented1 = EventedStaticClass.create('test>path>foo'.toPath()),
+            evented2 = EventedStaticClass.create('test>path>bar'.toPath());
 
-        var evented = EventedClass.create();
+        // subscribing handlers
+        function eventHandler(event) {
+            triggeredPaths.push(event.currentPath.toString());
+        }
 
-        evan.Event.addMock({
-            broadcastSync: function (path) {
-                equal(this.eventName, 'myEvent', "Event name");
-                strictEqual(this.eventSpace, EventedClass.eventSpace, "Event operates on class' event space");
-                ok(path.equals('this.is.a.path'.toPath()), "Target path");
-                ok(true, "Event triggered");
-            }
-        });
+        EventedStaticClass.on('myEvent', eventHandler);
+        evented1.on('myEvent', eventHandler);
+        evented2.on('myEvent', eventHandler);
 
-        evented.broadcastSync('myEvent', 'this.is.a.path'.toPath());
+        // broadcasting on instance
+        triggeredPaths = [];
+        evented1.broadcastSync('myEvent');
+        deepEqual(
+            triggeredPaths.sort(),
+            ['test>path', 'test>path>foo'],
+            "Broadcasting on instance hits instance and class"
+        );
 
-        evan.Event.removeMocks();
+        // broadcasting on class
+        triggeredPaths = [];
+        EventedStaticClass.broadcastSync('myEvent');
+        deepEqual(
+            triggeredPaths.sort(),
+            ['test>path', 'test>path>bar', 'test>path>foo'],
+            "Broadcasting on class hits all instances too"
+        );
+
+        EventedStaticClass.off('myEvent');
+        evented1.off('myEvent');
+        evented2.off('myEvent');
     });
 }());
