@@ -135,8 +135,8 @@ troop.promise(evan, 'Event', function () {
 
                 result.originalPath = this.originalPath;
                 result.currentPath = currentPath ?
-                    currentPath.clone().asArray.toEventPath() : // must be EventPath
-                    this.currentPath.clone(); // already EventPath
+                    currentPath.clone() :
+                    this.currentPath.clone();
                 result.broadcastPath = this.broadcastPath;
                 result.data = this.data;
 
@@ -162,7 +162,7 @@ troop.promise(evan, 'Event', function () {
             setTargetPath: function (targetPath) {
                 dessert.isPath(targetPath, "Invalid target path");
                 this.originalPath = targetPath;
-                this.currentPath = targetPath.clone().asArray.toEventPath();
+                this.currentPath = targetPath.clone();
                 return this;
             },
 
@@ -212,7 +212,7 @@ troop.promise(evan, 'Event', function () {
                         // bubbling was deliberately stopped or event can't bubble
                         break;
                     } else {
-                        this.currentPath.shrink();
+                        this.currentPath.asArray.pop();
                     }
                 }
 

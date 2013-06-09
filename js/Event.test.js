@@ -43,7 +43,7 @@
         equal(originalEvent.currentPath.toString(), cloneEvent.currentPath.toString(), "...but they match");
         strictEqual(originalEvent.data, cloneEvent.data, "Custom data is the same");
 
-        currentPath = 'test>path'.toEventPath();
+        currentPath = 'test>path'.toPath();
         cloneEvent = originalEvent.clone(currentPath);
 
         notStrictEqual(cloneEvent.currentPath, currentPath, "Current path is not the same as specified...");
@@ -62,7 +62,7 @@
         event.setTargetPath('test>path'.toPath());
 
         ok(event.originalPath.instanceOf(sntls.Path), "Original path is plain path");
-        ok(event.currentPath.instanceOf(evan.EventPath), "Current path is event specific path");
+        ok(event.currentPath.instanceOf(sntls.Path), "Current path is plain path");
 
         notStrictEqual(event.originalPath, event.currentPath, "Original and current path different instances");
         deepEqual(event.originalPath.asArray, ['test', 'path'], "Original path set");
