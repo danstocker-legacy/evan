@@ -274,6 +274,7 @@
             .on('myEvent', 'test>event'.toPath(), function () {})
             .on('myEvent', 'test>event>foo'.toPath(), function () {})
             .on('myEvent', 'test>event>foo>bar'.toPath(), function () {})
+            .on('myEvent', 'test>event>|>baz'.toQuery(), function () {})
             .on('myEvent', 'test>foo>bar'.toPath(), function () {})
             .on('myEvent', 'test>event>hello'.toPath(), function () {})
             .on('otherEvent', 'test>event'.toPath(), function () {})
@@ -284,7 +285,8 @@
             [
                 'test>event>foo',
                 'test>event>foo>bar',
-                'test>event>hello'
+                'test>event>hello',
+                'test>event>|>baz'
             ],
             "Paths subscribed to 'myEvent' relative to 'test>event'"
         );
@@ -312,10 +314,12 @@
         }
 
         eventSpace
+            .on('myEvent', 'a>b>|>e'.toQuery(), handler)
             .on('myEvent', 'a>b'.toPath(), handler)
             .on('myEvent', 'a>b>other path'.toPath(), handler);
 
         eventSpace.delegate('myEvent', 'a>b'.toPath(), 'a>b>c>d'.toPath(), handler);
+        eventSpace.delegate('myEvent', 'a>b'.toPath(), 'a>b>c>|>f'.toQuery(), handler);
 
         triggeredPaths = {};
         event.broadcastSync('a'.toPath()); // triggers due to broadcast path < capture path
@@ -325,7 +329,9 @@
             {
                 "a>b"             : true,
                 "a>b>other%20path": true,
-                "a>b>c>d"         : true
+                "a>b>c>d"         : true,
+                "a>b>c>|>f"       : true,
+                "a>b>|>e"         : true
             },
             "Broadcast below fork (trunk)"
         );
@@ -336,8 +342,9 @@
         deepEqual(
             triggeredPaths,
             {
-                "a>b"    : true, // hit b/c BC bubbles
-                "a>b>c>d": true // hit b/c BC bubbles & triggers delegates
+                "a>b"      : true, // hit b/c BC bubbles
+                "a>b>c>d"  : true, // hit b/c BC bubbles & triggers delegates
+                "a>b>c>|>f": true // hit b/c BC bubbles & triggers delegates
             },
             "Broadcast above fork"
         );
