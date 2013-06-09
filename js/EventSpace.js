@@ -249,7 +249,7 @@ troop.promise(evan, 'EventSpace', function () {
                     .toStringCollection()
 
                     // converting them to a collection of paths
-                    .toPath().asType(evan.PathCollection);
+                    .toPathOrQuery().asType(evan.PathCollection);
             }
         });
 });
