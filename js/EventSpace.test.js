@@ -247,7 +247,7 @@
             myEvent = eventSpace.spawnEvent('myEvent'),
             result;
 
-        myEvent.originalPath = evan.EventPath.create('test>event');
+        myEvent.originalPath = 'test>event'.toPath();
         myEvent.currentPath = myEvent.originalPath.clone();
 
         result = eventSpace.callHandlers(myEvent);
@@ -261,7 +261,7 @@
                 }),
             event = eventSpace.spawnEvent('event');
 
-        event.originalPath = evan.EventPath.create('test>event');
+        event.originalPath = 'test>event'.toPath();
         event.currentPath = event.originalPath.clone();
 
         eventSpace.callHandlers(event);
