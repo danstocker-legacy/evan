@@ -116,7 +116,23 @@
             }
         });
 
-        event.triggerSync('test>path'.toPath(), {foo: 'bar'});
+        event.triggerSync('test>path'.toPath());
+
+        evan.EventSpace.removeMocks();
+    });
+
+    test("Triggering on queries", function () {
+        expect(1);
+
+        var event = evan.Event.create(eventSpace, 'testEvent');
+
+        evan.EventSpace.addMock({
+            callHandlers: function (event) {
+                equal(event.currentPath.toString(), 'test>|>path', "Current event path");
+            }
+        });
+
+        event.triggerSync('test>|>path'.toQuery());
 
         evan.EventSpace.removeMocks();
     });
@@ -133,7 +149,7 @@
             }
         });
 
-        event.triggerSync('test>path'.toPath(), {foo: 'bar'});
+        event.triggerSync('test>path'.toPath());
 
         evan.EventSpace.removeMocks();
     });

@@ -204,15 +204,25 @@ troop.promise(evan, 'Event', function () {
                         .setData(data);
                 }
 
-                dessert.assert(this.currentPath, "Event is not ready to be triggered");
+                var currentPath = this.currentPath,
+                    eventSpace = this.eventSpace;
 
-                // bubbling and calling handlers
-                while (this.currentPath.asArray.length) {
-                    if (this.eventSpace.callHandlers(this) === false || !this.canBubble) {
-                        // bubbling was deliberately stopped or event can't bubble
-                        break;
-                    } else {
-                        this.currentPath.asArray.pop();
+                dessert.assert(currentPath, "Event is not ready to be triggered");
+
+                if (!this.canBubble || this.originalPath.isA(sntls.Query)) {
+                    // event can't bubble because it's not allowed to
+                    // or because path is a query and queries shouldn't bubble
+                    // calling subscribed handlers once
+                    eventSpace.callHandlers(this);
+                } else {
+                    // bubbling and calling handlers
+                    while (currentPath.asArray.length) {
+                        if (eventSpace.callHandlers(this) === false) {
+                            // bubbling was deliberately stopped
+                            break;
+                        } else {
+                            currentPath.asArray.pop();
+                        }
                     }
                 }
 
