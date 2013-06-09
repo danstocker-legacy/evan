@@ -6,12 +6,12 @@
     "author"         : "Dan Stocker <dan@kwaia.com>",
     "repository"     : {
         "type": "git",
-        "url" : "https://github.com/pdanstocker/evan.git"
+        "url" : "https://github.com/danstocker/evan.git"
     },
     "dependencies"   : {
-        "dessert": "~0.2.9",
-        "troop"  : "~0.3.8",
-        "sntls"  : "~0.7.2"
+        "dessert": "~0.2.10",
+        "troop"  : "~0.3.9",
+        "sntls"  : "~0.8.0"
     },
     "devDependencies": {
         "phil"                : "~0.2.0",
