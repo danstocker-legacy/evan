@@ -104,7 +104,7 @@ troop.promise(evan, 'Event', function () {
 
                 /**
                  * Path reflecting current state of bubbling
-                 * @type {evan.EventPath}
+                 * @type {evan.Path}
                  */
                 this.currentPath = undefined;
 
