@@ -25,6 +25,8 @@ troop.promise(evan, 'Evented', function () {
                 dessert.isEventSpace(eventSpace);
 
                 this.eventSpace = eventSpace;
+
+                return this;
             },
 
             /**
