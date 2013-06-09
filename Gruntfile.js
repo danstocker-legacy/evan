@@ -5,7 +5,7 @@ module.exports = function (grunt) {
     var params = {
         files: [
             'js/namespace.js',
-            'js/EventPath.js',
+            'js/PathCollection.js',
             'js/Event.js',
             'js/EventSpace.js',
             'js/exports.js'
