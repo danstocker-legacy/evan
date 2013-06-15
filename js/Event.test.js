@@ -84,7 +84,7 @@
         var event = evan.Event.create(eventSpace, 'testEvent'),
             i = 0;
 
-        evan.EventSpace.addMock({
+        evan.EventSpace.addMocks({
             callHandlers: function (event) {
                 equal(event.eventName, 'testEvent', "Event name");
                 equal(event.originalPath.toString(), 'test>path', "Original event path");
@@ -107,7 +107,7 @@
 
         var event = evan.Event.create(eventSpace, 'testEvent');
 
-        evan.EventSpace.addMock({
+        evan.EventSpace.addMocks({
             callHandlers: function (event) {
                 equal(event.currentPath.toString(), 'test>path', "Current event path");
 
@@ -126,7 +126,7 @@
 
         var event = evan.Event.create(eventSpace, 'testEvent');
 
-        evan.EventSpace.addMock({
+        evan.EventSpace.addMocks({
             callHandlers: function (event) {
                 equal(event.currentPath.toString(), 'test>|>path', "Current event path");
             }
@@ -143,7 +143,7 @@
         var event = evan.Event.create(eventSpace, 'testEvent')
             .allowBubbling(false);
 
-        evan.EventSpace.addMock({
+        evan.EventSpace.addMocks({
             callHandlers: function (event) {
                 equal(event.currentPath.toString(), 'test>path', "Current event path");
             }
@@ -166,7 +166,7 @@
                 .on('otherEvent', 'test.event.foo'.toPath(), function () {}),
             event = eventSpace.spawnEvent('myEvent');
 
-        evan.Event.addMock({
+        evan.Event.addMocks({
             triggerSync: function () {
                 triggeredPaths.push(this.originalPath.toString());
             }

@@ -15,7 +15,7 @@
 
         var eventSpace = evan.EventSpace.create();
 
-        evan.Event.addMock({
+        evan.Event.addMocks({
             create: function (es, eventName) {
                 strictEqual(es, eventSpace, "Event space");
                 equal(eventName, 'myEvent', "Event name");

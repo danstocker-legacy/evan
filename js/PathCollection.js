@@ -1,5 +1,5 @@
 /*global dessert, troop, sntls, evan */
-troop.promise(evan, 'PathCollection', function () {
+troop.postpone(evan, 'PathCollection', function () {
     "use strict";
 
     /**

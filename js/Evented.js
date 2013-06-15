@@ -5,7 +5,7 @@
  * events on a specified event space directly.
  */
 /*global dessert, troop, sntls, evan */
-troop.promise(evan, 'Evented', function () {
+troop.postpone(evan, 'Evented', function () {
     "use strict";
 
     /**
@@ -13,7 +13,7 @@ troop.promise(evan, 'Evented', function () {
      * @extends troop.Base
      */
     evan.Evented = troop.Base.extend()
-        .addMethod(/** @lends evan.Evented */{
+        .addMethods(/** @lends evan.Evented */{
             /**
              * Initializes evented instance by assigning an event space
              * in which to operate.

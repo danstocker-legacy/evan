@@ -5,7 +5,7 @@
  * Events carry all information regarding their position & properties.
  */
 /*global dessert, troop, sntls, evan */
-troop.promise(evan, 'Event', function () {
+troop.postpone(evan, 'Event', function () {
     "use strict";
 
     var base = troop.Base,
@@ -16,7 +16,7 @@ troop.promise(evan, 'Event', function () {
      * @extends troop.Base
      */
     evan.Event = self
-        .addPrivateMethod(/** @lends evan.Event */{
+        .addPrivateMethods(/** @lends evan.Event */{
             /**
              * Creates a new event instance and prepares it to be triggered.
              * @param {*} data Custom event data
@@ -63,7 +63,7 @@ troop.promise(evan, 'Event', function () {
                 return this;
             }
         })
-        .addMethod(/** @lends evan.Event */{
+        .addMethods(/** @lends evan.Event */{
             /**
              * @name evan.Event.create
              * @return {evan.Event}
@@ -260,7 +260,7 @@ troop.promise(evan, 'Event', function () {
         });
 });
 
-troop.promise(evan, 'EventCollection', function () {
+troop.postpone(evan, 'EventCollection', function () {
     "use strict";
 
     /**

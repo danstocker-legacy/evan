@@ -9,7 +9,7 @@
         EventedStaticClass = troop.Base.extend()
             .addTrait(evan.Evented)
             .initEvented(eventSpace, 'test>path'.toPath())
-            .addMethod({
+            .addMethods({
                 init: function (path) {
                     this.initEvented(eventSpace, path);
                 }
@@ -17,7 +17,7 @@
 
         EventedClass = troop.Base.extend()
             .addTrait(evan.Evented)
-            .addMethod({
+            .addMethods({
                 init: function (path) {
                     this.initEvented(evan.EventSpace.create(), path);
                 }
@@ -28,7 +28,7 @@
 
         function eventHandler() {}
 
-        evan.EventSpace.addMock({
+        evan.EventSpace.addMocks({
             on: function (eventName, eventPath, handler) {
                 equal(eventName, 'myEvent', "Event name");
                 ok(eventPath.equals('test>path'.toPath()), "Event path");
@@ -48,7 +48,7 @@
 
         function eventHandler() {}
 
-        evan.EventSpace.addMock({
+        evan.EventSpace.addMocks({
             on: function (eventName, eventPath, handler) {
                 equal(eventName, 'myEvent', "Event name");
                 ok(eventPath.equals('test>path>foo>bar'.toPath()), "Event path");
@@ -66,7 +66,7 @@
 
         function eventHandler() {}
 
-        evan.EventSpace.addMock({
+        evan.EventSpace.addMocks({
             off: function (eventName, eventPath, handler) {
                 equal(eventName, 'myEvent', "Event name");
                 ok(eventPath.equals('test>path'.toPath()), "Event path");
@@ -86,7 +86,7 @@
 
         function eventHandler() {}
 
-        evan.EventSpace.addMock({
+        evan.EventSpace.addMocks({
             off: function (eventName, eventPath, handler) {
                 equal(eventName, 'myEvent', "Event name");
                 ok(eventPath.equals('test>path>foo>bar'.toPath()), "Event path");
@@ -104,7 +104,7 @@
 
         function eventHandler() {}
 
-        evan.EventSpace.addMock({
+        evan.EventSpace.addMocks({
             one: function (eventName, eventPath, handler) {
                 equal(eventName, 'myEvent', "Event name");
                 ok(eventPath.equals('test>path'.toPath()), "Event path");
@@ -124,7 +124,7 @@
 
         function eventHandler() {}
 
-        evan.EventSpace.addMock({
+        evan.EventSpace.addMocks({
             one: function (eventName, eventPath, handler) {
                 equal(eventName, 'myEvent', "Event name");
                 ok(eventPath.equals('test>path>foo>bar'.toPath()), "Event path");
@@ -142,7 +142,7 @@
 
         function eventHandler() {}
 
-        evan.EventSpace.addMock({
+        evan.EventSpace.addMocks({
             delegate: function (eventName, capturePath, delegatePath, handler) {
                 equal(eventName, 'myEvent', "Event name");
                 ok(capturePath.equals('test>path'.toPath()), "Capture path");
@@ -163,7 +163,7 @@
 
         function eventHandler() {}
 
-        evan.EventSpace.addMock({
+        evan.EventSpace.addMocks({
             delegate: function (eventName, capturePath, delegatePath, handler) {
                 equal(eventName, 'myEvent', "Event name");
                 ok(capturePath.equals('test>path>foo>bar'.toPath()), "Capture path");

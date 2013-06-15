@@ -4,7 +4,7 @@
  * Events traverse within a confined event space.
  */
 /*global dessert, troop, sntls, evan */
-troop.promise(evan, 'EventSpace', function () {
+troop.postpone(evan, 'EventSpace', function () {
     "use strict";
 
     var Event = evan.Event;
@@ -14,7 +14,7 @@ troop.promise(evan, 'EventSpace', function () {
      * @extends troop.Base
      */
     evan.EventSpace = troop.Base.extend()
-        .addPrivateMethod(/** @lends evan.EventSpace */{
+        .addPrivateMethods(/** @lends evan.EventSpace */{
             /**
              * Generates a stub for event handlers. (An empty array)
              * @return {Array}
@@ -33,7 +33,7 @@ troop.promise(evan, 'EventSpace', function () {
                 return sntls.OrderedStringList.create();
             }
         })
-        .addMethod(/** @lends evan.EventSpace */{
+        .addMethods(/** @lends evan.EventSpace */{
             /**
              * @name evan.EventSpace.create
              * @return {evan.EventSpace}
