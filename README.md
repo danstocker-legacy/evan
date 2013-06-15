@@ -27,7 +27,7 @@ var eventSpace = evan.EventSpace.create(),
     MyClass = troop.Base.extend()
         .addTrait(evan.Evented)
         .initEvented(eventSpace, 'test>path'.toPath())
-        .addMethod({
+        .addMethods({
             init: function (path) {
                 this.initEvented(eventSpace, path);
             }
