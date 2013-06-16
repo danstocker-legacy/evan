@@ -1,7 +1,7 @@
 /**
  * Library exports
  */
-/*global evan, exports */
-if (typeof exports === 'object') {
-    exports.evan = evan;
+/*global evan, module */
+if (typeof module === 'object') {
+    module.exports = evan;
 }

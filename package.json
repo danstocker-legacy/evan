@@ -1,6 +1,6 @@
 {
     "name"           : "evan",
-    "version"        : "0.1.1",
+    "version"        : "0.2.0",
     "description"    : "Custom events",
     "keywords"       : ["custom", "events", "event", "troop"],
     "author"         : "Dan Stocker <dan@kwaia.com>",
@@ -9,9 +9,9 @@
         "url" : "https://github.com/danstocker/evan.git"
     },
     "dependencies"   : {
-        "dessert": "~0.2.10",
-        "troop"  : "~0.4.0",
-        "sntls"  : "~0.8.1"
+        "dessert": "~0.3.0",
+        "troop"  : "~0.5.0",
+        "sntls"  : "~0.9.0"
     },
     "devDependencies": {
         "phil"                : "~0.2.0",
