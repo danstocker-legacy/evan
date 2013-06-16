@@ -20,7 +20,7 @@ troop.postpone(evan, 'Evented', function () {
              * Event space may be both class level or instance level,
              * hence the instance level assignment.
              * @param {evan.EventSpace} eventSpace Event space the listener is working with.
-             * @param {sntls.Path} eventPath Path representing this instance in the event space.
+             * @param {sntls.Path} [eventPath] Path representing this instance in the event space.
              */
             initEvented: function (eventSpace, eventPath) {
                 dessert
