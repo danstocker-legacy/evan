@@ -32,7 +32,7 @@ var eventSpace = evan.EventSpace.create(),
                 this.initEvented(eventSpace, path);
             }
         })
-        .on('myEvent', function (event) {
+        .subscribeTo('myEvent', function (event) {
             console.log("event triggered", event.clone());
         });
 
@@ -76,7 +76,7 @@ this.initEvented(eventSpace, path);
 Building the class is concluded by adding an event handler that is supposed to capture all 'myEvent' events that concern this class. The handler logs the event to the console. (The event is cloned because when an event has finished traversing the event space it will reset.)
 
 ```javascript
-.on('myEvent', function (event) {
+.subscribeTo('myEvent', function (event) {
     console.log("event triggered", event.clone());
 });
 ```
