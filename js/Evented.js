@@ -61,8 +61,8 @@ troop.postpone(evan, 'Evented', function () {
              * @param {function} [handler] Event handler function
              * @return {evan.Evented}
              */
-            off: function (eventName, handler) {
-                this.eventSpace.off(eventName, this.eventPath, handler);
+            unsubscribeFrom: function (eventName, handler) {
+                this.eventSpace.unsubscribeFrom(eventName, this.eventPath, handler);
                 return this;
             },
 

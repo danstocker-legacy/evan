@@ -67,14 +67,14 @@
         function eventHandler() {}
 
         evan.EventSpace.addMocks({
-            off: function (eventName, eventPath, handler) {
+            unsubscribeFrom: function (eventName, eventPath, handler) {
                 equal(eventName, 'myEvent', "Event name");
                 ok(eventPath.equals('test>path'.toPath()), "Event path");
                 strictEqual(handler, eventHandler, "Event handler");
             }
         });
 
-        EventedStaticClass.off('myEvent', eventHandler);
+        EventedStaticClass.unsubscribeFrom('myEvent', eventHandler);
 
         evan.EventSpace.removeMocks();
     });
@@ -87,14 +87,14 @@
         function eventHandler() {}
 
         evan.EventSpace.addMocks({
-            off: function (eventName, eventPath, handler) {
+            unsubscribeFrom: function (eventName, eventPath, handler) {
                 equal(eventName, 'myEvent', "Event name");
                 ok(eventPath.equals('test>path>foo>bar'.toPath()), "Event path");
                 strictEqual(handler, eventHandler, "Event handler");
             }
         });
 
-        evented.off('myEvent', eventHandler);
+        evented.unsubscribeFrom('myEvent', eventHandler);
 
         evan.EventSpace.removeMocks();
     });
@@ -193,8 +193,8 @@
 
         deepEqual(triggeredPaths, ['test>path>foo', 'test>path'], "Event hits both static and instance subscriptions");
 
-        EventedStaticClass.off('myEvent');
-        evented.off('myEvent');
+        EventedStaticClass.unsubscribeFrom('myEvent');
+        evented.unsubscribeFrom('myEvent');
     });
 
     test("Broadcasting", function () {
@@ -229,8 +229,8 @@
             "Broadcasting on class hits all instances too"
         );
 
-        EventedStaticClass.off('myEvent');
-        evented1.off('myEvent');
-        evented2.off('myEvent');
+        EventedStaticClass.unsubscribeFrom('myEvent');
+        evented1.unsubscribeFrom('myEvent');
+        evented2.unsubscribeFrom('myEvent');
     });
 }());

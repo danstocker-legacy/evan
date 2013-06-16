@@ -97,7 +97,7 @@ troop.postpone(evan, 'EventSpace', function () {
              * @param {function} [handler] Event handler function
              * @return {evan.EventSpace}
              */
-            off: function (eventName, eventPath, handler) {
+            unsubscribeFrom: function (eventName, eventPath, handler) {
                 dessert.isFunctionOptional(handler, "Invalid event handler function");
 
                 var eventRegistry = this.eventRegistry,
@@ -157,7 +157,7 @@ troop.postpone(evan, 'EventSpace', function () {
                 function oneHandler(event, data) {
                     /*jshint validthis: true */
                     handler.call(this, event, data);
-                    return event.eventSpace.off(event.eventName, event.currentPath, oneHandler);
+                    return event.eventSpace.unsubscribeFrom(event.eventName, event.currentPath, oneHandler);
                 }
 
                 // subscribing delegate handler to capturing path

@@ -80,7 +80,7 @@
             .subscribeTo('myEvent', 'test>event>path'.toPath(), handler1)
             .subscribeTo('myEvent', 'test>event>path'.toPath(), handler2);
 
-        eventSpace.off('myEvent', 'test>event>path'.toPath(), handler1);
+        eventSpace.unsubscribeFrom('myEvent', 'test>event>path'.toPath(), handler1);
 
         deepEqual(
             eventSpace.eventRegistry.items.myEvent.handlers,
@@ -97,7 +97,7 @@
         );
 
         // attempting to unsubscribe non-existing handler
-        eventSpace.off('myEvent', 'test>event>path'.toPath(), handler1);
+        eventSpace.unsubscribeFrom('myEvent', 'test>event>path'.toPath(), handler1);
 
         deepEqual(
             eventSpace.eventRegistry.items.myEvent.handlers,
@@ -113,7 +113,7 @@
             "Paths untouched"
         );
 
-        eventSpace.off('myEvent', 'test>event>path'.toPath(), handler2);
+        eventSpace.unsubscribeFrom('myEvent', 'test>event>path'.toPath(), handler2);
 
         deepEqual(
             eventSpace.eventRegistry.items.myEvent.handlers,
@@ -137,7 +137,7 @@
             .subscribeTo('myEvent', 'test>event>path'.toPath(), handler1)
             .subscribeTo('myEvent', 'test>event>path'.toPath(), handler2);
 
-        eventSpace.off('myEvent', 'test>event>path'.toPath());
+        eventSpace.unsubscribeFrom('myEvent', 'test>event>path'.toPath());
 
         deepEqual(
             eventSpace.eventRegistry.items.myEvent.handlers,
@@ -168,7 +168,7 @@
         );
 
         // unsubscribing event before triggering
-        eventSpace.off('myEvent', 'test>event>path'.toPath(), result);
+        eventSpace.unsubscribeFrom('myEvent', 'test>event>path'.toPath(), result);
 
         equal(
             eventSpace.eventRegistry.items.myEvent.handlers.hasOwnProperty('test>event>path'),
@@ -227,7 +227,7 @@
             "Delegate handler subscribed"
         );
 
-        eventSpace.off('myEvent', 'test>event'.toPath(), delegateHandler);
+        eventSpace.unsubscribeFrom('myEvent', 'test>event'.toPath(), delegateHandler);
 
         equal(
             eventSpace.eventRegistry.items.myEvent.handlers.hasOwnProperty('test>event'),
