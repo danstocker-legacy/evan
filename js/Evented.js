@@ -95,7 +95,7 @@ troop.postpone(evan, 'Evented', function () {
              * Shorthand for **triggering** an event in the event space
              * associated with the instance / class.
              * @param {string} eventName
-             * @param {*} data
+             * @param {*} [data]
              * @return {evan.Evented}
              */
             triggerSync: function (eventName, data) {
@@ -108,7 +108,7 @@ troop.postpone(evan, 'Evented', function () {
              * Shorthand for **broadcasting** an event in the event space
              * associated with the instance / class.
              * @param {string} eventName
-             * @param {*} data
+             * @param {*} [data]
              * @return {evan.Evented}
              */
             broadcastSync: function (eventName, data) {
