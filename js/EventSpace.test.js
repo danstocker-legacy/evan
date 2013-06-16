@@ -158,7 +158,7 @@
         var eventSpace = evan.EventSpace.create(),
             result;
 
-        result = eventSpace.one('myEvent', 'test>event>path'.toPath(), handler);
+        result = eventSpace.subscribeToUntilTriggered('myEvent', 'test>event>path'.toPath(), handler);
 
         equal(typeof result, 'function', "Returns wrapped handler");
         equal(
@@ -177,7 +177,7 @@
         );
 
         // re binding and triggering event
-        eventSpace.one('myEvent', 'test>event>path'.toPath(), handler);
+        eventSpace.subscribeToUntilTriggered('myEvent', 'test>event>path'.toPath(), handler);
         eventSpace.spawnEvent('myEvent').triggerSync('test>event>path'.toPath());
 
         equal(

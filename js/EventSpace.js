@@ -146,7 +146,7 @@ troop.postpone(evan, 'EventSpace', function () {
              * is triggered on (or bubbles to) the specified path.
              * @return {function} Event handler actually subscribed. Use this for unsubscribing.
              */
-            one: function (eventName, eventPath, handler) {
+            subscribeToUntilTriggered: function (eventName, eventPath, handler) {
                 /**
                  * Handler wrapper for events that automatically unsubscribe
                  * after the first trigger.

@@ -73,8 +73,8 @@ troop.postpone(evan, 'Evented', function () {
              * is triggered on (or bubbles to) the specified path.
              * @return {evan.Evented}
              */
-            one: function (eventName, handler) {
-                this.eventSpace.one(eventName, this.eventPath, handler);
+            subscribeToUntilTriggered: function (eventName, handler) {
+                this.eventSpace.subscribeToUntilTriggered(eventName, this.eventPath, handler);
                 return this;
             },
 

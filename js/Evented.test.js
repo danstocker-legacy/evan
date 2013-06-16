@@ -105,14 +105,14 @@
         function eventHandler() {}
 
         evan.EventSpace.addMocks({
-            one: function (eventName, eventPath, handler) {
+            subscribeToUntilTriggered: function (eventName, eventPath, handler) {
                 equal(eventName, 'myEvent', "Event name");
                 ok(eventPath.equals('test>path'.toPath()), "Event path");
                 strictEqual(handler, eventHandler, "Event handler");
             }
         });
 
-        EventedStaticClass.one('myEvent', eventHandler);
+        EventedStaticClass.subscribeToUntilTriggered('myEvent', eventHandler);
 
         evan.EventSpace.removeMocks();
     });
@@ -125,14 +125,14 @@
         function eventHandler() {}
 
         evan.EventSpace.addMocks({
-            one: function (eventName, eventPath, handler) {
+            subscribeToUntilTriggered: function (eventName, eventPath, handler) {
                 equal(eventName, 'myEvent', "Event name");
                 ok(eventPath.equals('test>path>foo>bar'.toPath()), "Event path");
                 strictEqual(handler, eventHandler, "Event handler");
             }
         });
 
-        evented.one('myEvent', eventHandler);
+        evented.subscribeToUntilTriggered('myEvent', eventHandler);
 
         evan.EventSpace.removeMocks();
     });
