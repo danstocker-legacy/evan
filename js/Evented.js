@@ -86,8 +86,8 @@ troop.postpone(evan, 'Evented', function () {
              * @param {function} handler Event handler function
              * @return {evan.Evented}
              */
-            delegate: function (eventName, delegatePath, handler) {
-                this.eventSpace.delegate(eventName, this.eventPath, delegatePath, handler);
+            delegateSubscriptionTo: function (eventName, delegatePath, handler) {
+                this.eventSpace.delegateSubscriptionTo(eventName, this.eventPath, delegatePath, handler);
                 return this;
             },
 

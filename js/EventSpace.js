@@ -175,7 +175,7 @@ troop.postpone(evan, 'EventSpace', function () {
              * @param {function} handler Event handler function
              * @return {function} Event handler actually subscribed. Use this for unsubscribing.
              */
-            delegate: function (eventName, capturePath, delegatePath, handler) {
+            delegateSubscriptionTo: function (eventName, capturePath, delegatePath, handler) {
                 dessert
                     .assert(delegatePath.isRelativeTo(capturePath), "Delegate path is not relative to capture path")
                     .isFunction(handler, "Invalid event handler function");

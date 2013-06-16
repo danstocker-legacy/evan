@@ -199,15 +199,15 @@
         }
 
         raises(function () {
-            eventSpace.delegate('myEvent', 'test>event'.toPath(), 'unrelated.path'.toPath(), handler);
+            eventSpace.delegateSubscriptionTo('myEvent', 'test>event'.toPath(), 'unrelated.path'.toPath(), handler);
         }, "Unrelated paths");
 
         raises(function () {
-            eventSpace.delegate('myEvent', 'test>event'.toPath(), 'test>event>path'.toPath(), 'non-function');
+            eventSpace.delegateSubscriptionTo('myEvent', 'test>event'.toPath(), 'test>event>path'.toPath(), 'non-function');
         }, "Invalid event handler");
 
         // delegating event to path 'test>event>path'
-        result = eventSpace.delegate('myEvent', 'test>event'.toPath(), 'test>event>path'.toPath(), handler);
+        result = eventSpace.delegateSubscriptionTo('myEvent', 'test>event'.toPath(), 'test>event>path'.toPath(), handler);
         equal(typeof result, 'function', "Delegation returns wrapped handler");
         eventSpace.spawnEvent('myEvent').triggerSync('test>event>path>foo'.toPath());
     });
@@ -219,7 +219,7 @@
         function handler() {}
 
         // delegating in a way that handler may be unsubscribed
-        delegateHandler = eventSpace.delegate('myEvent', 'test>event'.toPath(), 'test>event>path'.toPath(), handler);
+        delegateHandler = eventSpace.delegateSubscriptionTo('myEvent', 'test>event'.toPath(), 'test>event>path'.toPath(), handler);
 
         equal(
             eventSpace.eventRegistry.items.myEvent.handlers['test>event'].length,
@@ -318,8 +318,8 @@
             .subscribeTo('myEvent', 'a>b'.toPath(), handler)
             .subscribeTo('myEvent', 'a>b>other path'.toPath(), handler);
 
-        eventSpace.delegate('myEvent', 'a>b'.toPath(), 'a>b>c>d'.toPath(), handler);
-        eventSpace.delegate('myEvent', 'a>b'.toPath(), 'a>b>c>|>f'.toQuery(), handler);
+        eventSpace.delegateSubscriptionTo('myEvent', 'a>b'.toPath(), 'a>b>c>d'.toPath(), handler);
+        eventSpace.delegateSubscriptionTo('myEvent', 'a>b'.toPath(), 'a>b>c>|>f'.toQuery(), handler);
 
         triggeredPaths = {};
         event.broadcastSync('a'.toPath()); // triggers due to broadcast path < capture path

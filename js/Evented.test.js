@@ -143,7 +143,7 @@
         function eventHandler() {}
 
         evan.EventSpace.addMocks({
-            delegate: function (eventName, capturePath, delegatePath, handler) {
+            delegateSubscriptionTo: function (eventName, capturePath, delegatePath, handler) {
                 equal(eventName, 'myEvent', "Event name");
                 ok(capturePath.equals('test>path'.toPath()), "Capture path");
                 ok(delegatePath.equals('test>path>foo'.toPath()), "Delegate path");
@@ -151,7 +151,7 @@
             }
         });
 
-        EventedStaticClass.delegate('myEvent', 'test>path>foo'.toPath(), eventHandler);
+        EventedStaticClass.delegateSubscriptionTo('myEvent', 'test>path>foo'.toPath(), eventHandler);
 
         evan.EventSpace.removeMocks();
     });
@@ -164,7 +164,7 @@
         function eventHandler() {}
 
         evan.EventSpace.addMocks({
-            delegate: function (eventName, capturePath, delegatePath, handler) {
+            delegateSubscriptionTo: function (eventName, capturePath, delegatePath, handler) {
                 equal(eventName, 'myEvent', "Event name");
                 ok(capturePath.equals('test>path>foo>bar'.toPath()), "Capture path");
                 ok(delegatePath.equals('test>path>foo>bar>hello>world'.toPath()), "Delegate path");
@@ -172,7 +172,7 @@
             }
         });
 
-        evented.delegate('myEvent', 'test>path>foo>bar>hello>world'.toPath(), eventHandler);
+        evented.delegateSubscriptionTo('myEvent', 'test>path>foo>bar>hello>world'.toPath(), eventHandler);
 
         evan.EventSpace.removeMocks();
     });
