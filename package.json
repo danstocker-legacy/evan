@@ -1,6 +1,6 @@
 {
     "name"           : "evan",
-    "version"        : "0.2.0",
+    "version"        : "0.2.1",
     "description"    : "Custom events",
     "keywords"       : ["custom", "events", "event", "troop"],
     "author"         : "Dan Stocker <dan@kwaia.com>",
