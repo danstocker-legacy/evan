@@ -157,13 +157,13 @@
     test("Broadcast", function () {
         var triggeredPaths = [],
             eventSpace = evan.EventSpace.create()
-                .on('myEvent', 'test.event'.toPath(), function () {})
-                .on('myEvent', 'test.event.foo'.toPath(), function () {})
-                .on('myEvent', 'test.event.foo.bar'.toPath(), function () {})
-                .on('myEvent', 'test.foo.bar'.toPath(), function () {})
-                .on('myEvent', 'test.event.hello'.toPath(), function () {})
-                .on('otherEvent', 'test.event'.toPath(), function () {})
-                .on('otherEvent', 'test.event.foo'.toPath(), function () {}),
+                .subscribeTo('myEvent', 'test.event'.toPath(), function () {})
+                .subscribeTo('myEvent', 'test.event.foo'.toPath(), function () {})
+                .subscribeTo('myEvent', 'test.event.foo.bar'.toPath(), function () {})
+                .subscribeTo('myEvent', 'test.foo.bar'.toPath(), function () {})
+                .subscribeTo('myEvent', 'test.event.hello'.toPath(), function () {})
+                .subscribeTo('otherEvent', 'test.event'.toPath(), function () {})
+                .subscribeTo('otherEvent', 'test.event.foo'.toPath(), function () {}),
             event = eventSpace.spawnEvent('myEvent');
 
         evan.Event.addMocks({

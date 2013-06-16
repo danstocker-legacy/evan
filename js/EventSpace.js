@@ -68,7 +68,7 @@ troop.postpone(evan, 'EventSpace', function () {
              * is triggered on (or bubbles to) the specified path.
              * @return {evan.EventSpace}
              */
-            on: function (eventName, eventPath, handler) {
+            subscribeTo: function (eventName, eventPath, handler) {
                 dessert.isFunction(handler, "Invalid event handler function");
 
                 var eventRegistry = this.eventRegistry,
@@ -161,7 +161,7 @@ troop.postpone(evan, 'EventSpace', function () {
                 }
 
                 // subscribing delegate handler to capturing path
-                this.on(eventName, eventPath, oneHandler);
+                this.subscribeTo(eventName, eventPath, oneHandler);
 
                 return oneHandler;
             },
@@ -199,7 +199,7 @@ troop.postpone(evan, 'EventSpace', function () {
                 }
 
                 // subscribing delegate handler to capturing path
-                this.on(eventName, capturePath, delegateHandler);
+                this.subscribeTo(eventName, capturePath, delegateHandler);
 
                 return delegateHandler;
             },

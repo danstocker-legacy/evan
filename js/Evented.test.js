@@ -29,14 +29,14 @@
         function eventHandler() {}
 
         evan.EventSpace.addMocks({
-            on: function (eventName, eventPath, handler) {
+            subscribeTo: function (eventName, eventPath, handler) {
                 equal(eventName, 'myEvent', "Event name");
                 ok(eventPath.equals('test>path'.toPath()), "Event path");
                 strictEqual(handler, eventHandler, "Event handler");
             }
         });
 
-        EventedStaticClass.on('myEvent', eventHandler);
+        EventedStaticClass.subscribeTo('myEvent', eventHandler);
 
         evan.EventSpace.removeMocks();
     });
@@ -49,14 +49,14 @@
         function eventHandler() {}
 
         evan.EventSpace.addMocks({
-            on: function (eventName, eventPath, handler) {
+            subscribeTo: function (eventName, eventPath, handler) {
                 equal(eventName, 'myEvent', "Event name");
                 ok(eventPath.equals('test>path>foo>bar'.toPath()), "Event path");
                 strictEqual(handler, eventHandler, "Event handler");
             }
         });
 
-        evented.on('myEvent', eventHandler);
+        evented.subscribeTo('myEvent', eventHandler);
 
         evan.EventSpace.removeMocks();
     });
@@ -186,8 +186,8 @@
             triggeredPaths.push(event.currentPath.toString());
         }
 
-        EventedStaticClass.on('myEvent', eventHandler);
-        evented.on('myEvent', eventHandler);
+        EventedStaticClass.subscribeTo('myEvent', eventHandler);
+        evented.subscribeTo('myEvent', eventHandler);
 
         evented.triggerSync('myEvent');
 
@@ -207,9 +207,9 @@
             triggeredPaths.push(event.currentPath.toString());
         }
 
-        EventedStaticClass.on('myEvent', eventHandler);
-        evented1.on('myEvent', eventHandler);
-        evented2.on('myEvent', eventHandler);
+        EventedStaticClass.subscribeTo('myEvent', eventHandler);
+        evented1.subscribeTo('myEvent', eventHandler);
+        evented2.subscribeTo('myEvent', eventHandler);
 
         // broadcasting on instance
         triggeredPaths = [];

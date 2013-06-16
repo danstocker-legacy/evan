@@ -35,10 +35,10 @@
         function handler2() {}
 
         raises(function () {
-            eventSpace.on('myEvent', 'test>event>path'.toPath(), 123);
+            eventSpace.subscribeTo('myEvent', 'test>event>path'.toPath(), 123);
         }, "Invalid event handler");
 
-        eventSpace.on('myEvent', 'test>event>path'.toPath(), handler1);
+        eventSpace.subscribeTo('myEvent', 'test>event>path'.toPath(), handler1);
 
         deepEqual(
             eventSpace.eventRegistry.items.myEvent.handlers,
@@ -54,7 +54,7 @@
             "Event path added to registry"
         );
 
-        eventSpace.on('myEvent', 'test>event>path', handler2);
+        eventSpace.subscribeTo('myEvent', 'test>event>path', handler2);
 
         deepEqual(
             eventSpace.eventRegistry.items.myEvent.handlers,
@@ -77,8 +77,8 @@
         function handler2() {}
 
         var eventSpace = evan.EventSpace.create()
-            .on('myEvent', 'test>event>path'.toPath(), handler1)
-            .on('myEvent', 'test>event>path'.toPath(), handler2);
+            .subscribeTo('myEvent', 'test>event>path'.toPath(), handler1)
+            .subscribeTo('myEvent', 'test>event>path'.toPath(), handler2);
 
         eventSpace.off('myEvent', 'test>event>path'.toPath(), handler1);
 
@@ -134,8 +134,8 @@
         function handler2() {}
 
         var eventSpace = evan.EventSpace.create()
-            .on('myEvent', 'test>event>path'.toPath(), handler1)
-            .on('myEvent', 'test>event>path'.toPath(), handler2);
+            .subscribeTo('myEvent', 'test>event>path'.toPath(), handler1)
+            .subscribeTo('myEvent', 'test>event>path'.toPath(), handler2);
 
         eventSpace.off('myEvent', 'test>event>path'.toPath());
 
@@ -240,7 +240,7 @@
         expect(3);
 
         var eventSpace = evan.EventSpace.create()
-                .on('myEvent', 'test>event', function (event, data) {
+                .subscribeTo('myEvent', 'test>event', function (event, data) {
                     strictEqual(event, myEvent, "Event instance passed to handler");
                     strictEqual(data, event.data, "Custom event data passed to handler");
                 }),
@@ -256,7 +256,7 @@
 
     test("Bubbling with stop-propagation", function () {
         var eventSpace = evan.EventSpace.create()
-                .on('event', 'test>event'.toPath(), function () {
+                .subscribeTo('event', 'test>event'.toPath(), function () {
                     return false;
                 }),
             event = eventSpace.spawnEvent('event');
@@ -271,14 +271,14 @@
 
     test("Path query", function () {
         var eventSpace = evan.EventSpace.create()
-            .on('myEvent', 'test>event'.toPath(), function () {})
-            .on('myEvent', 'test>event>foo'.toPath(), function () {})
-            .on('myEvent', 'test>event>foo>bar'.toPath(), function () {})
-            .on('myEvent', 'test>event>|>baz'.toQuery(), function () {})
-            .on('myEvent', 'test>foo>bar'.toPath(), function () {})
-            .on('myEvent', 'test>event>hello'.toPath(), function () {})
-            .on('otherEvent', 'test>event'.toPath(), function () {})
-            .on('otherEvent', 'test>event>foo'.toPath(), function () {});
+            .subscribeTo('myEvent', 'test>event'.toPath(), function () {})
+            .subscribeTo('myEvent', 'test>event>foo'.toPath(), function () {})
+            .subscribeTo('myEvent', 'test>event>foo>bar'.toPath(), function () {})
+            .subscribeTo('myEvent', 'test>event>|>baz'.toQuery(), function () {})
+            .subscribeTo('myEvent', 'test>foo>bar'.toPath(), function () {})
+            .subscribeTo('myEvent', 'test>event>hello'.toPath(), function () {})
+            .subscribeTo('otherEvent', 'test>event'.toPath(), function () {})
+            .subscribeTo('otherEvent', 'test>event>foo'.toPath(), function () {});
 
         deepEqual(
             eventSpace.getPathsRelativeTo('myEvent', 'test>event'.toPath()).callOnEachItem('toString').items,
@@ -314,9 +314,9 @@
         }
 
         eventSpace
-            .on('myEvent', 'a>b>|>e'.toQuery(), handler)
-            .on('myEvent', 'a>b'.toPath(), handler)
-            .on('myEvent', 'a>b>other path'.toPath(), handler);
+            .subscribeTo('myEvent', 'a>b>|>e'.toQuery(), handler)
+            .subscribeTo('myEvent', 'a>b'.toPath(), handler)
+            .subscribeTo('myEvent', 'a>b>other path'.toPath(), handler);
 
         eventSpace.delegate('myEvent', 'a>b'.toPath(), 'a>b>c>d'.toPath(), handler);
         eventSpace.delegate('myEvent', 'a>b'.toPath(), 'a>b>c>|>f'.toQuery(), handler);
