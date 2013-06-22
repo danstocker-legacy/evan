@@ -4,17 +4,19 @@
     "description"    : "Custom events",
     "keywords"       : ["custom", "events", "event", "troop"],
     "author"         : "Dan Stocker <dan@kwaia.com>",
+    "copyright"      : "Copyright (c) 2012-2013 Dan Stocker",
+    "license"        : "MIT",
     "repository"     : {
         "type": "git",
         "url" : "https://github.com/danstocker/evan.git"
     },
     "dependencies"   : {
-        "dessert": "~0.3.0",
-        "troop"  : "~0.5.0",
-        "sntls"  : "~0.9.0"
+        "dessert": "~0.3.2",
+        "troop"  : "~0.5.1",
+        "sntls"  : "~0.9.1"
     },
     "devDependencies": {
-        "phil"                : "~0.2.0",
+        "phil"                : "~0.2.2",
         "grunt"               : "~0.4.1",
         "grunt-jstestdriver"  : "git://github.com/danstocker/grunt-jstestdriver.git",
         "grunt-contrib-concat": "~0.3.0",
@@ -22,9 +24,9 @@
         "grunt-yui-compressor": "~0.3.0",
         "grunt-contrib-copy"  : "~0.4.1",
         "grunt-jsdoc"         : "~0.3.3",
-        "common-gruntfile"    : "git://github.com/danstocker/common-gruntfile.git",
+        "common-gruntfile"    : "git://github.com/danstocker/common-gruntfile.git#0.1.2",
         "QUnitAdapter"        : "https://dl.dropboxusercontent.com/u/9258903/packages/QUnitAdapter-0.1.0.tgz"
     },
-    "files"          : ["out/evan.js"],
-    "main"           : "out/evan.js"
+    "files"          : ["evan.js"],
+    "main"           : "evan.js"
 }
