@@ -7,8 +7,6 @@
 troop.postpone(evan, 'EventSpace', function () {
     "use strict";
 
-    var Event = evan.Event;
-
     /**
      * @class evan.EventSpace
      * @extends troop.Base
@@ -57,7 +55,7 @@ troop.postpone(evan, 'EventSpace', function () {
              * @return {evan.Event} New event instance
              */
             spawnEvent: function (eventName) {
-                return Event.create(this, eventName);
+                return evan.Event.create(this, eventName);
             },
 
             /**
