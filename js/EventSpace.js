@@ -73,10 +73,10 @@ troop.postpone(evan, 'EventSpace', function () {
 
                 var eventRegistry = this.eventRegistry,
                     eventPathString = eventPath.toString(),
-                    handlers = /** @type {Array} */ eventRegistry.getSafeNode(
+                    handlers = /** @type {Array} */ eventRegistry.getOrSetNode(
                         [eventName, 'handlers', eventPathString].toPath(),
                         this._generateHandlersStub),
-                    pathList = eventRegistry.getSafeNode(
+                    pathList = eventRegistry.getOrSetNode(
                         [eventName, 'paths'].toPath(),
                         this._generatePathsStub
                     );
