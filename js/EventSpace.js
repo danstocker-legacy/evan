@@ -122,11 +122,11 @@ troop.postpone(evan, 'EventSpace', function () {
 
                         if (!handlers.length) {
                             // removing handlers stub
-                            eventRegistry.unsetNode(handlersPath);
+                            eventRegistry.unsetKey(handlersPath);
                         }
                     } else {
                         // unsubscribing all handlers from event name / path
-                        eventRegistry.unsetNode(handlersPath);
+                        eventRegistry.unsetKey(handlersPath);
 
                         // removing all items pointing to this path
                         pathList.removeEvery(eventPathString);
