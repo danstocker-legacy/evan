@@ -89,7 +89,6 @@
             },
             "Former handler unsubscribed"
         );
-
         deepEqual(
             eventSpace.eventRegistry.items.myEvent.paths.items,
             ['test>event>path'],
@@ -106,7 +105,6 @@
             },
             "Handlers untouched"
         );
-
         deepEqual(
             eventSpace.eventRegistry.items.myEvent.paths.items,
             ['test>event>path'],
@@ -120,7 +118,6 @@
             'undefined',
             "Former handler unsubscribed"
         );
-
         deepEqual(
             eventSpace.eventRegistry.items.myEvent.paths.items,
             [],
@@ -144,11 +141,46 @@
             'undefined',
             "All handlers unsubscribed"
         );
-
         deepEqual(
             eventSpace.eventRegistry.items.myEvent.paths.items,
             [],
             "All paths unsubscribed"
+        );
+    });
+
+    test("Unsubscribing from multiple events", function () {
+        function handler1() {}
+
+        function handler2() {}
+
+        var eventSpace = evan.EventSpace.create()
+            .subscribeTo('myEvent', 'test>event>path'.toPath(), handler1)
+            .subscribeTo('otherEvent', 'test>event>path'.toPath(), handler2);
+
+        eventSpace.unsubscribeFrom(null, 'test>event>path'.toPath(), handler1);
+
+        equal(
+            typeof eventSpace.eventRegistry.items.myEvent.handlers,
+            'undefined',
+            "MyEvent handler unsubscribed"
+        );
+        deepEqual(
+            eventSpace.eventRegistry.items.otherEvent.handlers,
+            {
+                'test>event>path': [handler2]
+            },
+            "Other event's handlers untouched"
+        );
+
+        deepEqual(
+            eventSpace.eventRegistry.items.myEvent.paths.items,
+            [],
+            "MyEvent path removed"
+        );
+        deepEqual(
+            eventSpace.eventRegistry.items.otherEvent.paths.items,
+            ['test>event>path'],
+            "Other event's paths untouched"
         );
     });
 

@@ -105,30 +105,36 @@ troop.postpone(evan, 'EventSpace', function () {
                         '|'.toQueryPattern().setValue(handler) :
                         '|'
                     ].toQuery(),
-                    pathsQuery = [eventName || '|', 'paths'].toQuery(),
-                    handlerPaths;
+                    pathsQuery,
+                    eventNames;
 
                 // removing handlers from registry
-                handlerPaths = eventRegistry.queryPathsAsHash(handlersQuery)
+                eventNames = eventRegistry.queryPathsAsHash(handlersQuery)
                     .toCollection()
                     .forEachItem(function (/**sntls.Path*/handlerPath) {
                         eventRegistry.unsetPath(handlerPath, true);
-                    });
+                    })
+                    .mapContents(function (/**sntls.Path*/handlerPath) {
+                        // returning event name
+                        return handlerPath.asArray[0];
+                    })
+                    .toStringDictionary()
+                    .reverse()
+                    .getKeys();
 
                 // removing affected paths from registry (path lookup list)
-                if (handlerPaths.count > 0) {
-                    eventRegistry.queryValuesAsHash(pathsQuery)
-                        .toCollection()
-                        .forEachItem(function (/**sntls.OrderedStringList*/pathList) {
-                            if (handler) {
-                                // when handler is specified, remove one copy of event path
-                                pathList.removeItem(eventPathString);
-                            } else {
-                                // when handler is not specified, remove all copies of event path
-                                pathList.removeEvery(eventPathString);
-                            }
-                        });
-                }
+                pathsQuery = [eventNames, 'paths'].toQuery();
+                eventRegistry.queryValuesAsHash(pathsQuery)
+                    .toCollection()
+                    .forEachItem(function (/**sntls.OrderedStringList*/pathList) {
+                        if (handler) {
+                            // when handler is specified, remove one copy of event path
+                            pathList.removeItem(eventPathString);
+                        } else {
+                            // when handler is not specified, remove all copies of event path
+                            pathList.removeEvery(eventPathString);
+                        }
+                    });
 
                 return this;
             },
