@@ -4,7 +4,14 @@ troop.postpone(evan, 'PathCollection', function () {
 
     /**
      * @name evan.PathCollection.create
+     * @function
+     * @param {object} [items] Initial contents.
      * @return {evan.PathCollection}
+     */
+
+    /**
+     * @name evan.PathCollection#asArray
+     * @ignore
      */
 
     /**

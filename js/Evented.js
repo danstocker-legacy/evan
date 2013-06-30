@@ -1,19 +1,16 @@
-/**
- * Evented Trait
- *
- * Classes with this trait are may trigger and capture
- * events on a specified event space directly.
- */
 /*global dessert, troop, sntls, evan */
 troop.postpone(evan, 'Evented', function () {
     "use strict";
 
     /**
+     * Trait.
+     * Classes with this trait are may trigger and capture
+     * events on a specified event space directly.
      * @class evan.Evented
      * @extends troop.Base
      */
     evan.Evented = troop.Base.extend()
-        .addMethods(/** @lends evan.Evented */{
+        .addMethods(/** @lends evan.Evented# */{
             /**
              * Initializes evented instance by assigning an event space
              * in which to operate.
@@ -21,6 +18,7 @@ troop.postpone(evan, 'Evented', function () {
              * hence the instance level assignment.
              * @param {evan.EventSpace} eventSpace Event space the listener is working with.
              * @param {sntls.Path} [eventPath] Path representing this instance in the event space.
+             * @returns {evan.Evented}
              */
             initEvented: function (eventSpace, eventPath) {
                 dessert

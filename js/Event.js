@@ -1,9 +1,3 @@
-/**
- * Event
- *
- * An event is an object that may traverse in an event space.
- * Events carry all information regarding their position & properties.
- */
 /*global dessert, troop, sntls, evan */
 troop.postpone(evan, 'Event', function () {
     "use strict";
@@ -12,11 +6,22 @@ troop.postpone(evan, 'Event', function () {
         self = base.extend();
 
     /**
+     * Instantiates class.
+     * @name evan.Event.create
+     * @function
+     * @param {evan.EventSpace} eventSpace Event space associated with event
+     * @param {string} eventName Event name
+     * @return {evan.Event}
+     */
+
+    /**
+     * An event is an object that may traverse in an event space.
+     * Events carry all information regarding their position & properties.
      * @class evan.Event
      * @extends troop.Base
      */
     evan.Event = self
-        .addPrivateMethods(/** @lends evan.Event */{
+        .addPrivateMethods(/** @lends evan.Event# */{
             /**
              * Creates a new event instance and prepares it to be triggered.
              * @param {*} data Custom event data
@@ -63,12 +68,7 @@ troop.postpone(evan, 'Event', function () {
                 return this;
             }
         })
-        .addMethods(/** @lends evan.Event */{
-            /**
-             * @name evan.Event.create
-             * @return {evan.Event}
-             */
-
+        .addMethods(/** @lends evan.Event# */{
             /**
              * @param {evan.EventSpace} eventSpace Event space associated with event
              * @param {string} eventName Event name
@@ -265,7 +265,44 @@ troop.postpone(evan, 'EventCollection', function () {
 
     /**
      * @name evan.EventCollection.create
+     * @function
+     * @param {object} [items] Initial contents.
      * @return {evan.EventCollection}
+     */
+
+    /**
+     * @name evan.EventCollection#eventName
+     * @ignore
+     */
+
+    /**
+     * @name evan.EventCollection#eventSpace
+     * @ignore
+     */
+
+    /**
+     * @name evan.EventCollection#canBubble
+     * @ignore
+     */
+
+    /**
+     * @name evan.EventCollection#data
+     * @ignore
+     */
+
+    /**
+     * @name evan.EventCollection#currentPath
+     * @ignore
+     */
+
+    /**
+     * @name evan.EventCollection#originalPath
+     * @ignore
+     */
+
+    /**
+     * @name evan.EventCollection#broadcastPath
+     * @ignore
      */
 
     /**

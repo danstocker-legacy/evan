@@ -1,13 +1,16 @@
-/**
- * Event Space
- *
- * Events traverse within a confined event space.
- */
 /*global dessert, troop, sntls, evan */
 troop.postpone(evan, 'EventSpace', function () {
     "use strict";
 
     /**
+     * Instantiates class.
+     * @name evan.EventSpace.create
+     * @function
+     * @return {evan.EventSpace}
+     */
+
+    /**
+     * Events traverse within a confined event space.
      * @class evan.EventSpace
      * @extends troop.Base
      */
@@ -31,13 +34,10 @@ troop.postpone(evan, 'EventSpace', function () {
                 return sntls.OrderedStringList.create();
             }
         })
-        .addMethods(/** @lends evan.EventSpace */{
+        .addMethods(/** @lends evan.EventSpace# */{
             /**
-             * @name evan.EventSpace.create
-             * @return {evan.EventSpace}
+             * @ignore
              */
-
-            /**/
             init: function () {
                 /**
                  * Lookup for subscribed event handlers.
@@ -72,7 +72,8 @@ troop.postpone(evan, 'EventSpace', function () {
                     eventPathString = eventPath.toString(),
                     handlers = /** @type {Array} */ eventRegistry.getOrSetNode(
                         [eventName, 'handlers', eventPathString].toPath(),
-                        this._generateHandlersStub),
+                        this._generateHandlersStub
+                    ),
                     pathList = eventRegistry.getOrSetNode(
                         [eventName, 'paths'].toPath(),
                         this._generatePathsStub
