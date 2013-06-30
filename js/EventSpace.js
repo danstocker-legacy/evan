@@ -37,8 +37,7 @@ troop.postpone(evan, 'EventSpace', function () {
              * @return {evan.EventSpace}
              */
 
-            /**
-             */
+            /**/
             init: function () {
                 /**
                  * Lookup for subscribed event handlers.
@@ -89,7 +88,9 @@ troop.postpone(evan, 'EventSpace', function () {
             },
 
             /**
-             * Unsubscribes from event.
+             * Unsubscribes from event. Removes entries associated with subscription
+             * from event registry, both from the list of handlers and the list of
+             * subscribed paths.
              * @param {string} eventName Name of event to be triggered.
              * @param {sntls.Path} eventPath Path we're listening to
              * @param {function} [handler] Event handler function
@@ -100,37 +101,33 @@ troop.postpone(evan, 'EventSpace', function () {
 
                 var eventRegistry = this.eventRegistry,
                     eventPathString = eventPath.toString(),
-                    handlersPath = [eventName, 'handlers', eventPathString].toPath(),
-                    handlers = eventRegistry.getNode(handlersPath),
-                    handlerIndex,
-                    pathsPath, pathList;
+                    handlersQuery = [eventName || '|', 'handlers', eventPathString, handler ?
+                        '|'.toQueryPattern().setValue(handler) :
+                        '|'
+                    ].toQuery(),
+                    pathsQuery = [eventName || '|', 'paths'].toQuery(),
+                    handlerPaths;
 
-                if (handlers) {
-                    pathsPath = [eventName, 'paths'].toPath();
-                    pathList = /** @type {sntls.OrderedStringList} */ eventRegistry.getNode(pathsPath);
+                // removing handlers from registry
+                handlerPaths = eventRegistry.queryPathsAsHash(handlersQuery)
+                    .toCollection()
+                    .forEachItem(function (/**sntls.Path*/handlerPath) {
+                        eventRegistry.unsetPath(handlerPath, true);
+                    });
 
-                    if (handler) {
-                        // obtaining handler index
-                        handlerIndex = handlers.indexOf(handler);
-                        if (handlerIndex > -1) {
-                            // unsubscribing one specific handler
-                            handlers.splice(handlerIndex, 1);
-
-                            // removing path from ordered path list
-                            pathList.removeItem(eventPathString);
-                        }
-
-                        if (!handlers.length) {
-                            // removing handlers stub
-                            eventRegistry.unsetKey(handlersPath);
-                        }
-                    } else {
-                        // unsubscribing all handlers from event name / path
-                        eventRegistry.unsetKey(handlersPath);
-
-                        // removing all items pointing to this path
-                        pathList.removeEvery(eventPathString);
-                    }
+                // removing affected paths from registry (path lookup list)
+                if (handlerPaths.count > 0) {
+                    eventRegistry.queryValuesAsHash(pathsQuery)
+                        .toCollection()
+                        .forEachItem(function (/**sntls.OrderedStringList*/pathList) {
+                            if (handler) {
+                                // when handler is specified, remove one copy of event path
+                                pathList.removeItem(eventPathString);
+                            } else {
+                                // when handler is not specified, remove all copies of event path
+                                pathList.removeEvery(eventPathString);
+                            }
+                        });
                 }
 
                 return this;

@@ -115,9 +115,9 @@
 
         eventSpace.unsubscribeFrom('myEvent', 'test>event>path'.toPath(), handler2);
 
-        deepEqual(
-            eventSpace.eventRegistry.items.myEvent.handlers,
-            {},
+        equal(
+            typeof eventSpace.eventRegistry.items.myEvent.handlers,
+            'undefined',
             "Former handler unsubscribed"
         );
 
@@ -139,9 +139,9 @@
 
         eventSpace.unsubscribeFrom('myEvent', 'test>event>path'.toPath());
 
-        deepEqual(
-            eventSpace.eventRegistry.items.myEvent.handlers,
-            {},
+        equal(
+            typeof eventSpace.eventRegistry.items.myEvent.handlers,
+            'undefined',
             "All handlers unsubscribed"
         );
 
@@ -171,9 +171,9 @@
         eventSpace.unsubscribeFrom('myEvent', 'test>event>path'.toPath(), result);
 
         equal(
-            eventSpace.eventRegistry.items.myEvent.handlers.hasOwnProperty('test>event>path'),
+            eventSpace.eventRegistry.items.myEvent.hasOwnProperty('handlers'),
             false,
-            "One time handler subscribed"
+            "One time handler unsubscribed"
         );
 
         // re binding and triggering event
@@ -181,7 +181,7 @@
         eventSpace.spawnEvent('myEvent').triggerSync('test>event>path'.toPath());
 
         equal(
-            eventSpace.eventRegistry.items.myEvent.handlers.hasOwnProperty('test>event>path'),
+            eventSpace.eventRegistry.items.myEvent.hasOwnProperty('handlers'),
             false,
             "One time handler subscribed"
         );
@@ -230,7 +230,7 @@
         eventSpace.unsubscribeFrom('myEvent', 'test>event'.toPath(), delegateHandler);
 
         equal(
-            eventSpace.eventRegistry.items.myEvent.handlers.hasOwnProperty('test>event'),
+            eventSpace.eventRegistry.items.myEvent.hasOwnProperty('handlers'),
             false,
             "Delegate handler unsubscribed"
         );
