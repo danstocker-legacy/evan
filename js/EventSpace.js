@@ -221,21 +221,17 @@ troop.postpone(evan, 'EventSpace', function () {
                         event.currentPath.toString(),
                         '|'.toQueryPattern()
                     ].toQuery(),
-                    result;
+                    result = true;
 
                 this.eventRegistry.queryValuesAsHash(handlersQuery)
                     .toCollection()
                     .forEachItem(function (handler) {
                         // iteration stops here and prevents further bubbling
-                        if (handler.call(that, event, event.data) === false) {
-                            result = false;
-                            return false;
-                        }
+                        result = handler.call(that, event, event.data);
+                        return result;
                     });
 
-                if (result === false) {
-                    return false;
-                }
+                return result;
             },
 
             /**
