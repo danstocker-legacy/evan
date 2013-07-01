@@ -74,7 +74,7 @@ troop.postpone(evan, 'EventSpace', function () {
                         [eventName, 'handlers', eventPathString].toPath(),
                         this._generateHandlersStub
                     ),
-                    pathList = eventRegistry.getOrSetNode(
+                    pathList = /** @type {sntls.OrderedStringList} */ eventRegistry.getOrSetNode(
                         [eventName, 'paths'].toPath(),
                         this._generatePathsStub
                     );
@@ -102,9 +102,9 @@ troop.postpone(evan, 'EventSpace', function () {
 
                 var eventRegistry = this.eventRegistry,
                     eventPathString = eventPath.toString(),
-                    handlersQuery = [eventName || '|', 'handlers', eventPathString, handler ?
+                    handlersQuery = [eventName || '|'.toQueryPattern(), 'handlers', eventPathString, handler ?
                         '|'.toQueryPattern().setValue(handler) :
-                        '|'
+                        '|'.toQueryPattern()
                     ].toQuery(),
                     pathsQuery,
                     eventNames;
@@ -214,22 +214,27 @@ troop.postpone(evan, 'EventSpace', function () {
              * @see evan.Event.trigger
              */
             callHandlers: function (event) {
-                var handlersPath = [event.eventName, 'handlers', event.currentPath.toString()].toPath(),
-                    handlers = this.eventRegistry.getNode(handlersPath),
-                    i, result;
+                var that = this,
+                    handlersQuery = [
+                        event.eventName,
+                        'handlers',
+                        event.currentPath.toString(),
+                        '|'.toQueryPattern()
+                    ].toQuery(),
+                    result;
 
-                if (handlers) {
-                    // iterating over subscribed functions
-                    // handlers is assumed to be array of functions
-                    for (i = 0; i < handlers.length; i++) {
-                        // calling subscribed function
-                        result = handlers[i].call(this, event, event.data);
-
-                        if (result === false) {
-                            // iteration stops here and prevents further bubbling
+                this.eventRegistry.queryValuesAsHash(handlersQuery)
+                    .toCollection()
+                    .forEachItem(function (handler) {
+                        // iteration stops here and prevents further bubbling
+                        if (handler.call(that, event, event.data) === false) {
+                            result = false;
                             return false;
                         }
-                    }
+                    });
+
+                if (result === false) {
+                    return false;
                 }
             },
 
