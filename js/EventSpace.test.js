@@ -148,7 +148,7 @@
         );
     });
 
-    test("Unsubscribing from multiple events", function () {
+    test("Unsubscribing from multiple events, different handler", function () {
         function handler1() {}
 
         function handler2() {}
@@ -181,6 +181,38 @@
             eventSpace.eventRegistry.items.otherEvent.paths.items,
             ['test>event>path'],
             "Other event's paths untouched"
+        );
+    });
+
+    test("Unsubscribing from multiple events, same handler", function () {
+        function handler1() {}
+
+        var eventSpace = evan.EventSpace.create()
+            .subscribeTo('myEvent', 'test>event>path'.toPath(), handler1)
+            .subscribeTo('otherEvent', 'test>event>path'.toPath(), handler1);
+
+        eventSpace.unsubscribeFrom(null, 'test>event>path'.toPath(), handler1);
+
+        equal(
+            typeof eventSpace.eventRegistry.items.myEvent.handlers,
+            'undefined',
+            "MyEvent handler unsubscribed"
+        );
+        deepEqual(
+            typeof eventSpace.eventRegistry.items.otherEvent.handlers,
+            'undefined',
+            "Other event's handler unsubscribed"
+        );
+
+        deepEqual(
+            eventSpace.eventRegistry.items.myEvent.paths.items,
+            [],
+            "MyEvent path removed"
+        );
+        deepEqual(
+            eventSpace.eventRegistry.items.otherEvent.paths.items,
+            [],
+            "Other event's path removed"
         );
     });
 
