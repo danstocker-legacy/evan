@@ -107,18 +107,22 @@ troop.postpone(evan, 'EventSpace', function () {
                         '|'.toQueryPattern()
                     ].toQuery(),
                     pathsQuery,
+                    handlerPaths,
                     eventNames;
 
                 // removing handlers from registry
-                eventNames = eventRegistry.queryPathsAsHash(handlersQuery)
+                handlerPaths = eventRegistry.queryPathsAsHash(handlersQuery)
                     .toCollection()
                     .forEachItem(function (/**sntls.Path*/handlerPath) {
                         eventRegistry.unsetPath(handlerPath, true);
-                    })
-                    .mapContents(function (/**sntls.Path*/handlerPath) {
-                        // returning event name
-                        return handlerPath.asArray[0];
-                    })
+                    });
+
+                // obtaining affected events' names
+                eventNames = handlerPaths
+                    .toTree()
+                    // first item of each path holds event name
+                    .queryValuesAsHash('|>asArray>0'.toQuery())
+                    // getting unique event names
                     .toStringDictionary()
                     .reverse()
                     .getKeys();
