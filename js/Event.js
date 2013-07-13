@@ -249,7 +249,8 @@ troop.postpone(evan, 'Event', function () {
                     // obtaining subscribed paths relative to broadcast path
                     .getPathsRelativeTo(this.eventName, broadcastPath)
                     // spawning an event for each subscribed path
-                    .mapContents(this._spawnBroadcastEvent.bind(this, data, broadcastPath), evan.EventCollection)
+                    .passEachItemTo(this._spawnBroadcastEvent, this, 2, data, broadcastPath)
+                    .asType(evan.EventCollection)
                     // adding main event
                     .setItem('main', mainEvent)
                     // triggering all events

@@ -113,7 +113,7 @@ troop.postpone(evan, 'EventSpace', function () {
 
                 // removing handlers from registry
                 handlerPaths
-                    .passEachItemTo(eventRegistry.unsetPath.bind(eventRegistry), 0, true);
+                    .passEachItemTo(eventRegistry.unsetPath, eventRegistry, 0, true);
 
                 // obtaining affected events' names
                 eventNames = handlerPaths
