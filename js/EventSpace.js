@@ -228,7 +228,7 @@ troop.postpone(evan, 'EventSpace', function () {
                 this.eventRegistry.queryValuesAsHash(handlersQuery)
                     .toCollection()
                     .forEachItem(function (handler) {
-                        // iteration stops here and prevents further bubbling
+                        // stopping iteration when handler returns false
                         result = handler.call(that, event, event.data);
                         return result;
                     });
