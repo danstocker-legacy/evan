@@ -248,11 +248,9 @@ troop.postpone(evan, 'EventSpace', function () {
                     // obtaining all paths associated with event name
                     // node holds an OrderedStringList
                     .getNode([eventName, 'paths'].toPath())
-
                     // querying collection of strings that are relative to `path`
                     .getRangeByPrefixAsHash(path.toString(), true)
                     .toStringCollection()
-
                     // converting them to a collection of paths
                     .toPathOrQuery().asType(evan.PathCollection);
             }
