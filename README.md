@@ -22,75 +22,57 @@ Tutorial
 The following [example](http://jsfiddle.net/danstocker/Hw8Ya/
 ) creates an evented class, endows it and its instances with evented properties, then triggers an event on the instance. Right below it's presented in its entirety, followed by a step by step explanation.
 
-```javascript
-var eventSpace = evan.EventSpace.create(),
-    MyClass = troop.Base.extend()
-        .addTrait(evan.Evented)
-        .initEvented(eventSpace, 'test>path'.toPath())
-        .addMethods({
-            init: function (path) {
-                this.initEvented(eventSpace, path);
-            }
-        })
-        .subscribeTo('myEvent', function (event) {
-            console.log("event triggered", event.clone());
-        });
+    var eventSpace = evan.EventSpace.create(),
+        MyClass = troop.Base.extend()
+            .addTrait(evan.Evented)
+            .initEvented(eventSpace, 'test>path'.toPath())
+            .addMethods({
+                init: function (path) {
+                    this.initEvented(eventSpace, path);
+                }
+            })
+            .subscribeTo('myEvent', function (event) {
+                console.log("event triggered", event.clone());
+            });
 
-var myInstance = MyClass.create('test>path>foo'.toPath());
+    var myInstance = MyClass.create('test>path>foo'.toPath());
 
-myInstance.triggerSync('myEvent');
-```
+    myInstance.triggerSync('myEvent');
 
 **Step by step**
 
 First, we created an event space for the class. Events will traverse within the confines of this space. Events cannot cross between spaces.
 
-```javascript
-var eventSpace = evan.EventSpace.create(),
-```
+    var eventSpace = evan.EventSpace.create(),
 
 Then, we created a new class ...
 
-```javascript
-MyClass = troop.Base.extend()
-```
+    MyClass = troop.Base.extend()
 
 ... and added the evented behavior as a Troop trait.
 
-```javascript
-.addTrait(evan.Evented)
-```
+    .addTrait(evan.Evented)
 
 Then, we assign the event space and a path that represents the whole class.
 
-```javascript
-.initEvented(eventSpace, 'test>path'.toPath())
-```
+    .initEvented(eventSpace, 'test>path'.toPath())
 
 Then added an `init` method, which takes an individual path specific to the instance and applies it to it.
 
-```javascript
-this.initEvented(eventSpace, path);
-```
+    this.initEvented(eventSpace, path);
 
 Building the class is concluded by adding an event handler that is supposed to capture all 'myEvent' events that concern this class. The handler logs the event to the console. (The event is cloned because when an event has finished traversing the event space it will reset.)
 
-```javascript
-.subscribeTo('myEvent', function (event) {
-    console.log("event triggered", event.clone());
-});
-```
+    .subscribeTo('myEvent', function (event) {
+        console.log("event triggered", event.clone());
+    });
 
 Now, to try how this works on an instance, we need to instantiate the class.
 
-```javascript
-var myInstance = MyClass.create('test>path>foo'.toPath());
-```
+    var myInstance = MyClass.create('test>path>foo'.toPath());
 
 Finally, we trigger an event on the instance.
 
-```javascript
-myInstance.triggerSync('myEvent');
-```
+    myInstance.triggerSync('myEvent');
 
 This will trigger the event handler we applied to it statically on the class, but within the handler, while `event.currentPath.asArray` will say `['test','path']`, `event.originalPath.asArray` will say `['test','path','foo']`, as implied by the path we assigned to the instance.
