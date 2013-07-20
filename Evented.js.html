@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Evented.js</title>
+    
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+    
+    <h1 class="page-title">Source: Evented.js</h1>
+    
+    
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source"><code>/*global dessert, troop, sntls, evan */
+troop.postpone(evan, 'Evented', function () {
+    "use strict";
+
+    /**
+     * Trait.
+     * Classes with this trait are may trigger and capture
+     * events on a specified event space directly.
+     * @class evan.Evented
+     * @extends troop.Base
+     */
+    evan.Evented = troop.Base.extend()
+        .addMethods(/** @lends evan.Evented# */{
+            /**
+             * Initializes evented instance by assigning an event space
+             * in which to operate.
+             * Event space may be both class level or instance level,
+             * hence the instance level assignment.
+             * @param {evan.EventSpace} eventSpace Event space the listener is working with.
+             * @param {sntls.Path} [eventPath] Path representing this instance in the event space.
+             * @returns {evan.Evented}
+             */
+            initEvented: function (eventSpace, eventPath) {
+                dessert
+                    .isEventSpace(eventSpace, "Invalid event space")
+                    .isPathOptional(eventPath, "invalid event path");
+
+                /**
+                 * Event space associated with instance or class.
+                 * @type {evan.EventSpace}
+                 */
+                this.eventSpace = eventSpace;
+
+                /**
+                 * Event path assigned to the current instance or class
+                 * in the context of the current event space.
+                 * @type {sntls.Path}
+                 */
+                this.eventPath = eventPath;
+
+                return this;
+            },
+
+            /**
+             * Subscribes to event.
+             * @param {string} eventName Name of event to be triggered.
+             * @param {function} handler Event handler function that is called when the event
+             * is triggered on (or bubbles to) the specified path.
+             * @return {evan.Evented}
+             */
+            subscribeTo: function (eventName, handler) {
+                this.eventSpace.subscribeTo(eventName, this.eventPath, handler);
+                return this;
+            },
+
+            /**
+             * Unsubscribes from event.
+             * @param {string} eventName Name of event to be triggered.
+             * @param {function} [handler] Event handler function
+             * @return {evan.Evented}
+             */
+            unsubscribeFrom: function (eventName, handler) {
+                this.eventSpace.unsubscribeFrom(eventName, this.eventPath, handler);
+                return this;
+            },
+
+            /**
+             * Subscribes to event and unsubscribes after first trigger.
+             * @param {string} eventName Name of event to be triggered.
+             * @param {function} handler Event handler function that is called when the event
+             * is triggered on (or bubbles to) the specified path.
+             * @return {evan.Evented}
+             */
+            subscribeToUntilTriggered: function (eventName, handler) {
+                this.eventSpace.subscribeToUntilTriggered(eventName, this.eventPath, handler);
+                return this;
+            },
+
+            /**
+             * Delegates event capturing to a path closer to the root.
+             * Handlers subscribed this way CANNOT be unsubscribed individually.
+             * @param {string} eventName
+             * @param {sntls.Path} delegatePath Path we're listening to. (Could be derived, eg. Query)
+             * @param {function} handler Event handler function
+             * @return {evan.Evented}
+             */
+            delegateSubscriptionTo: function (eventName, delegatePath, handler) {
+                this.eventSpace.delegateSubscriptionTo(eventName, this.eventPath, delegatePath, handler);
+                return this;
+            },
+
+            /**
+             * Shorthand for **triggering** an event in the event space
+             * associated with the instance / class.
+             * @param {string} eventName
+             * @param {*} [data]
+             * @return {evan.Evented}
+             */
+            triggerSync: function (eventName, data) {
+                this.eventSpace.spawnEvent(eventName)
+                    .triggerSync(this.eventPath, data);
+                return this;
+            },
+
+            /**
+             * Shorthand for **broadcasting** an event in the event space
+             * associated with the instance / class.
+             * @param {string} eventName
+             * @param {*} [data]
+             * @return {evan.Evented}
+             */
+            broadcastSync: function (eventName, data) {
+                this.eventSpace.spawnEvent(eventName)
+                    .broadcastSync(this.eventPath, data);
+                return this;
+            }
+        });
+});
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="evan.Event.html">Event</a></li><li><a href="evan.EventCollection.html">EventCollection</a></li><li><a href="evan.Evented.html">Evented</a></li><li><a href="evan.EventSpace.html">EventSpace</a></li><li><a href="evan.PathCollection.html">PathCollection</a></li></ul><h3>Namespaces</h3><ul><li><a href="evan.html">evan</a></li></ul>
+</nav>
+
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Sat Jul 20 2013 16:39:29 GMT+0200 (CEST)
+</footer>
+
+<script> prettyPrint(); </script>
+</body>
+</html>

@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: EventSpace.js</title>
+    
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+    
+    <h1 class="page-title">Source: EventSpace.js</h1>
+    
+    
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source"><code>/*global dessert, troop, sntls, evan */
+troop.postpone(evan, 'EventSpace', function () {
+    "use strict";
+
+    /**
+     * Instantiates class.
+     * @name evan.EventSpace.create
+     * @function
+     * @return {evan.EventSpace}
+     */
+
+    /**
+     * Events traverse within a confined event space.
+     * @class evan.EventSpace
+     * @extends troop.Base
+     */
+    evan.EventSpace = troop.Base.extend()
+        .addPrivateMethods(/** @lends evan.EventSpace */{
+            /**
+             * Generates a stub for event handlers. (An empty array)
+             * @return {Array}
+             * @private
+             */
+            _generateHandlersStub: function () {
+                return [];
+            },
+
+            /**
+             * Generates a stub for empty paths buffer.
+             * @return {sntls.OrderedStringList}
+             * @private
+             */
+            _generatePathsStub: function () {
+                return sntls.OrderedStringList.create();
+            }
+        })
+        .addMethods(/** @lends evan.EventSpace# */{
+            /**
+             * @ignore
+             */
+            init: function () {
+                /**
+                 * Lookup for subscribed event handlers.
+                 * @type {sntls.Tree}
+                 * @constant
+                 * @example {myEvent: {handlers: {myPath: [func1, func2]}, paths: [myPath]}}
+                 */
+                this.eventRegistry = sntls.Tree.create();
+            },
+
+            /**
+             * Creates an event in the context of the current event space.
+             * @param {string} eventName Event name
+             * @return {evan.Event} New event instance
+             */
+            spawnEvent: function (eventName) {
+                return evan.Event.create(this, eventName);
+            },
+
+            /**
+             * Subscribes to event.
+             * @param {string} eventName Name of event to be triggered.
+             * @param {sntls.Path} eventPath Path we're listening to
+             * @param {function} handler Event handler function that is called when the event
+             * is triggered on (or bubbles to) the specified path.
+             * @return {evan.EventSpace}
+             */
+            subscribeTo: function (eventName, eventPath, handler) {
+                dessert.isFunction(handler, "Invalid event handler function");
+
+                var eventRegistry = this.eventRegistry,
+                    eventPathString = eventPath.toString(),
+                    handlers = /** @type {Array} */ eventRegistry.getOrSetNode(
+                        [eventName, 'handlers', eventPathString].toPath(),
+                        this._generateHandlersStub
+                    ),
+                    pathList = /** @type {sntls.OrderedStringList} */ eventRegistry.getOrSetNode(
+                        [eventName, 'paths'].toPath(),
+                        this._generatePathsStub
+                    );
+
+                // adding handler to handlers
+                handlers.push(handler);
+
+                // adding paths to ordered path list
+                pathList.addItem(eventPathString);
+
+                return this;
+            },
+
+            /**
+             * Unsubscribes from event. Removes entries associated with subscription
+             * from event registry, both from the list of handlers and the list of
+             * subscribed paths.
+             * @param {string} eventName Name of event to be triggered.
+             * @param {sntls.Path} eventPath Path we're listening to
+             * @param {function} [handler] Event handler function
+             * @return {evan.EventSpace}
+             */
+            unsubscribeFrom: function (eventName, eventPath, handler) {
+                dessert.isFunctionOptional(handler, "Invalid event handler function");
+
+                var eventRegistry = this.eventRegistry,
+                    eventPathString = eventPath.toString(),
+                    handlersQuery = [eventName || '|'.toQueryPattern(), 'handlers', eventPathString, handler ?
+                        '|'.toQueryPattern().setValue(handler) :
+                        '|'.toQueryPattern()
+                    ].toQuery(),
+                    handlerPaths = eventRegistry.queryPathsAsHash(handlersQuery)
+                        .toCollection(),
+                    pathsQuery,
+                    eventNames;
+
+                // removing handlers from registry
+                handlerPaths
+                    .passEachItemTo(eventRegistry.unsetPath, eventRegistry, 0, true);
+
+                // obtaining affected events' names
+                eventNames = handlerPaths
+                    .toTree()
+                    // first item of each path holds event name
+                    .queryValuesAsHash('|>asArray>0'.toQuery())
+                    // getting unique event names
+                    .toStringDictionary()
+                    .reverse()
+                    .getKeys();
+
+                // removing affected paths from registry (path lookup list)
+                pathsQuery = [eventNames, 'paths'].toQuery();
+                eventRegistry.queryValuesAsHash(pathsQuery)
+                    .toCollection()
+                    .forEachItem(function (/**sntls.OrderedStringList*/pathList) {
+                        if (handler) {
+                            // when handler is specified, remove one copy of event path
+                            pathList.removeItem(eventPathString);
+                        } else {
+                            // when handler is not specified, remove all copies of event path
+                            pathList.removeEvery(eventPathString);
+                        }
+                    });
+
+                return this;
+            },
+
+            /**
+             * Subscribes to event and unsubscribes after first trigger.
+             * @param {string} eventName Name of event to be triggered.
+             * @param {sntls.Path} eventPath Path we're listening to
+             * @param {function} handler Event handler function that is called when the event
+             * is triggered on (or bubbles to) the specified path.
+             * @return {function} Event handler actually subscribed. Use this for unsubscribing.
+             */
+            subscribeToUntilTriggered: function (eventName, eventPath, handler) {
+                /**
+                 * Handler wrapper for events that automatically unsubscribe
+                 * after the first trigger.
+                 * @param {evan.Event} event
+                 * @param {*} data
+                 * @return {*} Whatever the user-defined handler returns (possibly a `false`)
+                 */
+                function oneHandler(event, data) {
+                    /*jshint validthis: true */
+                    handler.call(this, event, data);
+                    return event.eventSpace.unsubscribeFrom(event.eventName, event.currentPath, oneHandler);
+                }
+
+                // subscribing delegate handler to capturing path
+                this.subscribeTo(eventName, eventPath, oneHandler);
+
+                return oneHandler;
+            },
+
+            /**
+             * Delegates event capturing to a path closer to the root.
+             * Handlers subscribed this way CANNOT be unsubscribed individually.
+             * @param {string} eventName
+             * @param {sntls.Path} capturePath Path where the event will actually subscribe
+             * @param {sntls.Path} delegatePath Path we're listening to. (Could be derived, eg. Query)
+             * @param {function} handler Event handler function
+             * @return {function} Event handler actually subscribed. Use this for unsubscribing.
+             */
+            delegateSubscriptionTo: function (eventName, capturePath, delegatePath, handler) {
+                dessert
+                    .assert(delegatePath.isRelativeTo(capturePath), "Delegate path is not relative to capture path")
+                    .isFunction(handler, "Invalid event handler function");
+
+                /**
+                 * Handler wrapper for subscribing delegates
+                 * @param {evan.Event} event Event object passed down by the triggering process
+                 * @param {*} data Custom event data
+                 * @return {*} Whatever the user-defined handler returns (possibly a `false`)
+                 */
+                function delegateHandler(event, data) {
+                    /*jshint validthis: true */
+                    var originalPath = event.originalPath,
+                        broadcastPath = event.broadcastPath;
+
+                    if (originalPath.isRelativeTo(delegatePath) ||
+                        broadcastPath && delegatePath.isRelativeTo(broadcastPath)) {
+                        // triggering handler and passing forged current path set to delegatePath
+                        return handler.call(this, event.clone(delegatePath), data);
+                    }
+                }
+
+                // subscribing delegate handler to capturing path
+                this.subscribeTo(eventName, capturePath, delegateHandler);
+
+                return delegateHandler;
+            },
+
+            /**
+             * Calls handlers associated with an event name and path.
+             * Handlers are assumed to be synchronous.
+             * @param {evan.Event} event
+             * @return {*}
+             * @see evan.Event.trigger
+             */
+            callHandlers: function (event) {
+                var that = this,
+                    handlersQuery = [
+                        event.eventName,
+                        'handlers',
+                        event.currentPath.toString(),
+                        '|'.toQueryPattern()
+                    ].toQuery(),
+                    result = true;
+
+                this.eventRegistry.queryValuesAsHash(handlersQuery)
+                    .toCollection()
+                    .forEachItem(function (handler) {
+                        // stopping iteration when handler returns false
+                        result = handler.call(that, event, event.data);
+                        return result;
+                    });
+
+                return result;
+            },
+
+            /**
+             * Retrieves subscribed paths that are relative to the specified path.
+             * @param {string} eventName
+             * @param {sntls.Path} path
+             * @return {evan.PathCollection} Collection of paths relative to (not including) `path`
+             * Question is which lib/class should delegate the method.
+             */
+            getPathsRelativeTo: function (eventName, path) {
+                return /** @type evan.PathCollection */ this.eventRegistry
+                    // obtaining all paths associated with event name
+                    // node holds an OrderedStringList
+                    .getNode([eventName, 'paths'].toPath())
+                    // querying collection of strings that are relative to `path`
+                    .getRangeByPrefixAsHash(path.toString(), true)
+                    .toStringCollection()
+                    // converting them to a collection of paths
+                    .toPathOrQuery().asType(evan.PathCollection);
+            }
+        });
+});
+
+(function () {
+    "use strict";
+
+    dessert.addTypes(/** @lends dessert */{
+        isEventSpace: function (expr) {
+            return evan.EventSpace.isPrototypeOf(expr);
+        },
+
+        isEventSpaceOptional: function (expr) {
+            return typeof expr === 'undefined' ||
+                   evan.EventSpace.isPrototypeOf(expr);
+        }
+    });
+}());
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="evan.Event.html">Event</a></li><li><a href="evan.EventCollection.html">EventCollection</a></li><li><a href="evan.Evented.html">Evented</a></li><li><a href="evan.EventSpace.html">EventSpace</a></li><li><a href="evan.PathCollection.html">PathCollection</a></li></ul><h3>Namespaces</h3><ul><li><a href="evan.html">evan</a></li></ul>
+</nav>
+
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Sat Jul 20 2013 16:39:29 GMT+0200 (CEST)
+</footer>
+
+<script> prettyPrint(); </script>
+</body>
+</html>
