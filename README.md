@@ -7,6 +7,10 @@ Evan implements a general eventing system in which any object that can be repres
 
 Evan is based on [Troop](https://github.com/production-minds/troop) for OOP and [Sntls](https://github.com/danstocker/sntls) for collections.
 
+[Wiki](https://github.com/danstocker/evan/wiki)
+
+[Reference](http://danstocker.github.io/evan/)
+
 Features
 --------
 
