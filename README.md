@@ -1,7 +1,7 @@
 Evan
 ====
 
-*Custom events*
+*Universal events*
 
 Evan implements a general eventing system in which any object that can be represented by a path (typically in an hierarchical, tree-like structure like the DOM) may trigger and capture events.
 
