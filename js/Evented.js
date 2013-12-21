@@ -12,15 +12,15 @@ troop.postpone(evan, 'Evented', function () {
     evan.Evented = troop.Base.extend()
         .addMethods(/** @lends evan.Evented# */{
             /**
-             * Initializes evented instance by assigning an event space
-             * in which to operate.
-             * Event space may be both class level or instance level,
-             * hence the instance level assignment.
+             * Initializes evented instance by assigning an event space in which to operate.
+             * When trait is applied statically, ie. all instances share the same event space,
+             * it's not necessary to initialize the trait, it's enough to set the event path for
+             * each instance.
              * @param {evan.EventSpace} eventSpace Event space the listener is working with.
              * @param {sntls.Path} [eventPath] Path representing this instance in the event space.
              * @returns {evan.Evented}
              */
-            initEvented: function (eventSpace, eventPath) {
+            init: function (eventSpace, eventPath) {
                 dessert
                     .isEventSpace(eventSpace, "Invalid event space")
                     .isPathOptional(eventPath, "invalid event path");
@@ -38,6 +38,28 @@ troop.postpone(evan, 'Evented', function () {
                  */
                 this.eventPath = eventPath;
 
+                return this;
+            },
+
+            /**
+             * Sets event space on current class or instance.
+             * @param {evan.EventSpace} eventSpace
+             * @returns {evan.Evented}
+             */
+            setEventSpace: function (eventSpace) {
+                dessert.isEventSpace(eventSpace, "Invalid event space");
+                this.eventSpace = eventSpace;
+                return this;
+            },
+
+            /**
+             * Sets event path for the current class or instance.
+             * @param {sntls.Path} eventPath
+             * @returns {evan.Evented}
+             */
+            setEventPath: function (eventPath) {
+                dessert.isPathOptional(eventPath, "Invalid event path");
+                this.eventPath = eventPath;
                 return this;
             },
 

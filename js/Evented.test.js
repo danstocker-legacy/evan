@@ -8,10 +8,11 @@
 
         EventedStaticClass = troop.Base.extend()
             .addTrait(evan.Evented)
-            .initEvented(eventSpace, 'test>path'.toPath())
+            .setEventSpace(eventSpace)
+            .setEventPath('test>path'.toPath())
             .addMethods({
                 init: function (path) {
-                    this.initEvented(eventSpace, path);
+                    this.setEventPath(path);
                 }
             }),
 
@@ -19,9 +20,31 @@
             .addTrait(evan.Evented)
             .addMethods({
                 init: function (path) {
-                    this.initEvented(evan.EventSpace.create(), path);
+                    evan.Evented.init.call(this, evan.EventSpace.create(), path);
                 }
             });
+
+    test("Event space setter", function () {
+        var evented = EventedClass.create('foo>bar'.toPath()),
+            eventSpace = evan.EventSpace.create();
+
+        notStrictEqual(evented.eventSpace, eventSpace, "Initially different event space");
+
+        evented.setEventSpace(eventSpace);
+
+        strictEqual(evented.eventSpace, eventSpace, "Event space set");
+    });
+
+    test("Event path setter", function () {
+        var evented = EventedClass.create('foo>bar'.toPath()),
+            eventPath = 'foo>bar>baz'.toPath();
+
+        notStrictEqual(evented.eventPath, eventPath, "Initially different event path");
+
+        evented.setEventPath(eventPath);
+
+        strictEqual(evented.eventPath, eventPath, "Event path set");
+    });
 
     test("Static subscription", function () {
         expect(3);
