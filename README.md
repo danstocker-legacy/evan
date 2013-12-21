@@ -29,10 +29,11 @@ The following [example](http://jsfiddle.net/danstocker/Hw8Ya/
     var eventSpace = evan.EventSpace.create(),
         MyClass = troop.Base.extend()
             .addTrait(evan.Evented)
-            .initEvented(eventSpace, 'test>path'.toPath())
+            .setEventSpace(eventSpace)
+            .setEventPath('test'.toPath())
             .addMethods({
                 init: function (path) {
-                    this.initEvented(eventSpace, path);
+                    this.setEventPath(path);
                 }
             })
             .subscribeTo('myEvent', function (event) {
@@ -59,11 +60,12 @@ Then, we created a new class ...
 
 Then, we assign the event space and a path that represents the whole class.
 
-    .initEvented(eventSpace, 'test>path'.toPath())
+    .setEventSpace(eventSpace)
+    .setEventPath('test'.toPath())
 
 Then added an `init` method, which takes an individual path specific to the instance and applies it to it.
 
-    this.initEvented(eventSpace, path);
+    this.setEventPath(path);
 
 Building the class is concluded by adding an event handler that is supposed to capture all 'myEvent' events that concern this class. The handler logs the event to the console. (The event is cloned because when an event has finished traversing the event space it will reset.)
 
@@ -71,7 +73,7 @@ Building the class is concluded by adding an event handler that is supposed to c
         console.log("event triggered", event.clone());
     });
 
-Now, to try how this works on an instance, we need to instantiate the class.
+Now, to try how this works on an instance, we need to instantiate the class. Instances must have paths relative to the class path or instantiation will fail.
 
     var myInstance = MyClass.create('test>path>foo'.toPath());
 
