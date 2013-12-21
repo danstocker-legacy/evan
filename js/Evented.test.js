@@ -46,6 +46,16 @@
         strictEqual(evented.eventPath, eventPath, "Event path set");
     });
 
+    test("Event path setter on static evented", function () {
+        raises(function () {
+            EventedStaticClass.create('foo>bar'.toPath());
+        }, "Invalid instance level path");
+
+        var evented = EventedStaticClass.create('test>path>foo'.toPath());
+
+        equal(evented.eventPath.toString(), 'test>path>foo', "Relative event path set");
+    });
+
     test("Static subscription", function () {
         expect(3);
 

@@ -21,22 +21,22 @@ troop.postpone(evan, 'Evented', function () {
              * @returns {evan.Evented}
              */
             init: function (eventSpace, eventPath) {
-                dessert
-                    .isEventSpace(eventSpace, "Invalid event space")
-                    .isPathOptional(eventPath, "invalid event path");
-
                 /**
                  * Event space associated with instance or class.
                  * @type {evan.EventSpace}
                  */
-                this.eventSpace = eventSpace;
+                this.eventSpace = undefined;
 
                 /**
                  * Event path assigned to the current instance or class
                  * in the context of the current event space.
                  * @type {sntls.Path}
                  */
-                this.eventPath = eventPath;
+                this.eventPath = undefined;
+
+                this
+                    .setEventSpace(eventSpace)
+                    .setEventPath(eventPath);
 
                 return this;
             },
@@ -58,8 +58,14 @@ troop.postpone(evan, 'Evented', function () {
              * @returns {evan.Evented}
              */
             setEventPath: function (eventPath) {
-                dessert.isPathOptional(eventPath, "Invalid event path");
+                dessert
+                    .isPath(eventPath, "Invalid event path")
+                    .assert(
+                        !this.eventPath || eventPath.isRelativeTo(this.eventPath),
+                        "Specified event path is not relative to static event path");
+
                 this.eventPath = eventPath;
+
                 return this;
             },
 
