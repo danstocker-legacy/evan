@@ -45,6 +45,7 @@ troop.postpone(evan, 'Evented', function () {
              * Sets event space on current class or instance.
              * @param {evan.EventSpace} eventSpace
              * @returns {evan.Evented}
+             * @memberOf {evan.Evented}
              */
             setEventSpace: function (eventSpace) {
                 dessert.isEventSpace(eventSpace, "Invalid event space");
@@ -56,6 +57,7 @@ troop.postpone(evan, 'Evented', function () {
              * Sets event path for the current class or instance.
              * @param {sntls.Path} eventPath
              * @returns {evan.Evented}
+             * @memberOf {evan.Evented}
              */
             setEventPath: function (eventPath) {
                 dessert
