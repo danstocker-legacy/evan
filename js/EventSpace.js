@@ -102,9 +102,9 @@ troop.postpone(evan, 'EventSpace', function () {
 
                 var eventRegistry = this.eventRegistry,
                     eventPathString = eventPath.toString(),
-                    handlersQuery = [eventName || '|'.toQueryPattern(), 'handlers', eventPathString, handler ?
-                        '|'.toQueryPattern().setValue(handler) :
-                        '|'.toQueryPattern()
+                    handlersQuery = [eventName || '|'.toKVP(), 'handlers', eventPathString, handler ?
+                        '|'.toKVP().setValue(handler) :
+                        '|'.toKVP()
                     ].toQuery(),
                     handlerPaths = eventRegistry.queryPathsAsHash(handlersQuery)
                         .toCollection(),
@@ -221,7 +221,7 @@ troop.postpone(evan, 'EventSpace', function () {
                         event.eventName,
                         'handlers',
                         event.currentPath.toString(),
-                        '|'.toQueryPattern()
+                        '|'.toKVP()
                     ].toQuery(),
                     result = true;
 
