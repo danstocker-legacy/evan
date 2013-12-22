@@ -28,7 +28,8 @@
     });
 
     test("Cloning", function () {
-        var originalEvent = evan.Event.create(eventSpace, 'testEvent')
+        var MyEvent = evan.Event.extend(),
+            originalEvent = MyEvent.create(eventSpace, 'testEvent')
                 .setTargetPath('test.path.hello.world'.toPath())
                 .setData({foo: 'bar'}),
             cloneEvent,
@@ -36,6 +37,7 @@
 
         cloneEvent = originalEvent.clone();
 
+        ok(cloneEvent.isA(MyEvent), "Event is instance of subclass");
         strictEqual(originalEvent.eventSpace, cloneEvent.eventSpace, "Event spaces are the same");
         equal(originalEvent.eventName, cloneEvent.eventName, "Event names are the same");
         strictEqual(originalEvent.originalPath, cloneEvent.originalPath, "Original paths are the same");

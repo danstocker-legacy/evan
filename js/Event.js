@@ -131,7 +131,7 @@ troop.postpone(evan, 'Event', function () {
             clone: function (currentPath) {
                 dessert.isPathOptional(currentPath, "Invalid current event path");
 
-                var /**evan.Event*/ result = self.create(this.eventSpace, this.eventName);
+                var result = this.getBase().create(this.eventSpace, this.eventName);
 
                 result.originalPath = this.originalPath;
                 result.currentPath = currentPath ?
