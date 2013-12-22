@@ -195,8 +195,9 @@ troop.postpone(evan, 'EventSpace', function () {
                     var originalPath = event.originalPath,
                         broadcastPath = event.broadcastPath;
 
-                    if (originalPath.isRelativeTo(delegatePath) ||
-                        broadcastPath && delegatePath.isRelativeTo(broadcastPath)) {
+                    if (delegatePath.isRootOf(originalPath) ||
+                        broadcastPath && delegatePath.isRelativeTo(broadcastPath)
+                        ) {
                         // triggering handler and passing forged current path set to delegatePath
                         return handler.call(this, event.clone(delegatePath), data);
                     }

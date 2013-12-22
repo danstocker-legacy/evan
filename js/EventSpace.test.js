@@ -276,6 +276,27 @@
         eventSpace.spawnEvent('myEvent').triggerSync('test>event>path>foo'.toPath());
     });
 
+    test("Delegation with queries", function () {
+        expect(4);
+
+        var eventSpace = evan.EventSpace.create(),
+            result;
+
+        function handler(/** evan.Event */ event) {
+            equal(event.currentPath.toString(), 'test>event>|>foo', "Event current path reflects delegated path");
+            equal(event.originalPath.toString(), 'test>event>bar>foo>baz', "Event current path reflects delegated path");
+        }
+
+        raises(function () {
+            eventSpace.delegateSubscriptionTo('myEvent', 'test>event'.toPath(), 'test>|>path'.toPath(), handler);
+        }, "Unrelated paths");
+
+        // delegating event to query 'test>event>|>path'
+        result = eventSpace.delegateSubscriptionTo('myEvent', 'test>event'.toPath(), 'test>event>|>foo'.toQuery(), handler);
+        equal(typeof result, 'function', "Delegation returns wrapped handler");
+        eventSpace.spawnEvent('myEvent').triggerSync('test>event>bar>foo>baz'.toPath());
+    });
+
     test("Un-delegation", function () {
         var eventSpace = evan.EventSpace.create(),
             delegateHandler;
