@@ -23,6 +23,7 @@
         equal(event.canBubble, true, "should turn on bubbling");
         equal(typeof event.originalEvent, 'undefined', "should clear original event");
         equal(event.defaultPrevented, false, "should set defaultPrevented to false");
+        equal(event.handled, false, "should set handled flag to false");
 
         equal(typeof event.originalPath, 'undefined', "should clear original path");
         equal(typeof event.currentPath, 'undefined', "should clear current path");
@@ -101,26 +102,27 @@
         equal(event.data, 'foo', "Custom data set");
     });
 
-    test("Triggering", function () {
-        expect(11);
+    test("Triggering event", function () {
+        expect(12);
 
         var event = evan.Event.create(eventSpace, 'testEvent'),
             i = 0;
 
         evan.EventSpace.addMocks({
             callHandlers: function (event) {
-                equal(event.eventName, 'testEvent', "Event name");
-                equal(event.originalPath.toString(), 'test>path', "Original event path");
-                equal(event.currentPath.toString(), ['test>path', 'test'][i++], "Current event path");
-                deepEqual(event.data, {foo: 'bar'}, "Custom event data");
+                equal(event.eventName, 'testEvent', "should call handlers with: event name,");
+                equal(event.originalPath.toString(), 'test>path', "original event path,");
+                equal(event.currentPath.toString(), ['test>path', 'test'][i++], "current event path,");
+                deepEqual(event.data, {foo: 'bar'}, "and custom event data");
             }
         });
 
         event.triggerSync('test>path'.toPath(), {foo: 'bar'});
 
-        equal(typeof event.originalPath, 'undefined', "Original path reset");
-        equal(typeof event.currentPath, 'undefined', "Current path reset");
-        equal(typeof event.data, 'undefined', "Data load reset");
+        equal(typeof event.originalPath, 'undefined', "should reset original path");
+        equal(typeof event.currentPath, 'undefined', "should reset current path");
+        equal(typeof event.data, 'undefined', "should reset data load");
+        equal(event.handled, true, "should set handled flag to true");
 
         evan.EventSpace.removeMocks();
     });

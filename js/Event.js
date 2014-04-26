@@ -109,6 +109,12 @@ troop.postpone(evan, 'Event', function () {
                 this.defaultPrevented = false;
 
                 /**
+                 * Whether event was handled. (A subscribed handler ran.)
+                 * @type {boolean}
+                 */
+                this.handled = false;
+
+                /**
                  * Custom user data to be carried by the event
                  * @type {*}
                  */
@@ -262,6 +268,9 @@ troop.postpone(evan, 'Event', function () {
                         }
                     }
                 }
+
+                // setting handled flag
+                this.handled = true;
 
                 // resetting path properties
                 this._reset();
