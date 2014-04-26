@@ -103,6 +103,12 @@ troop.postpone(evan, 'Event', function () {
                 this.originalEvent = undefined;
 
                 /**
+                 * Whether the event's default behavior was prevented.
+                 * @type {boolean}
+                 */
+                this.defaultPrevented = false;
+
+                /**
                  * Custom user data to be carried by the event
                  * @type {*}
                  */
@@ -172,6 +178,15 @@ troop.postpone(evan, 'Event', function () {
             },
 
             /**
+             * Sets flag for default behavior prevention to true.
+             * @returns {evan.Event}
+             */
+            preventDefault: function () {
+                this.defaultPrevented = true;
+                return this;
+            },
+
+            /**
              * Assigns paths to the event.
              * @param {sntls.Path} targetPath Path on which to trigger event.
              * @return {evan.Event}
@@ -236,6 +251,11 @@ troop.postpone(evan, 'Event', function () {
                     while (currentPath.asArray.length) {
                         if (eventSpace.callHandlers(this) === false) {
                             // bubbling was deliberately stopped
+
+                            // preventing default behavior
+                            this.preventDefault();
+
+                            // getting out of the bubbling loop
                             break;
                         } else {
                             currentPath.asArray.pop();

@@ -22,6 +22,7 @@
 
         equal(event.canBubble, true, "should turn on bubbling");
         equal(typeof event.originalEvent, 'undefined', "should clear original event");
+        equal(event.defaultPrevented, false, "should set defaultPrevented to false");
 
         equal(typeof event.originalPath, 'undefined', "should clear original path");
         equal(typeof event.currentPath, 'undefined', "should clear current path");
@@ -63,6 +64,13 @@
 
         strictEqual(event.setOriginalEvent(originalEvent), event, "should be chainable");
         strictEqual(event.originalEvent, originalEvent, "should set original event");
+    });
+
+    test("Setting default prevention flag", function () {
+        var event = evan.Event.create(eventSpace, 'testEvent');
+
+        strictEqual(event.preventDefault(), event, "should be chainable");
+        equal(event.defaultPrevented, true, "should set defaultPrevented to true");
     });
 
     test("Setting path", function () {
@@ -118,13 +126,13 @@
     });
 
     test("Triggering with stop-propagation", function () {
-        expect(1);
+        expect(2);
 
         var event = evan.Event.create(eventSpace, 'testEvent');
 
         evan.EventSpace.addMocks({
             callHandlers: function (event) {
-                equal(event.currentPath.toString(), 'test>path', "Current event path");
+                equal(event.currentPath.toString(), 'test>path', "should call handlers on specified path");
 
                 // stops propagation after first bubbling
                 return false;
@@ -132,6 +140,8 @@
         });
 
         event.triggerSync('test>path'.toPath());
+
+        equal(event.defaultPrevented, true, "should prevent default behavior");
 
         evan.EventSpace.removeMocks();
     });
