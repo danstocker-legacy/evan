@@ -60,9 +60,17 @@ troop.postpone(evan, 'Event', function () {
              * @private
              */
             _reset: function () {
+                // re-setting paths
                 this.currentPath = undefined;
                 this.originalPath = undefined;
                 this.broadcastPath = undefined;
+
+                // re-setting state
+                this.originalEvent = undefined;
+                this.defaultPrevented = false;
+                this.handled = false;
+
+                // re-setting data load
                 this.data = undefined;
 
                 return this;
@@ -151,11 +159,19 @@ troop.postpone(evan, 'Event', function () {
 
                 var result = this.getBase().create(this.eventSpace, this.eventName);
 
+                // transferring paths
                 result.originalPath = this.originalPath;
                 result.currentPath = currentPath ?
                     currentPath.clone() :
                     this.currentPath.clone();
                 result.broadcastPath = this.broadcastPath;
+
+                // transferring event state
+                result.originalEvent = this.originalEvent;
+                result.defaultPrevented = this.defaultPrevented;
+                result.handled = this.handled;
+
+                // transferring load
                 result.data = this.data;
 
                 return result;
@@ -257,20 +273,16 @@ troop.postpone(evan, 'Event', function () {
                     while (currentPath.asArray.length) {
                         if (eventSpace.callHandlers(this) === false) {
                             // bubbling was deliberately stopped
-
-                            // preventing default behavior
-                            this.preventDefault();
-
                             // getting out of the bubbling loop
                             break;
                         } else {
+                            // setting handled flag
+                            this.handled = true;
+
                             currentPath.asArray.pop();
                         }
                     }
                 }
-
-                // setting handled flag
-                this.handled = true;
 
                 // resetting path properties
                 this._reset();

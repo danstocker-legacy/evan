@@ -30,7 +30,7 @@
         equal(typeof event.data, 'undefined', "should clear custom data");
     });
 
-    test("Cloning", function () {
+    test("Cloning event", function () {
         var MyEvent = evan.Event.extend(),
             originalEvent = MyEvent.create(eventSpace, 'testEvent')
                 .setTargetPath('test.path.hello.world'.toPath())
@@ -40,13 +40,19 @@
 
         cloneEvent = originalEvent.clone();
 
-        ok(cloneEvent.isA(MyEvent), "Event is instance of subclass");
-        strictEqual(originalEvent.eventSpace, cloneEvent.eventSpace, "Event spaces are the same");
-        equal(originalEvent.eventName, cloneEvent.eventName, "Event names are the same");
-        strictEqual(originalEvent.originalPath, cloneEvent.originalPath, "Original paths are the same");
-        notStrictEqual(originalEvent.currentPath, cloneEvent.currentPath, "Current paths are not the same...");
-        equal(originalEvent.currentPath.toString(), cloneEvent.currentPath.toString(), "...but they match");
-        strictEqual(originalEvent.data, cloneEvent.data, "Custom data is the same");
+        ok(cloneEvent.isA(MyEvent), "should preserve event (sub)class");
+        strictEqual(originalEvent.eventSpace, cloneEvent.eventSpace, "should transfer event space");
+        equal(originalEvent.eventName, cloneEvent.eventName, "should transfer event name");
+
+        strictEqual(originalEvent.originalEvent, cloneEvent.originalEvent, "should transfer original event");
+        equal(originalEvent.defaultPrevented, cloneEvent.defaultPrevented, "should transfer default prevention flag");
+        equal(originalEvent.handled, cloneEvent.handled, "should transfer handled flag");
+
+        strictEqual(originalEvent.originalPath, cloneEvent.originalPath, "should transfer original path");
+        notStrictEqual(originalEvent.currentPath, cloneEvent.currentPath, "should create a new current path");
+        equal(originalEvent.currentPath.toString(), cloneEvent.currentPath.toString(), "should transfer contents of current path");
+
+        strictEqual(originalEvent.data, cloneEvent.data, "should transfer data load");
 
         currentPath = 'test>path'.toPath();
         cloneEvent = originalEvent.clone(currentPath);
@@ -103,9 +109,10 @@
     });
 
     test("Triggering event", function () {
-        expect(12);
+        expect(10);
 
         var event = evan.Event.create(eventSpace, 'testEvent'),
+            handledFlags = [],
             i = 0;
 
         evan.EventSpace.addMocks({
@@ -114,21 +121,25 @@
                 equal(event.originalPath.toString(), 'test>path', "original event path,");
                 equal(event.currentPath.toString(), ['test>path', 'test'][i++], "current event path,");
                 deepEqual(event.data, {foo: 'bar'}, "and custom event data");
+                handledFlags.push(event.handled);
+            }
+        });
+        evan.Event.addMocks({
+            _reset: function () {
+                strictEqual(this, event, "should reset event");
             }
         });
 
         event.triggerSync('test>path'.toPath(), {foo: 'bar'});
 
-        equal(typeof event.originalPath, 'undefined', "should reset original path");
-        equal(typeof event.currentPath, 'undefined', "should reset current path");
-        equal(typeof event.data, 'undefined', "should reset data load");
-        equal(event.handled, true, "should set handled flag to true");
+        deepEqual(handledFlags, [false, true], "should set handled flags");
 
         evan.EventSpace.removeMocks();
+        evan.Event.removeMocks();
     });
 
     test("Triggering with stop-propagation", function () {
-        expect(2);
+        expect(1);
 
         var event = evan.Event.create(eventSpace, 'testEvent');
 
@@ -142,8 +153,6 @@
         });
 
         event.triggerSync('test>path'.toPath());
-
-        equal(event.defaultPrevented, true, "should prevent default behavior");
 
         evan.EventSpace.removeMocks();
     });
