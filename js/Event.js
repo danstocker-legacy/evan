@@ -97,6 +97,12 @@ troop.postpone(evan, 'Event', function () {
                 this.canBubble = true;
 
                 /**
+                 * Evan event or DOM event that led to triggering the current event.
+                 * @type {evan.Event|Event}
+                 */
+                this.originalEvent = undefined;
+
+                /**
                  * Custom user data to be carried by the event
                  * @type {*}
                  */
@@ -151,6 +157,17 @@ troop.postpone(evan, 'Event', function () {
             allowBubbling: function (value) {
                 dessert.isBoolean(value);
                 this.canBubble = value;
+                return this;
+            },
+
+            /**
+             * Sets original event that led to triggering the current event.
+             * @param {even.Event|Event} originalEvent
+             * @returns {evan.Event}
+             */
+            setOriginalEvent: function (originalEvent) {
+                dessert.isEvent(originalEvent, "Invalid original event");
+                this.originalEvent = originalEvent;
                 return this;
             },
 

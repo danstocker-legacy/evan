@@ -6,25 +6,26 @@
 
     var eventSpace = evan.EventSpace.create();
 
-    test("Instantiation", function () {
+    test("Creating an event", function () {
         raises(function () {
             evan.Event.create('foo', 'testEvent');
-        }, "Invalid event space");
+        }, "with invalid event space should raise exception");
 
         raises(function () {
             evan.Event.create(eventSpace, 123);
-        }, "Invalid event name");
+        }, "with invalid event name should raise exception");
 
         var event = evan.Event.create(eventSpace, 'testEvent');
 
-        equal(event.eventName, 'testEvent', "Event name");
-        strictEqual(event.eventSpace, eventSpace, "Event space");
+        equal(event.eventName, 'testEvent', "should set event name");
+        strictEqual(event.eventSpace, eventSpace, "should set event space");
 
-        equal(event.canBubble, true, "Event can bubble by default");
+        equal(event.canBubble, true, "should turn on bubbling");
+        equal(typeof event.originalEvent, 'undefined', "should clear original event");
 
-        equal(typeof event.originalPath, 'undefined', "Original path");
-        equal(typeof event.currentPath, 'undefined', "Current path");
-        equal(typeof event.data, 'undefined', "Data load");
+        equal(typeof event.originalPath, 'undefined', "should clear original path");
+        equal(typeof event.currentPath, 'undefined', "should clear current path");
+        equal(typeof event.data, 'undefined', "should clear custom data");
     });
 
     test("Cloning", function () {
@@ -50,6 +51,18 @@
 
         notStrictEqual(cloneEvent.currentPath, currentPath, "Current path is not the same as specified...");
         equal(cloneEvent.currentPath.toString(), 'test>path', "..but they match");
+    });
+
+    test("Setting original event", function () {
+        var originalEvent = evan.Event.create(eventSpace, 'originalEvent'),
+            event = evan.Event.create(eventSpace, 'testEvent');
+
+        raises(function () {
+            event.setOriginalEvent();
+        }, "to invalid value should raise exception");
+
+        strictEqual(event.setOriginalEvent(originalEvent), event, "should be chainable");
+        strictEqual(event.originalEvent, originalEvent, "should set original event");
     });
 
     test("Setting path", function () {
