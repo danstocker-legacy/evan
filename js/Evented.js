@@ -12,36 +12,6 @@ troop.postpone(evan, 'Evented', function () {
     evan.Evented = troop.Base.extend()
         .addMethods(/** @lends evan.Evented# */{
             /**
-             * Initializes evented instance by assigning an event space in which to operate.
-             * When trait is applied statically, ie. all instances share the same event space,
-             * it's not necessary to initialize the trait, it's enough to set the event path for
-             * each instance.
-             * @param {evan.EventSpace} eventSpace Event space the listener is working with.
-             * @param {sntls.Path} [eventPath] Path representing this instance in the event space.
-             * @returns {evan.Evented}
-             */
-            init: function (eventSpace, eventPath) {
-                /**
-                 * Event space associated with instance or class.
-                 * @type {evan.EventSpace}
-                 */
-                this.eventSpace = undefined;
-
-                /**
-                 * Event path assigned to the current instance or class
-                 * in the context of the current event space.
-                 * @type {sntls.Path}
-                 */
-                this.eventPath = undefined;
-
-                this
-                    .setEventSpace(eventSpace)
-                    .setEventPath(eventPath);
-
-                return this;
-            },
-
-            /**
              * Sets event space on current class or instance.
              * @param {evan.EventSpace} eventSpace
              * @returns {evan.Evented}
@@ -123,12 +93,12 @@ troop.postpone(evan, 'Evented', function () {
              * Shorthand for **triggering** an event in the event space
              * associated with the instance / class.
              * @param {string} eventName
-             * @param {*} [data]
+             * @param {*} [payload]
              * @return {evan.Evented}
              */
-            triggerSync: function (eventName, data) {
+            triggerSync: function (eventName, payload) {
                 this.eventSpace.spawnEvent(eventName)
-                    .triggerSync(this.eventPath, data);
+                    .triggerSync(this.eventPath, payload);
                 return this;
             },
 
@@ -136,12 +106,12 @@ troop.postpone(evan, 'Evented', function () {
              * Shorthand for **broadcasting** an event in the event space
              * associated with the instance / class.
              * @param {string} eventName
-             * @param {*} [data]
+             * @param {*} [payload]
              * @return {evan.Evented}
              */
-            broadcastSync: function (eventName, data) {
+            broadcastSync: function (eventName, payload) {
                 this.eventSpace.spawnEvent(eventName)
-                    .broadcastSync(this.eventPath, data);
+                    .broadcastSync(this.eventPath, payload);
                 return this;
             }
         });
