@@ -327,7 +327,7 @@
         var eventSpace = e$.EventSpace.create()
                 .subscribeTo('myEvent', 'test>event', function (event, data) {
                     strictEqual(event, myEvent, "Event instance passed to handler");
-                    strictEqual(data, event.data, "Custom event data passed to handler");
+                    strictEqual(data, event.payload, "Custom event data passed to handler");
                 }),
             myEvent = eventSpace.spawnEvent('myEvent'),
             result;

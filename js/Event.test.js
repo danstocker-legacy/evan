@@ -27,14 +27,14 @@
 
         equal(typeof event.originalPath, 'undefined', "should clear original path");
         equal(typeof event.currentPath, 'undefined', "should clear current path");
-        equal(typeof event.data, 'undefined', "should clear custom data");
+        equal(typeof event.payload, 'undefined', "should clear custom data");
     });
 
     test("Cloning event", function () {
         var MyEvent = e$.Event.extend(),
             originalEvent = MyEvent.create('testEvent', eventSpace)
                 .setTargetPath('test.path.hello.world'.toPath())
-                .setData({foo: 'bar'}),
+                .setPayload({foo: 'bar'}),
             cloneEvent,
             currentPath;
 
@@ -52,7 +52,7 @@
         notStrictEqual(originalEvent.currentPath, cloneEvent.currentPath, "should create a new current path");
         equal(originalEvent.currentPath.toString(), cloneEvent.currentPath.toString(), "should transfer contents of current path");
 
-        strictEqual(originalEvent.data, cloneEvent.data, "should transfer data load");
+        strictEqual(originalEvent.payload, cloneEvent.payload, "should transfer data load");
 
         currentPath = 'test>path'.toPath();
         cloneEvent = originalEvent.clone(currentPath);
@@ -80,32 +80,30 @@
         equal(event.defaultPrevented, true, "should set defaultPrevented to true");
     });
 
-    test("Setting path", function () {
+    test("Setting target path", function () {
         var event = e$.Event.create('testEvent', eventSpace);
-        equal(typeof event.originalPath, 'undefined', "No original path initially");
-        equal(typeof event.currentPath, 'undefined', "No current path initially");
 
         raises(function () {
             event.setTargetPath('test>path');
-        }, "Invalid path");
+        }, "should raise exception on invalid path");
 
         event.setTargetPath('test>path'.toPath());
 
-        ok(event.originalPath.instanceOf(sntls.Path), "Original path is plain path");
-        ok(event.currentPath.instanceOf(sntls.Path), "Current path is plain path");
+        ok(event.originalPath.instanceOf(sntls.Path), "should set a Path instance as originalPath");
+        ok(event.currentPath.instanceOf(sntls.Path), "should set a Path instance as currentPath");
 
-        notStrictEqual(event.originalPath, event.currentPath, "Original and current path different instances");
-        deepEqual(event.originalPath.asArray, ['test', 'path'], "Original path set");
-        deepEqual(event.currentPath.asArray, ['test', 'path'], "Current path set");
+        notStrictEqual(event.originalPath, event.currentPath,
+            "should set different Path instances for originalPath and currentPath");
+        equal(event.originalPath.toString(), event.currentPath.toString(),
+            "should set originalPath and currentPath with identical contents");
     });
 
-    test("Setting custom data", function () {
+    test("Setting payload", function () {
         var event = e$.Event.create('testEvent', eventSpace);
-        equal(typeof event.data, 'undefined', "No data initially");
 
-        event.setData('foo');
+        event.setPayload('foo');
 
-        equal(event.data, 'foo', "Custom data set");
+        equal(event.payload, 'foo', "should set payload");
     });
 
     test("Triggering event", function () {
@@ -117,10 +115,15 @@
 
         e$.EventSpace.addMocks({
             callHandlers: function (event) {
-                equal(event.eventName, 'testEvent', "should call handlers with: event name,");
-                equal(event.originalPath.toString(), 'test>path', "original event path,");
-                equal(event.currentPath.toString(), ['test>path', 'test'][i++], "current event path,");
-                deepEqual(event.data, {foo: 'bar'}, "and custom event data");
+                equal(event.eventName, 'testEvent',
+                    "should call handlers with correct event name");
+                equal(event.originalPath.toString(), 'test>path',
+                    "should call handlers with correct original event path,");
+                equal(event.currentPath.toString(), ['test>path', 'test'][i++],
+                    "should call handlers with correct current event path");
+                deepEqual(event.payload, {foo: 'bar'},
+                    "should call handlers with correct payload");
+
                 handledFlags.push(event.handled);
             }
         });
@@ -158,13 +161,14 @@
     });
 
     test("Triggering on queries", function () {
-        expect(1);
+        expect(2);
 
         var event = e$.Event.create('testEvent', eventSpace);
 
         e$.EventSpace.addMocks({
             callHandlers: function (event) {
-                equal(event.currentPath.toString(), 'test>|>path', "Current event path");
+                ok(event.currentPath.isA(sntls.Query), "should call handlers with query");
+                equal(event.currentPath.toString(), 'test>|>path', "should set correct query contents");
             }
         });
 
@@ -173,7 +177,7 @@
         e$.EventSpace.removeMocks();
     });
 
-    test("Triggering without bubbling at all", function () {
+    test("Triggering without bubbling", function () {
         expect(1);
 
         var event = e$.Event.create('testEvent', eventSpace)
@@ -181,7 +185,7 @@
 
         e$.EventSpace.addMocks({
             callHandlers: function (event) {
-                equal(event.currentPath.toString(), 'test>path', "Current event path");
+                equal(event.currentPath.toString(), 'test>path', "should call handlers only once");
             }
         });
 
@@ -190,7 +194,8 @@
         e$.EventSpace.removeMocks();
     });
 
-    test("Broadcast", function () {
+    // TODO: should test mocking
+    test("Broadcasting event", function () {
         var triggeredPaths = [],
             eventSpace = e$.EventSpace.create()
                 .subscribeTo('myEvent', 'test.event'.toPath(), function () {})
@@ -213,7 +218,7 @@
         deepEqual(
             triggeredPaths,
             ['test.event.foo', 'test.event.foo.bar', 'test.event.hello', 'test.event'],
-            "Paths triggered by broadcast"
+            "should trigger event on all paths below broadcast path"
         );
 
         e$.Event.removeMocks();

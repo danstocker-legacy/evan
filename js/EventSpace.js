@@ -230,7 +230,7 @@ troop.postpone(evan, 'EventSpace', function () {
                     .toCollection()
                     .forEachItem(function (handler) {
                         // stopping iteration when handler returns false
-                        result = handler.call(that, event, event.data);
+                        result = handler.call(that, event, event.payload);
                         return result;
                     });
 
