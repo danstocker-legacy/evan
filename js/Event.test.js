@@ -1,4 +1,4 @@
-/*global sntls, e$, module, test, expect, ok, equal, strictEqual, notStrictEqual, deepEqual, raises */
+/*global sntls, e$, Event, module, test, expect, ok, equal, strictEqual, notStrictEqual, deepEqual, raises */
 (function () {
     "use strict";
 
@@ -65,12 +65,25 @@
         var originalEvent = e$.Event.create('originalEvent', eventSpace),
             event = e$.Event.create('testEvent', eventSpace);
 
-        raises(function () {
-            event.setOriginalEvent();
-        }, "to invalid value should raise exception");
-
         strictEqual(event.setOriginalEvent(originalEvent), event, "should be chainable");
         strictEqual(event.originalEvent, originalEvent, "should set original event");
+    });
+
+    test("Getting original event by type", function () {
+        var event1 = new Event('foo'),
+            Event2 = e$.Event.extend(),
+            Event3 = e$.Event.extend(),
+            event2 = Event2.create('event2', e$.EventSpace.create())
+                .setOriginalEvent(event1),
+            event3 = Event3.create('event3', e$.EventSpace.create())
+                .setOriginalEvent(event2),
+            event = e$.Event.create('event', e$.EventSpace.create())
+                .setOriginalEvent(event3);
+
+        strictEqual(event.getOriginalEventByType(Event), event1);
+        strictEqual(event.getOriginalEventByType(Event2), event2);
+        strictEqual(event.getOriginalEventByType(Event3), event3);
+        strictEqual(event.getOriginalEventByType(e$.Event), event3);
     });
 
     test("Setting default prevention flag", function () {

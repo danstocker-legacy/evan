@@ -85,7 +85,7 @@ troop.postpone(evan, 'Event', function () {
 
                 /**
                  * Evan event or DOM event that led to triggering the current event.
-                 * @type {evan.Event|Event}
+                 * @type {evan.Event|*}
                  */
                 this.originalEvent = undefined;
 
@@ -192,13 +192,43 @@ troop.postpone(evan, 'Event', function () {
 
             /**
              * Sets original event that led to triggering the current event.
-             * @param {even.Event|Event} originalEvent
+             * @param {even.Event|*} originalEvent
              * @returns {evan.Event}
              */
             setOriginalEvent: function (originalEvent) {
-                dessert.isEvent(originalEvent, "Invalid original event");
                 this.originalEvent = originalEvent;
                 return this;
+            },
+
+            /**
+             * Retrieves event from chain of original events by type.
+             * @returns {evan.Event|*} Original event matching the specified type.
+             */
+            getOriginalEventByType: function (eventType) {
+                var that = this.originalEvent,
+                    result;
+
+                if (typeof eventType === 'function') {
+                    while (that) {
+                        if (that instanceof eventType) {
+                            result = that;
+                            break;
+                        } else {
+                            that = that.originalEvent;
+                        }
+                    }
+                } else if (troop.Base.isBaseOf(eventType)) {
+                    while (that) {
+                        if (eventType.isBaseOf(that)) {
+                            result = that;
+                            break;
+                        } else {
+                            that = that.originalEvent;
+                        }
+                    }
+                }
+
+                return result;
             },
 
             /**
