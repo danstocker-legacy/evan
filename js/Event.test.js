@@ -1,21 +1,21 @@
-/*global sntls, evan, module, test, expect, ok, equal, strictEqual, notStrictEqual, deepEqual, raises */
+/*global sntls, e$, module, test, expect, ok, equal, strictEqual, notStrictEqual, deepEqual, raises */
 (function () {
     "use strict";
 
     module("Event");
 
-    var eventSpace = evan.EventSpace.create();
+    var eventSpace = e$.EventSpace.create();
 
-    test("Creating an event", function () {
+    test("Instantiation", function () {
         raises(function () {
-            evan.Event.create('foo', 'testEvent');
-        }, "with invalid event space should raise exception");
+            e$.Event.create();
+        }, "should raise exception on invalid event name argument");
 
         raises(function () {
-            evan.Event.create(eventSpace, 123);
-        }, "with invalid event name should raise exception");
+            e$.Event.create('foo');
+        }, "should raise exception on invalid event space argument");
 
-        var event = evan.Event.create(eventSpace, 'testEvent');
+        var event = e$.Event.create('testEvent', eventSpace);
 
         equal(event.eventName, 'testEvent', "should set event name");
         strictEqual(event.eventSpace, eventSpace, "should set event space");
@@ -31,8 +31,8 @@
     });
 
     test("Cloning event", function () {
-        var MyEvent = evan.Event.extend(),
-            originalEvent = MyEvent.create(eventSpace, 'testEvent')
+        var MyEvent = e$.Event.extend(),
+            originalEvent = MyEvent.create('testEvent', eventSpace)
                 .setTargetPath('test.path.hello.world'.toPath())
                 .setData({foo: 'bar'}),
             cloneEvent,
@@ -62,8 +62,8 @@
     });
 
     test("Setting original event", function () {
-        var originalEvent = evan.Event.create(eventSpace, 'originalEvent'),
-            event = evan.Event.create(eventSpace, 'testEvent');
+        var originalEvent = e$.Event.create('originalEvent', eventSpace),
+            event = e$.Event.create('testEvent', eventSpace);
 
         raises(function () {
             event.setOriginalEvent();
@@ -74,14 +74,14 @@
     });
 
     test("Setting default prevention flag", function () {
-        var event = evan.Event.create(eventSpace, 'testEvent');
+        var event = e$.Event.create('testEvent', eventSpace);
 
         strictEqual(event.preventDefault(), event, "should be chainable");
         equal(event.defaultPrevented, true, "should set defaultPrevented to true");
     });
 
     test("Setting path", function () {
-        var event = evan.Event.create(eventSpace, 'testEvent');
+        var event = e$.Event.create('testEvent', eventSpace);
         equal(typeof event.originalPath, 'undefined', "No original path initially");
         equal(typeof event.currentPath, 'undefined', "No current path initially");
 
@@ -100,7 +100,7 @@
     });
 
     test("Setting custom data", function () {
-        var event = evan.Event.create(eventSpace, 'testEvent');
+        var event = e$.Event.create('testEvent', eventSpace);
         equal(typeof event.data, 'undefined', "No data initially");
 
         event.setData('foo');
@@ -111,11 +111,11 @@
     test("Triggering event", function () {
         expect(10);
 
-        var event = evan.Event.create(eventSpace, 'testEvent'),
+        var event = e$.Event.create('testEvent', eventSpace),
             handledFlags = [],
             i = 0;
 
-        evan.EventSpace.addMocks({
+        e$.EventSpace.addMocks({
             callHandlers: function (event) {
                 equal(event.eventName, 'testEvent', "should call handlers with: event name,");
                 equal(event.originalPath.toString(), 'test>path', "original event path,");
@@ -124,7 +124,7 @@
                 handledFlags.push(event.handled);
             }
         });
-        evan.Event.addMocks({
+        e$.Event.addMocks({
             _reset: function () {
                 strictEqual(this, event, "should reset event");
             }
@@ -134,16 +134,16 @@
 
         deepEqual(handledFlags, [false, true], "should set handled flags");
 
-        evan.EventSpace.removeMocks();
-        evan.Event.removeMocks();
+        e$.EventSpace.removeMocks();
+        e$.Event.removeMocks();
     });
 
     test("Triggering with stop-propagation", function () {
         expect(1);
 
-        var event = evan.Event.create(eventSpace, 'testEvent');
+        var event = e$.Event.create('testEvent', eventSpace);
 
-        evan.EventSpace.addMocks({
+        e$.EventSpace.addMocks({
             callHandlers: function (event) {
                 equal(event.currentPath.toString(), 'test>path', "should call handlers on specified path");
 
@@ -154,15 +154,15 @@
 
         event.triggerSync('test>path'.toPath());
 
-        evan.EventSpace.removeMocks();
+        e$.EventSpace.removeMocks();
     });
 
     test("Triggering on queries", function () {
         expect(1);
 
-        var event = evan.Event.create(eventSpace, 'testEvent');
+        var event = e$.Event.create('testEvent', eventSpace);
 
-        evan.EventSpace.addMocks({
+        e$.EventSpace.addMocks({
             callHandlers: function (event) {
                 equal(event.currentPath.toString(), 'test>|>path', "Current event path");
             }
@@ -170,16 +170,16 @@
 
         event.triggerSync('test>|>path'.toQuery());
 
-        evan.EventSpace.removeMocks();
+        e$.EventSpace.removeMocks();
     });
 
     test("Triggering without bubbling at all", function () {
         expect(1);
 
-        var event = evan.Event.create(eventSpace, 'testEvent')
+        var event = e$.Event.create('testEvent', eventSpace)
             .allowBubbling(false);
 
-        evan.EventSpace.addMocks({
+        e$.EventSpace.addMocks({
             callHandlers: function (event) {
                 equal(event.currentPath.toString(), 'test>path', "Current event path");
             }
@@ -187,12 +187,12 @@
 
         event.triggerSync('test>path'.toPath());
 
-        evan.EventSpace.removeMocks();
+        e$.EventSpace.removeMocks();
     });
 
     test("Broadcast", function () {
         var triggeredPaths = [],
-            eventSpace = evan.EventSpace.create()
+            eventSpace = e$.EventSpace.create()
                 .subscribeTo('myEvent', 'test.event'.toPath(), function () {})
                 .subscribeTo('myEvent', 'test.event.foo'.toPath(), function () {})
                 .subscribeTo('myEvent', 'test.event.foo.bar'.toPath(), function () {})
@@ -202,7 +202,7 @@
                 .subscribeTo('otherEvent', 'test.event.foo'.toPath(), function () {}),
             event = eventSpace.spawnEvent('myEvent');
 
-        evan.Event.addMocks({
+        e$.Event.addMocks({
             triggerSync: function () {
                 triggeredPaths.push(this.originalPath.toString());
             }
@@ -216,6 +216,6 @@
             "Paths triggered by broadcast"
         );
 
-        evan.Event.removeMocks();
+        e$.Event.removeMocks();
     });
 }());

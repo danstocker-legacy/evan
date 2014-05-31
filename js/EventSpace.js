@@ -54,7 +54,7 @@ troop.postpone(evan, 'EventSpace', function () {
              * @return {evan.Event} New event instance
              */
             spawnEvent: function (eventName) {
-                return evan.Event.create(this, eventName);
+                return evan.Event.create(eventName, this);
             },
 
             /**

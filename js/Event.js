@@ -9,8 +9,8 @@ troop.postpone(evan, 'Event', function () {
      * Instantiates class.
      * @name evan.Event.create
      * @function
-     * @param {evan.EventSpace} eventSpace Event space associated with event
      * @param {string} eventName Event name
+     * @param {evan.EventSpace} eventSpace Event space associated with event
      * @return {evan.Event}
      */
 
@@ -30,7 +30,7 @@ troop.postpone(evan, 'Event', function () {
              * @private
              */
             _spawnMainBroadcastEvent: function (data, targetPath) {
-                return self.create(this.eventSpace, this.eventName)
+                return self.create(this.eventName, this.eventSpace)
                     .setBroadcastPath(targetPath)
                     .setTargetPath(targetPath)
                     .setData(data);
@@ -47,7 +47,7 @@ troop.postpone(evan, 'Event', function () {
              * @private
              */
             _spawnBroadcastEvent: function (data, broadcastPath, targetPath) {
-                return self.create(this.eventSpace, this.eventName)
+                return self.create(this.eventName, this.eventSpace)
                     .allowBubbling(false)
                     .setBroadcastPath(broadcastPath)
                     .setTargetPath(targetPath)
@@ -78,10 +78,11 @@ troop.postpone(evan, 'Event', function () {
         })
         .addMethods(/** @lends evan.Event# */{
             /**
-             * @param {evan.EventSpace} eventSpace Event space associated with event
              * @param {string} eventName Event name
+             * @param {evan.EventSpace} eventSpace Event space associated with event
+             * @ignore
              */
-            init: function (eventSpace, eventName) {
+            init: function (eventName, eventSpace) {
                 dessert
                     .isEventSpace(eventSpace)
                     .isString(eventName);
@@ -157,7 +158,7 @@ troop.postpone(evan, 'Event', function () {
             clone: function (currentPath) {
                 dessert.isPathOptional(currentPath, "Invalid current event path");
 
-                var result = this.getBase().create(this.eventSpace, this.eventName);
+                var result = this.getBase().create(this.eventName, this.eventSpace);
 
                 // transferring paths
                 result.originalPath = this.originalPath;

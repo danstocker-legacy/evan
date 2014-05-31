@@ -1,11 +1,11 @@
-/*global sntls, evan, module, test, expect, ok, equal, strictEqual, deepEqual, raises */
+/*global sntls, e$, module, test, expect, ok, equal, strictEqual, deepEqual, raises */
 (function () {
     "use strict";
 
     module("EventSpace");
 
     test("Instantiation", function () {
-        var eventSpace = evan.EventSpace.create();
+        var eventSpace = e$.EventSpace.create();
         ok(eventSpace.eventRegistry.isA(sntls.Tree), "Event registry is a tree");
         deepEqual(eventSpace.eventRegistry.items, {}, "Event registry initialized");
     });
@@ -13,10 +13,10 @@
     test("Event creation", function () {
         expect(2);
 
-        var eventSpace = evan.EventSpace.create();
+        var eventSpace = e$.EventSpace.create();
 
-        evan.Event.addMocks({
-            create: function (es, eventName) {
+        e$.Event.addMocks({
+            create: function (eventName, es) {
                 strictEqual(es, eventSpace, "Event space");
                 equal(eventName, 'myEvent', "Event name");
             }
@@ -24,11 +24,11 @@
 
         eventSpace.spawnEvent('myEvent');
 
-        evan.Event.removeMocks();
+        e$.Event.removeMocks();
     });
 
     test("Subscription", function () {
-        var eventSpace = evan.EventSpace.create();
+        var eventSpace = e$.EventSpace.create();
 
         function handler1() {}
 
@@ -76,7 +76,7 @@
 
         function handler2() {}
 
-        var eventSpace = evan.EventSpace.create()
+        var eventSpace = e$.EventSpace.create()
             .subscribeTo('myEvent', 'test>event>path'.toPath(), handler1)
             .subscribeTo('myEvent', 'test>event>path'.toPath(), handler2);
 
@@ -130,7 +130,7 @@
 
         function handler2() {}
 
-        var eventSpace = evan.EventSpace.create()
+        var eventSpace = e$.EventSpace.create()
             .subscribeTo('myEvent', 'test>event>path'.toPath(), handler1)
             .subscribeTo('myEvent', 'test>event>path'.toPath(), handler2);
 
@@ -153,7 +153,7 @@
 
         function handler2() {}
 
-        var eventSpace = evan.EventSpace.create()
+        var eventSpace = e$.EventSpace.create()
             .subscribeTo('myEvent', 'test>event>path'.toPath(), handler1)
             .subscribeTo('otherEvent', 'test>event>path'.toPath(), handler2);
 
@@ -187,7 +187,7 @@
     test("Unsubscribing from multiple events, same handler", function () {
         function handler1() {}
 
-        var eventSpace = evan.EventSpace.create()
+        var eventSpace = e$.EventSpace.create()
             .subscribeTo('myEvent', 'test>event>path'.toPath(), handler1)
             .subscribeTo('otherEvent', 'test>event>path'.toPath(), handler1);
 
@@ -219,7 +219,7 @@
     test("One time subscription", function () {
         function handler() {}
 
-        var eventSpace = evan.EventSpace.create(),
+        var eventSpace = e$.EventSpace.create(),
             result;
 
         result = eventSpace.subscribeToUntilTriggered('myEvent', 'test>event>path'.toPath(), handler);
@@ -254,10 +254,10 @@
     test("Delegation", function () {
         expect(5);
 
-        var eventSpace = evan.EventSpace.create(),
+        var eventSpace = e$.EventSpace.create(),
             result;
 
-        function handler(/** evan.Event */ event) {
+        function handler(/** e$.Event */ event) {
             equal(event.currentPath.toString(), 'test>event>path', "Event current path reflects delegated path");
             equal(event.originalPath.toString(), 'test>event>path>foo', "Event current path reflects delegated path");
         }
@@ -279,10 +279,10 @@
     test("Delegation with queries", function () {
         expect(4);
 
-        var eventSpace = evan.EventSpace.create(),
+        var eventSpace = e$.EventSpace.create(),
             result;
 
-        function handler(/** evan.Event */ event) {
+        function handler(/** e$.Event */ event) {
             equal(event.currentPath.toString(), 'test>event>|>foo', "Event current path reflects delegated path");
             equal(event.originalPath.toString(), 'test>event>bar>foo>baz', "Event current path reflects delegated path");
         }
@@ -298,7 +298,7 @@
     });
 
     test("Un-delegation", function () {
-        var eventSpace = evan.EventSpace.create(),
+        var eventSpace = e$.EventSpace.create(),
             delegateHandler;
 
         function handler() {}
@@ -324,7 +324,7 @@
     test("Bubbling", function () {
         expect(3);
 
-        var eventSpace = evan.EventSpace.create()
+        var eventSpace = e$.EventSpace.create()
                 .subscribeTo('myEvent', 'test>event', function (event, data) {
                     strictEqual(event, myEvent, "Event instance passed to handler");
                     strictEqual(data, event.data, "Custom event data passed to handler");
@@ -340,7 +340,7 @@
     });
 
     test("Bubbling with stop-propagation", function () {
-        var eventSpace = evan.EventSpace.create()
+        var eventSpace = e$.EventSpace.create()
                 .subscribeTo('event', 'test>event'.toPath(), function () {
                     return false;
                 }),
@@ -355,7 +355,7 @@
     });
 
     test("Path query", function () {
-        var eventSpace = evan.EventSpace.create()
+        var eventSpace = e$.EventSpace.create()
             .subscribeTo('myEvent', 'test>event'.toPath(), function () {})
             .subscribeTo('myEvent', 'test>event>foo'.toPath(), function () {})
             .subscribeTo('myEvent', 'test>event>foo>bar'.toPath(), function () {})
@@ -390,7 +390,7 @@
     });
 
     test("Broadcast w/ delegation", function () {
-        var eventSpace = evan.EventSpace.create(),
+        var eventSpace = e$.EventSpace.create(),
             event = eventSpace.spawnEvent('myEvent'),
             triggeredPaths;
 
