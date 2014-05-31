@@ -52,28 +52,6 @@ troop.postpone(evan, 'Event', function () {
                     .setBroadcastPath(broadcastPath)
                     .setTargetPath(targetPath)
                     .setPayload(payload);
-            },
-
-            /**
-             * Resets event properties
-             * @return {evan.Event}
-             * @private
-             */
-            _reset: function () {
-                // re-setting paths
-                this.currentPath = undefined;
-                this.originalPath = undefined;
-                this.broadcastPath = undefined;
-
-                // re-setting state
-                this.originalEvent = undefined;
-                this.defaultPrevented = false;
-                this.handled = false;
-
-                // re-setting payload
-                this.payload = undefined;
-
-                return this;
             }
         })
         .addMethods(/** @lends evan.Event# */{
@@ -150,8 +128,9 @@ troop.postpone(evan, 'Event', function () {
             },
 
             /**
-             * Clones event and sets its currentPath property to
+             * Clones event and optionally sets its currentPath property to
              * the one specified by the argument.
+             * Override in subclasses to clone additional properties.
              * @param {sntls.Path} [currentPath]
              * @return {evan.Event}
              */
@@ -176,6 +155,28 @@ troop.postpone(evan, 'Event', function () {
                 result.payload = this.payload;
 
                 return result;
+            },
+
+            /**
+             * Resets event properties. Override in subclasses to reset additional properties
+             * after bubbling is over.
+             * @return {evan.Event}
+             */
+            reset: function () {
+                // re-setting paths
+                this.currentPath = undefined;
+                this.originalPath = undefined;
+                this.broadcastPath = undefined;
+
+                // re-setting state
+                this.originalEvent = undefined;
+                this.defaultPrevented = false;
+                this.handled = false;
+
+                // re-setting payload
+                this.payload = undefined;
+
+                return this;
             },
 
             /**
@@ -286,7 +287,7 @@ troop.postpone(evan, 'Event', function () {
                 }
 
                 // resetting path properties
-                this._reset();
+                this.reset();
 
                 return this;
             },

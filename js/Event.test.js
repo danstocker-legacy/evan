@@ -128,7 +128,7 @@
             }
         });
         e$.Event.addMocks({
-            _reset: function () {
+            reset: function () {
                 strictEqual(this, event, "should reset event");
             }
         });
