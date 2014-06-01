@@ -35,9 +35,7 @@ troop.postpone(evan, 'EventSpace', function () {
             }
         })
         .addMethods(/** @lends evan.EventSpace# */{
-            /**
-             * @ignore
-             */
+            /** @ignore */
             init: function () {
                 /**
                  * Lookup for subscribed event handlers.
