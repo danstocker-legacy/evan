@@ -12,6 +12,7 @@
             .setEventPath('test>path'.toPath())
             .addMethods({
                 init: function (path) {
+                    e$.Evented.init.call(this);
                     this.setEventPath(path);
                 }
             }),
@@ -20,11 +21,55 @@
             .addTrait(e$.Evented)
             .addMethods({
                 init: function (path) {
+                    e$.Evented.init.call(this);
                     this
                         .setEventSpace(e$.EventSpace.create())
                         .setEventPath(path);
                 }
             });
+
+    test("Instantiation", function () {
+        var evented = EventedClass.create('foo>bar'.toPath());
+
+        ok(evented.hasOwnProperty('nextPayload'), "should add nextPayload property");
+        equal(typeof evented.nextPayload, 'undefined', "should set nextPayload to undefined");
+        ok(evented.hasOwnProperty('nextOriginalEvent'), "should add nextOriginalEvent property");
+        equal(typeof evented.nextOriginalEvent, 'undefined', "should set nextOriginalEvent to undefined");
+    });
+
+    test("Next payload setter", function () {
+        var payload = {},
+            evented = EventedClass.create('foo>bar'.toPath())
+                .setNextPayload(payload);
+
+        strictEqual(evented.nextPayload, payload, "should set nextPayload");
+    });
+
+    test("Clearing next payload", function () {
+        var payload = {},
+            evented = EventedClass.create('foo>bar'.toPath())
+                .setNextPayload(payload)
+                .clearNextPayload();
+
+        equal(typeof evented.nextPayload, 'undefined', "should set nextPayload to undefined");
+    });
+
+    test("Next original event setter", function () {
+        var originalEvent = {},
+            evented = EventedClass.create('foo>bar'.toPath())
+                .setNextOriginalEvent(originalEvent);
+
+        strictEqual(evented.nextOriginalEvent, originalEvent, "should set nextOriginalEvent");
+    });
+
+    test("Clearing next original event", function () {
+        var payload = {},
+            evented = EventedClass.create('foo>bar'.toPath())
+                .setNextOriginalEvent(payload)
+                .clearNextOriginalEvent();
+
+        equal(typeof evented.nextOriginalEvent, 'undefined', "should set nextOriginalEvent to undefined");
+    });
 
     test("Event space setter", function () {
         var evented = EventedClass.create('foo>bar'.toPath()),
