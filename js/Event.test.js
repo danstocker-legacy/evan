@@ -123,10 +123,11 @@
         expect(13);
 
         var originalEvent = e$.Event.create('original-event', eventSpace),
+            payload = {foo: 'bar'},
             event = e$.Event.create('test-event', eventSpace)
+                .setPayload(payload)
                 .setOriginalEvent(originalEvent),
             handledFlags = [],
-            payload = {foo: 'bar'},
             i = 0;
 
         e$.EventSpace.addMocks({
@@ -144,7 +145,7 @@
             }
         });
 
-        event.triggerSync('test>path'.toPath(), payload);
+        event.triggerSync('test>path'.toPath());
 
         deepEqual(handledFlags, [false, true], "should set handled flags as event bubbles");
 
@@ -209,26 +210,33 @@
         e$.EventSpace.removeMocks();
     });
 
-    // TODO: should test mocking
     test("Broadcasting event", function () {
+        expect(9);
+
         var triggeredPaths = [],
+            payload = {foo: "bar"},
             eventSpace = e$.EventSpace.create()
-                .subscribeTo('myEvent', 'test.event'.toPath(), function () {})
-                .subscribeTo('myEvent', 'test.event.foo'.toPath(), function () {})
-                .subscribeTo('myEvent', 'test.event.foo.bar'.toPath(), function () {})
-                .subscribeTo('myEvent', 'test.foo.bar'.toPath(), function () {})
-                .subscribeTo('myEvent', 'test.event.hello'.toPath(), function () {})
-                .subscribeTo('otherEvent', 'test.event'.toPath(), function () {})
-                .subscribeTo('otherEvent', 'test.event.foo'.toPath(), function () {}),
-            event = eventSpace.spawnEvent('myEvent');
+                .subscribeTo('my-event', 'test.event'.toPath(), function () {})
+                .subscribeTo('my-event', 'test.event.foo'.toPath(), function () {})
+                .subscribeTo('my-event', 'test.event.foo.bar'.toPath(), function () {})
+                .subscribeTo('my-event', 'test.foo.bar'.toPath(), function () {})
+                .subscribeTo('my-event', 'test.event.hello'.toPath(), function () {})
+                .subscribeTo('other-event', 'test.event'.toPath(), function () {})
+                .subscribeTo('other-event', 'test.event.foo'.toPath(), function () {}),
+            originalEvent = eventSpace.spawnEvent('original-event'),
+            event = eventSpace.spawnEvent('my-event')
+                .setOriginalEvent(originalEvent)
+                .setPayload(payload);
 
         e$.Event.addMocks({
             triggerSync: function () {
                 triggeredPaths.push(this.originalPath.toString());
+                strictEqual(this.payload, payload, "should set payload on spawned event");
+                strictEqual(this.originalEvent, originalEvent, "should set original event on spawned event");
             }
         });
 
-        event.broadcastSync('test.event'.toPath(), 'foo');
+        event.broadcastSync('test.event'.toPath());
 
         deepEqual(
             triggeredPaths,

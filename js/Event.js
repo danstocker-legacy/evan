@@ -24,34 +24,29 @@ troop.postpone(evan, 'Event', function () {
         .addPrivateMethods(/** @lends evan.Event# */{
             /**
              * Creates a new event instance and prepares it to be triggered.
-             * @param {*} payload Event payload
              * @param {sntls.Path} targetPath
              * @return {evan.Event}
              * @private
              */
-            _spawnMainBroadcastEvent: function (payload, targetPath) {
+            _spawnMainBroadcastEvent: function (targetPath) {
                 return self.create(this.eventName, this.eventSpace)
                     .setBroadcastPath(targetPath)
-                    .setTargetPath(targetPath)
-                    .setPayload(payload);
+                    .setTargetPath(targetPath);
             },
 
             /**
              * Creates a new event instance and prepares it to be broadcast.
              * Broadcast events do not bubble.
-             * @param {*} payload Custom event payload - first argument  because its bound
-             * version is used in collection mapping.
              * @param {sntls.Path} broadcastPath
              * @param {sntls.Path} targetPath
              * @return {evan.Event}
              * @private
              */
-            _spawnBroadcastEvent: function (payload, broadcastPath, targetPath) {
+            _spawnBroadcastEvent: function (broadcastPath, targetPath) {
                 return self.create(this.eventName, this.eventSpace)
                     .allowBubbling(false)
                     .setBroadcastPath(broadcastPath)
-                    .setTargetPath(targetPath)
-                    .setPayload(payload);
+                    .setTargetPath(targetPath);
             }
         })
         .addMethods(/** @lends evan.Event# */{
@@ -256,16 +251,18 @@ troop.postpone(evan, 'Event', function () {
              * Event handlers are assumed to be synchronous. Event properties change
              * between stages of bubbling, hence holding on to an event instance in an async handler
              * may not reflect the current paths and payload carried.
-             * @param {sntls.Path} targetPath Path on which to trigger event.
+             * @param {sntls.Path} [targetPath] Path on which to trigger event.
              * @param {*} [payload] Extra payload to be passed along with event to handlers.
              * @return {evan.Event}
              */
             triggerSync: function (targetPath, payload) {
                 // preparing event for trigger
                 if (targetPath) {
-                    this
-                        .setTargetPath(targetPath)
-                        .setPayload(payload);
+                    this.setTargetPath(targetPath);
+                }
+
+                if (payload) {
+                    this.setPayload(payload);
                 }
 
                 var currentPath = this.currentPath,
@@ -307,18 +304,20 @@ troop.postpone(evan, 'Event', function () {
              * @return {evan.Event}
              */
             broadcastSync: function (broadcastPath, payload) {
-                var mainEvent = this._spawnMainBroadcastEvent(payload, broadcastPath);
+                var mainEvent = this._spawnMainBroadcastEvent(broadcastPath),
+                    broadcastEvents = this.eventSpace
+                        // obtaining subscribed paths relative to broadcast path
+                        .getPathsRelativeTo(this.eventName, broadcastPath)
+                        // spawning an event for each subscribed path
+                        .passEachItemTo(this._spawnBroadcastEvent, this, 1, broadcastPath)
+                        .asType(evan.EventCollection)
+                        // adding main event
+                        .setItem('main', mainEvent);
 
                 // triggering all affected events
-                this.eventSpace
-                    // obtaining subscribed paths relative to broadcast path
-                    .getPathsRelativeTo(this.eventName, broadcastPath)
-                    // spawning an event for each subscribed path
-                    .passEachItemTo(this._spawnBroadcastEvent, this, 2, payload, broadcastPath)
-                    .asType(evan.EventCollection)
-                    // adding main event
-                    .setItem('main', mainEvent)
-                    // triggering all events
+                broadcastEvents
+                    .setPayload(payload || this.payload)
+                    .setOriginalEvent(this.originalEvent)
                     .triggerSync();
 
                 return this;
