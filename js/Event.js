@@ -158,28 +158,6 @@ troop.postpone(evan, 'Event', function () {
             },
 
             /**
-             * Resets event properties. Override in subclasses to reset additional properties
-             * after bubbling is over.
-             * @return {evan.Event}
-             */
-            reset: function () {
-                // re-setting paths
-                this.currentPath = undefined;
-                this.originalPath = undefined;
-                this.broadcastPath = undefined;
-
-                // re-setting state
-                this.originalEvent = undefined;
-                this.defaultPrevented = false;
-                this.handled = false;
-
-                // re-setting payload
-                this.payload = undefined;
-
-                return this;
-            },
-
-            /**
              * Sets whether the event can bubble
              * @param {boolean} value Bubbling flag
              * @return {evan.Event}
@@ -315,9 +293,6 @@ troop.postpone(evan, 'Event', function () {
                         }
                     }
                 }
-
-                // resetting path properties
-                this.reset();
 
                 return this;
             },

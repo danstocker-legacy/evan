@@ -120,38 +120,40 @@
     });
 
     test("Triggering event", function () {
-        expect(10);
+        expect(13);
 
-        var event = e$.Event.create('testEvent', eventSpace),
+        var originalEvent = e$.Event.create('original-event', eventSpace),
+            event = e$.Event.create('test-event', eventSpace)
+                .setOriginalEvent(originalEvent),
             handledFlags = [],
+            payload = {foo: 'bar'},
             i = 0;
 
         e$.EventSpace.addMocks({
             callHandlers: function (event) {
-                equal(event.eventName, 'testEvent',
+                equal(event.eventName, 'test-event',
                     "should call handlers with correct event name");
                 equal(event.originalPath.toString(), 'test>path',
                     "should call handlers with correct original event path,");
                 equal(event.currentPath.toString(), ['test>path', 'test'][i++],
                     "should call handlers with correct current event path");
-                deepEqual(event.payload, {foo: 'bar'},
+                strictEqual(event.payload, payload,
                     "should call handlers with correct payload");
 
                 handledFlags.push(event.handled);
             }
         });
-        e$.Event.addMocks({
-            reset: function () {
-                strictEqual(this, event, "should reset event");
-            }
-        });
 
-        event.triggerSync('test>path'.toPath(), {foo: 'bar'});
+        event.triggerSync('test>path'.toPath(), payload);
 
-        deepEqual(handledFlags, [false, true], "should set handled flags");
+        deepEqual(handledFlags, [false, true], "should set handled flags as event bubbles");
+
+        equal(event.originalPath.toString(), 'test>path', "should leave original path intact");
+        deepEqual(event.currentPath.asArray, [], "should leave current path empty (traversed)");
+        strictEqual(event.payload, payload, "should leave payload intact");
+        strictEqual(event.originalEvent, originalEvent, "should leave original event intact");
 
         e$.EventSpace.removeMocks();
-        e$.Event.removeMocks();
     });
 
     test("Triggering with stop-propagation", function () {
