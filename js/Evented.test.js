@@ -261,7 +261,27 @@
         e$.EventSpace.removeMocks();
     });
 
-    // TODO: Test for payload as well.
+    test("Spawning event", function () {
+        var originalEvent = {},
+            payload = {},
+            customPayload = {},
+            evented = EventedClass.create('test>path>foo>bar'.toPath())
+                .setNextPayload(payload)
+                .setNextOriginalEvent(originalEvent),
+            event;
+
+        event = evented.spawnEvent('event-name');
+
+        ok(event.isA(e$.Event), "should return an Event instance");
+        equal(event.eventName, 'event-name', "should set event name");
+        strictEqual(event.payload, payload, "should set payload to Evented.nextPayload");
+        strictEqual(event.originalEvent, originalEvent, "should set originalEvent to Evented.nextOriginalEvent");
+
+        event = evented.spawnEvent('event-name', customPayload);
+
+        strictEqual(event.payload, customPayload, "should set payload to customPayload when specified");
+    });
+
     test("Triggering events", function () {
         var triggeredPaths = [],
             evented = EventedStaticClass.create('test>path>foo'.toPath());
@@ -283,7 +303,6 @@
         evented.unsubscribeFrom('myEvent');
     });
 
-    // TODO: Test for payload as well.
     test("Broadcasting", function () {
         var triggeredPaths,
             evented1 = EventedStaticClass.create('test>path>foo'.toPath()),
