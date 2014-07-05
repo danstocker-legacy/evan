@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: namespace.js</title>
+    <title>JSDoc: Source: globals/eventSpace.js</title>
     
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Source: namespace.js</h1>
+    <h1 class="page-title">Source: globals/eventSpace.js</h1>
     
     
 
@@ -25,16 +25,16 @@
     
     <section>
         <article>
-            <pre class="prettyprint source"><code>/**
- * Top-Level Library Namespace
- */
-/*global require */
-/** @namespace */
-var evan = {},
-    e$ = evan,
-    dessert = dessert || require('dessert'),
-    troop = troop || require('troop'),
-    sntls = sntls || require('sntls');
+            <pre class="prettyprint source"><code>/*global troop, evan */
+troop.postpone(evan, 'eventSpace', function () {
+    "use strict";
+
+    /**
+     * Global, shared event space.
+     * @type {evan.EventSpace}
+     */
+    evan.eventSpace = evan.EventSpace.create();
+});
 </code></pre>
         </article>
     </section>

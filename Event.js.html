@@ -36,8 +36,8 @@ troop.postpone(evan, 'Event', function () {
      * Instantiates class.
      * @name evan.Event.create
      * @function
-     * @param {evan.EventSpace} eventSpace Event space associated with event
      * @param {string} eventName Event name
+     * @param {evan.EventSpace} eventSpace Event space associated with event
      * @return {evan.Event}
      */
 
@@ -51,56 +51,38 @@ troop.postpone(evan, 'Event', function () {
         .addPrivateMethods(/** @lends evan.Event# */{
             /**
              * Creates a new event instance and prepares it to be triggered.
-             * @param {*} data Custom event data
              * @param {sntls.Path} targetPath
              * @return {evan.Event}
              * @private
              */
-            _spawnMainBroadcastEvent: function (data, targetPath) {
-                return self.create(this.eventSpace, this.eventName)
+            _spawnMainBroadcastEvent: function (targetPath) {
+                return self.create(this.eventName, this.eventSpace)
                     .setBroadcastPath(targetPath)
-                    .setTargetPath(targetPath)
-                    .setData(data);
+                    .setTargetPath(targetPath);
             },
 
             /**
              * Creates a new event instance and prepares it to be broadcast.
              * Broadcast events do not bubble.
-             * @param {*} data Custom event data - first argument  because its bound
-             * version is used in collection mapping.
              * @param {sntls.Path} broadcastPath
              * @param {sntls.Path} targetPath
              * @return {evan.Event}
              * @private
              */
-            _spawnBroadcastEvent: function (data, broadcastPath, targetPath) {
-                return self.create(this.eventSpace, this.eventName)
+            _spawnBroadcastEvent: function (broadcastPath, targetPath) {
+                return self.create(this.eventName, this.eventSpace)
                     .allowBubbling(false)
                     .setBroadcastPath(broadcastPath)
-                    .setTargetPath(targetPath)
-                    .setData(data);
-            },
-
-            /**
-             * Resets event properties
-             * @return {evan.Event}
-             * @private
-             */
-            _reset: function () {
-                this.currentPath = undefined;
-                this.originalPath = undefined;
-                this.broadcastPath = undefined;
-                this.data = undefined;
-
-                return this;
+                    .setTargetPath(targetPath);
             }
         })
         .addMethods(/** @lends evan.Event# */{
             /**
-             * @param {evan.EventSpace} eventSpace Event space associated with event
              * @param {string} eventName Event name
+             * @param {evan.EventSpace} eventSpace Event space associated with event
+             * @ignore
              */
-            init: function (eventSpace, eventName) {
+            init: function (eventName, eventSpace) {
                 dessert
                     .isEventSpace(eventSpace)
                     .isString(eventName);
@@ -124,10 +106,28 @@ troop.postpone(evan, 'Event', function () {
                 this.canBubble = true;
 
                 /**
-                 * Custom user data to be carried by the event
+                 * Evan event or DOM event that led to triggering the current event.
+                 * @type {evan.Event|*}
+                 */
+                this.originalEvent = undefined;
+
+                /**
+                 * Whether the event's default behavior was prevented.
+                 * @type {boolean}
+                 */
+                this.defaultPrevented = false;
+
+                /**
+                 * Whether event was handled. (A subscribed handler ran.)
+                 * @type {boolean}
+                 */
+                this.handled = false;
+
+                /**
+                 * Custom payload to be carried by the event
                  * @type {*}
                  */
-                this.data = undefined;
+                this.payload = undefined;
 
                 /**
                  * Path reflecting current state of bubbling
@@ -150,22 +150,31 @@ troop.postpone(evan, 'Event', function () {
             },
 
             /**
-             * Clones event and sets its currentPath property to
+             * Clones event and optionally sets its currentPath property to
              * the one specified by the argument.
+             * Override in subclasses to clone additional properties.
              * @param {sntls.Path} [currentPath]
              * @return {evan.Event}
              */
             clone: function (currentPath) {
                 dessert.isPathOptional(currentPath, "Invalid current event path");
 
-                var /**evan.Event*/ result = self.create(this.eventSpace, this.eventName);
+                var result = this.getBase().create(this.eventName, this.eventSpace);
 
+                // transferring paths
                 result.originalPath = this.originalPath;
                 result.currentPath = currentPath ?
                     currentPath.clone() :
                     this.currentPath.clone();
                 result.broadcastPath = this.broadcastPath;
-                result.data = this.data;
+
+                // transferring event state
+                result.originalEvent = this.originalEvent;
+                result.defaultPrevented = this.defaultPrevented;
+                result.handled = this.handled;
+
+                // transferring load
+                result.payload = this.payload;
 
                 return result;
             },
@@ -178,6 +187,56 @@ troop.postpone(evan, 'Event', function () {
             allowBubbling: function (value) {
                 dessert.isBoolean(value);
                 this.canBubble = value;
+                return this;
+            },
+
+            /**
+             * Sets original event that led to triggering the current event.
+             * @param {even.Event|*} originalEvent
+             * @returns {evan.Event}
+             */
+            setOriginalEvent: function (originalEvent) {
+                this.originalEvent = originalEvent;
+                return this;
+            },
+
+            /**
+             * Retrieves event from chain of original events by type.
+             * @returns {evan.Event|*} Original event matching the specified type.
+             */
+            getOriginalEventByType: function (eventType) {
+                var that = this.originalEvent,
+                    result;
+
+                if (typeof eventType === 'function') {
+                    while (that) {
+                        if (that instanceof eventType) {
+                            result = that;
+                            break;
+                        } else {
+                            that = that.originalEvent;
+                        }
+                    }
+                } else if (troop.Base.isBaseOf(eventType)) {
+                    while (that) {
+                        if (eventType.isBaseOf(that)) {
+                            result = that;
+                            break;
+                        } else {
+                            that = that.originalEvent;
+                        }
+                    }
+                }
+
+                return result;
+            },
+
+            /**
+             * Sets flag for default behavior prevention to true.
+             * @returns {evan.Event}
+             */
+            preventDefault: function () {
+                this.defaultPrevented = true;
                 return this;
             },
 
@@ -205,12 +264,12 @@ troop.postpone(evan, 'Event', function () {
             },
 
             /**
-             * Assigns custom data to the event.
-             * @param {*} [data] Extra data to be passed along with event to handlers.
+             * Sets event payload. Payload is a reference carried by the event as it bubbles.
+             * @param {*} [payload]
              * @return {evan.Event}
              */
-            setData: function (data) {
-                this.data = data;
+            setPayload: function (payload) {
+                this.payload = payload;
                 return this;
             },
 
@@ -218,17 +277,19 @@ troop.postpone(evan, 'Event', function () {
              * Triggers event.
              * Event handlers are assumed to be synchronous. Event properties change
              * between stages of bubbling, hence holding on to an event instance in an async handler
-             * may not reflect the current paths and data carried.
-             * @param {sntls.Path} targetPath Path on which to trigger event.
-             * @param {*} [data] Extra data to be passed along with event to handlers.
+             * may not reflect the current paths and payload carried.
+             * @param {sntls.Path} [targetPath] Path on which to trigger event.
+             * @param {*} [payload] Extra payload to be passed along with event to handlers.
              * @return {evan.Event}
              */
-            triggerSync: function (targetPath, data) {
+            triggerSync: function (targetPath, payload) {
                 // preparing event for trigger
                 if (targetPath) {
-                    this
-                        .setTargetPath(targetPath)
-                        .setData(data);
+                    this.setTargetPath(targetPath);
+                }
+
+                if (payload) {
+                    this.setPayload(payload);
                 }
 
                 var currentPath = this.currentPath,
@@ -246,15 +307,16 @@ troop.postpone(evan, 'Event', function () {
                     while (currentPath.asArray.length) {
                         if (eventSpace.callHandlers(this) === false) {
                             // bubbling was deliberately stopped
+                            // getting out of the bubbling loop
                             break;
                         } else {
+                            // setting handled flag
+                            this.handled = true;
+
                             currentPath.asArray.pop();
                         }
                     }
                 }
-
-                // resetting path properties
-                this._reset();
 
                 return this;
             },
@@ -265,22 +327,24 @@ troop.postpone(evan, 'Event', function () {
              * on the specified broadcast path. It is necessary for delegates to react to
              * broadcasts.
              * @param {sntls.Path} broadcastPath Target root for broadcast
-             * @param {*} [data] Extra data to be passed along with event to handlers.
+             * @param {*} [payload] Extra payload to be passed along with event to handlers.
              * @return {evan.Event}
              */
-            broadcastSync: function (broadcastPath, data) {
-                var mainEvent = this._spawnMainBroadcastEvent(data, broadcastPath);
+            broadcastSync: function (broadcastPath, payload) {
+                var mainEvent = this._spawnMainBroadcastEvent(broadcastPath),
+                    broadcastEvents = this.eventSpace
+                        // obtaining subscribed paths relative to broadcast path
+                        .getPathsRelativeTo(this.eventName, broadcastPath)
+                        // spawning an event for each subscribed path
+                        .passEachItemTo(this._spawnBroadcastEvent, this, 1, broadcastPath)
+                        .asType(evan.EventCollection)
+                        // adding main event
+                        .setItem('main', mainEvent);
 
                 // triggering all affected events
-                this.eventSpace
-                    // obtaining subscribed paths relative to broadcast path
-                    .getPathsRelativeTo(this.eventName, broadcastPath)
-                    // spawning an event for each subscribed path
-                    .passEachItemTo(this._spawnBroadcastEvent, this, 2, data, broadcastPath)
-                    .asType(evan.EventCollection)
-                    // adding main event
-                    .setItem('main', mainEvent)
-                    // triggering all events
+                broadcastEvents
+                    .setPayload(payload || this.payload)
+                    .setOriginalEvent(this.originalEvent)
                     .triggerSync();
 
                 return this;
@@ -314,7 +378,7 @@ troop.postpone(evan, 'EventCollection', function () {
      */
 
     /**
-     * @name evan.EventCollection#data
+     * @name evan.EventCollection#payload
      * @ignore
      */
 
@@ -371,7 +435,7 @@ troop.postpone(evan, 'EventCollection', function () {
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Sat Jul 20 2013 16:39:29 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Sat Jul 05 2014 11:06:03 GMT+0100 (BST)
 </footer>
 
 <script> prettyPrint(); </script>

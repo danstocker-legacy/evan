@@ -31,7 +31,7 @@ troop.postpone(evan, 'Evented', function () {
 
     /**
      * Trait.
-     * Classes with this trait are may trigger and capture
+     * Classes with this trait may trigger and capture
      * events on a specified event space directly.
      * @class evan.Evented
      * @extends troop.Base
@@ -39,30 +39,85 @@ troop.postpone(evan, 'Evented', function () {
     evan.Evented = troop.Base.extend()
         .addMethods(/** @lends evan.Evented# */{
             /**
-             * Initializes evented instance by assigning an event space
-             * in which to operate.
-             * Event space may be both class level or instance level,
-             * hence the instance level assignment.
-             * @param {evan.EventSpace} eventSpace Event space the listener is working with.
-             * @param {sntls.Path} [eventPath] Path representing this instance in the event space.
+             * Call from init of host class.
+             */
+            init: function () {
+                /**
+                 * Payload to be set on next trigger(s).
+                 * @type {*}
+                 */
+                this.nextPayload = undefined;
+
+                /**
+                 * Original event to be set on next trigger(s).
+                 * @type {evan.Event|*}
+                 */
+                this.nextOriginalEvent = undefined;
+            },
+
+            /**
+             * Sets payload for next event triggered.
+             * @param {*} nextPayload
              * @returns {evan.Evented}
              */
-            initEvented: function (eventSpace, eventPath) {
-                dessert
-                    .isEventSpace(eventSpace, "Invalid event space")
-                    .isPathOptional(eventPath, "invalid event path");
+            setNextPayload: function (nextPayload) {
+                this.nextPayload = nextPayload;
+                return this;
+            },
 
-                /**
-                 * Event space associated with instance or class.
-                 * @type {evan.EventSpace}
-                 */
+            /**
+             * Clears payload for next event triggered.
+             * @returns {evan.Evented}
+             */
+            clearNextPayload: function () {
+                this.nextPayload = undefined;
+                return this;
+            },
+
+            /**
+             * Sets original event for next event triggered.
+             * @param {evan.Event|*} nextOriginalEvent
+             * @returns {evan.Evented}
+             */
+            setNextOriginalEvent: function (nextOriginalEvent) {
+                this.nextOriginalEvent = nextOriginalEvent;
+                return this;
+            },
+
+            /**
+             * Clears original event for next event triggered.
+             * @returns {evan.Evented}
+             */
+            clearNextOriginalEvent: function () {
+                this.nextOriginalEvent = undefined;
+                return this;
+            },
+
+            /**
+             * Sets event space on current class or instance.
+             * @param {evan.EventSpace} eventSpace
+             * @returns {evan.Evented}
+             * @memberOf {evan.Evented}
+             */
+            setEventSpace: function (eventSpace) {
+                dessert.isEventSpace(eventSpace, "Invalid event space");
                 this.eventSpace = eventSpace;
+                return this;
+            },
 
-                /**
-                 * Event path assigned to the current instance or class
-                 * in the context of the current event space.
-                 * @type {sntls.Path}
-                 */
+            /**
+             * Sets event path for the current class or instance.
+             * @param {sntls.Path} eventPath
+             * @returns {evan.Evented}
+             * @memberOf {evan.Evented}
+             */
+            setEventPath: function (eventPath) {
+                dessert
+                    .isPath(eventPath, "Invalid event path")
+                    .assert(
+                        !this.eventPath || eventPath.isRelativeTo(this.eventPath),
+                        "Specified event path is not relative to static event path");
+
                 this.eventPath = eventPath;
 
                 return this;
@@ -120,12 +175,22 @@ troop.postpone(evan, 'Evented', function () {
              * Shorthand for **triggering** an event in the event space
              * associated with the instance / class.
              * @param {string} eventName
-             * @param {*} [data]
+             * @param {*} [payload] Payload to be set on triggered event. Overrides nextPayload property.
              * @return {evan.Evented}
              */
-            triggerSync: function (eventName, data) {
-                this.eventSpace.spawnEvent(eventName)
-                    .triggerSync(this.eventPath, data);
+            triggerSync: function (eventName, payload) {
+                var event = this.eventSpace.spawnEvent(eventName),
+                    nextPayload = payload || this.nextPayload;
+
+                if (nextPayload) {
+                    event.setPayload(nextPayload);
+                }
+
+                if (this.nextOriginalEvent) {
+                    event.setOriginalEvent(this.nextOriginalEvent);
+                }
+
+                event.triggerSync(this.eventPath, nextPayload);
                 return this;
             },
 
@@ -133,12 +198,22 @@ troop.postpone(evan, 'Evented', function () {
              * Shorthand for **broadcasting** an event in the event space
              * associated with the instance / class.
              * @param {string} eventName
-             * @param {*} [data]
+             * @param {*} [payload] Payload to be set on triggered event. Overrides nextPayload property.
              * @return {evan.Evented}
              */
-            broadcastSync: function (eventName, data) {
-                this.eventSpace.spawnEvent(eventName)
-                    .broadcastSync(this.eventPath, data);
+            broadcastSync: function (eventName, payload) {
+                var event = this.eventSpace.spawnEvent(eventName),
+                    nextPayload = payload || this.nextPayload;
+
+                if (nextPayload) {
+                    event.setPayload(nextPayload);
+                }
+
+                if (this.nextOriginalEvent) {
+                    event.setPayload(this.nextOriginalEvent);
+                }
+
+                event.broadcastSync(this.eventPath, nextPayload);
                 return this;
             }
         });
@@ -159,7 +234,7 @@ troop.postpone(evan, 'Evented', function () {
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Sat Jul 20 2013 16:39:29 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Sat Jul 05 2014 11:06:03 GMT+0100 (BST)
 </footer>
 
 <script> prettyPrint(); </script>
