@@ -261,6 +261,7 @@
         e$.EventSpace.removeMocks();
     });
 
+    // TODO: Test for payload as well.
     test("Triggering events", function () {
         var triggeredPaths = [],
             evented = EventedStaticClass.create('test>path>foo'.toPath());
@@ -282,6 +283,7 @@
         evented.unsubscribeFrom('myEvent');
     });
 
+    // TODO: Test for payload as well.
     test("Broadcasting", function () {
         var triggeredPaths,
             evented1 = EventedStaticClass.create('test>path>foo'.toPath()),

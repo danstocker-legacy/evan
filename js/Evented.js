@@ -148,21 +148,22 @@ troop.postpone(evan, 'Evented', function () {
              * Shorthand for **triggering** an event in the event space
              * associated with the instance / class.
              * @param {string} eventName
-             * @param {*} [payload]
+             * @param {*} [payload] Payload to be set on triggered event. Overrides nextPayload property.
              * @return {evan.Evented}
              */
             triggerSync: function (eventName, payload) {
-                var event = this.eventSpace.spawnEvent(eventName);
+                var event = this.eventSpace.spawnEvent(eventName),
+                    nextPayload = payload || this.nextPayload;
 
-                if (this.nextPayload) {
-                    event.setPayload(this.nextPayload);
+                if (nextPayload) {
+                    event.setPayload(nextPayload);
                 }
 
                 if (this.nextOriginalEvent) {
                     event.setOriginalEvent(this.nextOriginalEvent);
                 }
 
-                event.triggerSync(this.eventPath, payload);
+                event.triggerSync(this.eventPath, nextPayload);
                 return this;
             },
 
@@ -170,21 +171,22 @@ troop.postpone(evan, 'Evented', function () {
              * Shorthand for **broadcasting** an event in the event space
              * associated with the instance / class.
              * @param {string} eventName
-             * @param {*} [payload]
+             * @param {*} [payload] Payload to be set on triggered event. Overrides nextPayload property.
              * @return {evan.Evented}
              */
             broadcastSync: function (eventName, payload) {
-                var event = this.eventSpace.spawnEvent(eventName);
+                var event = this.eventSpace.spawnEvent(eventName),
+                    nextPayload = payload || this.nextPayload;
 
-                if (this.nextPayload) {
-                    event.setPayload(this.nextPayload);
+                if (nextPayload) {
+                    event.setPayload(nextPayload);
                 }
 
                 if (this.nextOriginalEvent) {
                     event.setPayload(this.nextOriginalEvent);
                 }
 
-                event.broadcastSync(this.eventPath, payload);
+                event.broadcastSync(this.eventPath, nextPayload);
                 return this;
             }
         });
