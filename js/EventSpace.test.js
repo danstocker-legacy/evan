@@ -371,17 +371,20 @@
 
     test("Relative path query", function () {
         var eventSpace = e$.EventSpace.create()
-            .subscribeTo('myEvent', 'test>event'.toPath(), function () {})
-            .subscribeTo('myEvent', 'test>event>foo'.toPath(), function () {})
-            .subscribeTo('myEvent', 'test>event>foo>bar'.toPath(), function () {})
-            .subscribeTo('myEvent', 'test>event>|>baz'.toQuery(), function () {})
-            .subscribeTo('myEvent', 'test>foo>bar'.toPath(), function () {})
-            .subscribeTo('myEvent', 'test>event>hello'.toPath(), function () {})
-            .subscribeTo('otherEvent', 'test>event'.toPath(), function () {})
-            .subscribeTo('otherEvent', 'test>event>foo'.toPath(), function () {});
+                .subscribeTo('myEvent', 'test>event'.toPath(), function () {})
+                .subscribeTo('myEvent', 'test>event>foo'.toPath(), function () {})
+                .subscribeTo('myEvent', 'test>event>foo>bar'.toPath(), function () {})
+                .subscribeTo('myEvent', 'test>event>|>baz'.toQuery(), function () {})
+                .subscribeTo('myEvent', 'test>foo>bar'.toPath(), function () {})
+                .subscribeTo('myEvent', 'test>event>hello'.toPath(), function () {})
+                .subscribeTo('otherEvent', 'test>event'.toPath(), function () {})
+                .subscribeTo('otherEvent', 'test>event>foo'.toPath(), function () {}),
+            result;
 
+        result = eventSpace.getPathsRelativeTo('myEvent', 'test>event'.toPath());
+        ok(result.isA(e$.PathCollection), "should return PathCollection instance");
         deepEqual(
-            eventSpace.getPathsRelativeTo('myEvent', 'test>event'.toPath()).callOnEachItem('toString').items,
+            result.callOnEachItem('toString').items,
             [
                 'test>event>foo',
                 'test>event>foo>bar',
@@ -391,14 +394,16 @@
             "should fetch paths and queries for specified event, relative to the specified path (pass 1)"
         );
 
+        result = eventSpace.getPathsRelativeTo('myEvent', 'test>foo'.toPath());
         deepEqual(
-            eventSpace.getPathsRelativeTo('myEvent', 'test>foo'.toPath()).callOnEachItem('toString').items,
+            result.callOnEachItem('toString').items,
             ['test>foo>bar'],
             "should fetch paths and queries for specified event, relative to the specified path (pass 2)"
         );
 
+        result = eventSpace.getPathsRelativeTo('otherEvent', 'test>event'.toPath());
         deepEqual(
-            eventSpace.getPathsRelativeTo('otherEvent', 'test>event'.toPath()).callOnEachItem('toString').items,
+            result.callOnEachItem('toString').items,
             ['test>event>foo'],
             "should fetch paths and queries for specified event, relative to the specified path (pass 3)"
         );
