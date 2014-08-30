@@ -404,6 +404,16 @@
         );
     });
 
+    test("Relative path query w/ no subscriptions", function () {
+        var eventSpace = e$.EventSpace.create();
+
+        deepEqual(
+            eventSpace.getPathsRelativeTo('myEvent', 'test>event'.toPath()).items,
+            [],
+            "should fetch empty path collection"
+        );
+    });
+
     // TODO: Why is this here and not in Event?
     test("Broadcasting with delegation", function () {
         var eventSpace = e$.EventSpace.create(),

@@ -248,15 +248,24 @@ troop.postpone(evan, 'EventSpace', function () {
              * Question is which lib/class should delegate the method.
              */
             getPathsRelativeTo: function (eventName, path) {
-                return /** @type evan.PathCollection */ this.eventRegistry
-                    // obtaining all paths associated with event name
-                    // node holds an OrderedStringList
-                    .getNode([eventName, 'paths'].toPath())
-                    // querying collection of strings that are relative to `path`
-                    .getRangeByPrefixAsHash(path.toString(), true)
-                    .toStringCollection()
-                    // converting them to a collection of paths
-                    .toPathOrQuery().asType(evan.PathCollection);
+                // obtaining all paths associated with event name
+                // node holds an OrderedStringList
+                var paths = this.eventRegistry
+                    .getNode([eventName, 'paths'].toPath());
+
+                if (paths) {
+                    // there are subscriptions matching eventName
+                    return /** @type evan.PathCollection */paths
+                        // querying collection of strings that are relative to `path`
+                        .getRangeByPrefixAsHash(path.toString(), true)
+                        .toStringCollection()
+                        // converting them to a collection of paths
+                        .toPathOrQuery().asType(evan.PathCollection);
+                } else {
+                    // no subscriptions match eventName
+                    // returning empty path collection
+                    return evan.PathCollection.create([]);
+                }
             }
         });
 });
