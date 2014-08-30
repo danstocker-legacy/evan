@@ -81,12 +81,12 @@
     });
 
     test("Event path setter", function () {
-        var evented = EventedClass.create('foo>bar'.toPath()),
+        var evented = EventedClass.create('test>path'.toPath()),
             eventPath = 'foo>bar>baz'.toPath();
 
         evented.setEventPath(eventPath);
 
-        strictEqual(evented.eventPath, eventPath, "should set event space");
+        strictEqual(evented.eventPath, eventPath, "should set event path");
     });
 
     test("Relative event path setter", function () {

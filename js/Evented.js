@@ -85,10 +85,12 @@ troop.postpone(evan, 'Evented', function () {
              * @memberOf {evan.Evented}
              */
             setEventPath: function (eventPath) {
+                var baseEventPath = this.getBase().eventPath;
+
                 dessert
                     .isPath(eventPath, "Invalid event path")
                     .assert(
-                        !this.eventPath || eventPath.isRelativeTo(this.eventPath),
+                        !baseEventPath || eventPath.isRelativeTo(baseEventPath),
                         "Specified event path is not relative to static event path");
 
                 this.eventPath = eventPath;
