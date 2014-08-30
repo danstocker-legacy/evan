@@ -222,15 +222,20 @@ troop.postpone(evan, 'EventSpace', function () {
                         event.currentPath.toString(),
                         '|'.toKVP()
                     ].toQuery(),
-                    result = true;
+                    handlers = this.eventRegistry
+                        .queryValuesAsHash(handlersQuery)
+                        .toCollection(),
+                    result = handlers.getKeyCount();
 
-                this.eventRegistry.queryValuesAsHash(handlersQuery)
-                    .toCollection()
-                    .forEachItem(function (handler) {
-                        // stopping iteration when handler returns false
-                        result = handler.call(that, event, event.payload);
-                        return result;
-                    });
+                handlers.forEachItem(function (handler) {
+                    // stopping iteration when handler returns false
+                    if (handler.call(that, event, event.payload) === false) {
+                        result = false;
+                        return false;
+                    } else {
+                        return true;
+                    }
+                });
 
                 return result;
             },

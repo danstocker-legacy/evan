@@ -142,6 +142,9 @@
                     "should call handlers with correct payload");
 
                 handledFlags.push(event.handled);
+
+                // emulating that one handler was run
+                return 1;
             }
         });
 

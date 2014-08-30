@@ -266,7 +266,8 @@ troop.postpone(evan, 'Event', function () {
                 }
 
                 var currentPath = this.currentPath,
-                    eventSpace = this.eventSpace;
+                    eventSpace = this.eventSpace,
+                    handlerCount;
 
                 dessert.assert(currentPath, "Event is not ready to be triggered");
 
@@ -278,14 +279,16 @@ troop.postpone(evan, 'Event', function () {
                 } else {
                     // bubbling and calling handlers
                     while (currentPath.asArray.length) {
-                        if (eventSpace.callHandlers(this) === false) {
+                        handlerCount = eventSpace.callHandlers(this);
+                        if (handlerCount === false) {
                             // bubbling was deliberately stopped
                             // getting out of the bubbling loop
                             break;
                         } else {
-                            // setting handled flag
-                            this.handled = true;
-
+                            if (handlerCount > 0) {
+                                // setting handled flag
+                                this.handled = true;
+                            }
                             currentPath.asArray.pop();
                         }
                     }

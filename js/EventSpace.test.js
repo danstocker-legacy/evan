@@ -338,12 +338,10 @@
     test("Calling handlers for event", function () {
         expect(3);
 
-        var expectedResult = {},
-            eventSpace = e$.EventSpace.create()
+        var eventSpace = e$.EventSpace.create()
                 .subscribeTo('myEvent', 'test>event', function (event, data) {
                     strictEqual(event, myEvent, "should call handler with spawned event");
                     strictEqual(data, event.payload, "should call handler with payload set on event");
-                    return expectedResult;
                 }),
             myEvent = eventSpace.spawnEvent('myEvent'),
             result;
@@ -352,7 +350,7 @@
         myEvent.currentPath = myEvent.originalPath.clone();
 
         result = eventSpace.callHandlers(myEvent);
-        strictEqual(result, expectedResult, "should return what the last handler returned");
+        strictEqual(result, 1, "should return number of handlers run");
     });
 
     test("Calling handlers with stop-propagation", function () {
