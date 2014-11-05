@@ -28,58 +28,6 @@
                 }
             });
 
-    test("Instantiation", function () {
-        var evented = EventedClass.create('foo>bar'.toPath());
-
-        ok(evented.hasOwnProperty('nextPayload'), "should add nextPayload property");
-        equal(typeof evented.nextPayload, 'undefined', "should set nextPayload to undefined");
-        ok(evented.hasOwnProperty('nextOriginalEvent'), "should add nextOriginalEvent property");
-        equal(typeof evented.nextOriginalEvent, 'undefined', "should set nextOriginalEvent to undefined");
-    });
-
-    test("Next payload setter", function () {
-        var payload = {},
-            evented = EventedClass.create('foo>bar'.toPath())
-                .setNextPayload(payload);
-
-        strictEqual(evented.nextPayload, payload, "should set nextPayload");
-    });
-
-    test("Clearing next payload", function () {
-        var payload = {},
-            evented = EventedClass.create('foo>bar'.toPath())
-                .setNextPayload(payload)
-                .clearNextPayload();
-
-        equal(typeof evented.nextPayload, 'undefined', "should set nextPayload to undefined");
-    });
-
-    test("Next original event setter", function () {
-        var originalEvent = {},
-            evented = EventedClass.create('foo>bar'.toPath())
-                .setNextOriginalEvent(originalEvent);
-
-        strictEqual(evented.nextOriginalEvent, originalEvent, "should set nextOriginalEvent");
-    });
-
-    test("Clearing next original event", function () {
-        var payload = {},
-            evented = EventedClass.create('foo>bar'.toPath())
-                .setNextOriginalEvent(payload)
-                .clearNextOriginalEvent();
-
-        equal(typeof evented.nextOriginalEvent, 'undefined', "should set nextOriginalEvent to undefined");
-    });
-
-    test("Event space setter", function () {
-        var evented = EventedClass.create('foo>bar'.toPath()),
-            eventSpace = e$.EventSpace.create();
-
-        evented.setEventSpace(eventSpace);
-
-        strictEqual(evented.eventSpace, eventSpace, "should set event space");
-    });
-
     test("Event path setter", function () {
         var evented = EventedClass.create('test>path'.toPath()),
             eventPath = 'foo>bar>baz'.toPath();
@@ -262,24 +210,17 @@
     });
 
     test("Spawning event", function () {
-        var originalEvent = {},
-            payload = {},
-            customPayload = {},
-            evented = EventedClass.create('test>path>foo>bar'.toPath())
-                .setNextPayload(payload)
-                .setNextOriginalEvent(originalEvent),
-            event;
+        expect(1);
 
-        event = evented.spawnEvent('event-name');
+        var evented = EventedClass.create('test>path>foo>bar'.toPath());
 
-        ok(event.isA(e$.Event), "should return an Event instance");
-        equal(event.eventName, 'event-name', "should set event name");
-        strictEqual(event.payload, payload, "should set payload to Evented.nextPayload");
-        strictEqual(event.originalEvent, originalEvent, "should set originalEvent to Evented.nextOriginalEvent");
+        evented.addMocks({
+            _prepareEvent: function (event) {
+                strictEqual(event.eventSpace, evented.eventSpace, "should set event space of spawned event");
+            }
+        });
 
-        event = evented.spawnEvent('event-name', customPayload);
-
-        strictEqual(event.payload, customPayload, "should set payload to customPayload when specified");
+        evented.spawnEvent('event-name');
     });
 
     test("Triggering events", function () {

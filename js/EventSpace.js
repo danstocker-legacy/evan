@@ -2,6 +2,10 @@
 troop.postpone(evan, 'EventSpace', function () {
     "use strict";
 
+    var base = troop.Base,
+        self = base.extend()
+            .addTrait(evan.EventSpawner);
+
     /**
      * Instantiates class.
      * @name evan.EventSpace.create
@@ -13,8 +17,9 @@ troop.postpone(evan, 'EventSpace', function () {
      * Events traverse within a confined event space.
      * @class evan.EventSpace
      * @extends troop.Base
+     * @extends evan.EventSpawner
      */
-    evan.EventSpace = troop.Base.extend()
+    evan.EventSpace = self
         .addPrivateMethods(/** @lends evan.EventSpace */{
             /**
              * Generates a stub for event handlers. (An empty array)
@@ -51,7 +56,7 @@ troop.postpone(evan, 'EventSpace', function () {
              * @param {string} eventName Event name
              * @return {evan.Event} New event instance
              */
-            spawnEvent: function (eventName) {
+            spawnPlainEvent: function (eventName) {
                 return evan.Event.create(eventName, this);
             },
 

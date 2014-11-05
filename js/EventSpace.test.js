@@ -11,20 +11,17 @@
     });
 
     test("Spawning event", function () {
-        expect(2);
+        expect(1);
 
         var eventSpace = e$.EventSpace.create();
 
-        e$.Event.addMocks({
-            create: function (eventName, es) {
-                strictEqual(es, eventSpace, "should create event instance in current event space");
-                equal(eventName, 'myEvent', "should create event instance with specified name");
+        eventSpace.addMocks({
+            _prepareEvent: function (event) {
+                strictEqual(event.eventSpace, eventSpace, "should set event space of spawned event");
             }
         });
 
         eventSpace.spawnEvent('myEvent');
-
-        e$.Event.removeMocks();
     });
 
     test("Subscription", function () {
