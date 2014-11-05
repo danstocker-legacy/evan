@@ -57,8 +57,8 @@ troop.postpone(evan, 'Event', function () {
              */
             init: function (eventName, eventSpace) {
                 dessert
-                    .isEventSpace(eventSpace)
-                    .isString(eventName);
+                    .isString(eventName, "Invalid event name")
+                    .isEventSpace(eventSpace, "Invalid event space");
 
                 /**
                  * @type {string}
@@ -158,7 +158,7 @@ troop.postpone(evan, 'Event', function () {
              * @return {evan.Event}
              */
             allowBubbling: function (value) {
-                dessert.isBoolean(value);
+                dessert.isBoolean(value, "Invalid bubbling flag");
                 this.canBubble = value;
                 return this;
             },
@@ -385,10 +385,12 @@ troop.postpone(evan, 'EventCollection', function () {
     "use strict";
 
     dessert.addTypes(/** @lends dessert */{
+        /** @param {evan.Event} expr */
         isEvent: function (expr) {
             return evan.Event.isBaseOf(expr);
         },
 
+        /** @param {evan.Event} expr */
         isEventOptional: function (expr) {
             return typeof expr === 'undefined' ||
                    evan.Event.isBaseOf(expr);
