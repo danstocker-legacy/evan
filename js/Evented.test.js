@@ -1,29 +1,29 @@
-/*global troop, sntls, e$, module, test, expect, ok, equal, strictEqual, notStrictEqual, deepEqual, raises */
+/*global troop, sntls, evan, module, test, expect, ok, equal, strictEqual, notStrictEqual, deepEqual, raises */
 (function () {
     "use strict";
 
     module("Evented");
 
-    var eventSpace = e$.EventSpace.create(),
+    var eventSpace = evan.EventSpace.create(),
 
         EventedStaticClass = troop.Base.extend()
-            .addTrait(e$.Evented)
+            .addTrait(evan.Evented)
             .setEventSpace(eventSpace)
             .setEventPath('test>path'.toPath())
             .addMethods({
                 init: function (path) {
-                    e$.Evented.init.call(this);
+                    evan.Evented.init.call(this);
                     this.setEventPath(path);
                 }
             }),
 
         EventedClass = troop.Base.extend()
-            .addTrait(e$.Evented)
+            .addTrait(evan.Evented)
             .addMethods({
                 init: function (path) {
-                    e$.Evented.init.call(this);
+                    evan.Evented.init.call(this);
                     this
-                        .setEventSpace(e$.EventSpace.create())
+                        .setEventSpace(evan.EventSpace.create())
                         .setEventPath(path);
                 }
             });
@@ -52,7 +52,7 @@
 
         function eventHandler() {}
 
-        e$.EventSpace.addMocks({
+        evan.EventSpace.addMocks({
             subscribeTo: function (eventName, eventPath, handler) {
                 equal(eventName, 'myEvent', "should call EventSpace subscription with event name");
                 equal(eventPath.toString(), 'test>path', "should pass event path to subscription method");
@@ -62,7 +62,7 @@
 
         EventedStaticClass.subscribeTo('myEvent', eventHandler);
 
-        e$.EventSpace.removeMocks();
+        evan.EventSpace.removeMocks();
     });
 
     test("Instance level subscription", function () {
@@ -72,7 +72,7 @@
 
         function eventHandler() {}
 
-        e$.EventSpace.addMocks({
+        evan.EventSpace.addMocks({
             subscribeTo: function (eventName, eventPath, handler) {
                 equal(eventName, 'myEvent', "should call EventSpace subscription with event name");
                 ok(eventPath.toString(), 'test>path>foo>bar',
@@ -83,7 +83,7 @@
 
         evented.subscribeTo('myEvent', eventHandler);
 
-        e$.EventSpace.removeMocks();
+        evan.EventSpace.removeMocks();
     });
 
     test("Static unsubscription", function () {
@@ -91,7 +91,7 @@
 
         function eventHandler() {}
 
-        e$.EventSpace.addMocks({
+        evan.EventSpace.addMocks({
             unsubscribeFrom: function (eventName, eventPath, handler) {
                 equal(eventName, 'myEvent', "should call EventSpace unsubscription with event name");
                 equal(eventPath.toString(), 'test>path', "should pass event path to unsubscription method");
@@ -101,7 +101,7 @@
 
         EventedStaticClass.unsubscribeFrom('myEvent', eventHandler);
 
-        e$.EventSpace.removeMocks();
+        evan.EventSpace.removeMocks();
     });
 
     test("Instance level unsubscription", function () {
@@ -111,7 +111,7 @@
 
         function eventHandler() {}
 
-        e$.EventSpace.addMocks({
+        evan.EventSpace.addMocks({
             unsubscribeFrom: function (eventName, eventPath, handler) {
                 equal(eventName, 'myEvent', "should call EventSpace unsubscription with event name");
                 equal(eventPath.toString(), 'test>path>foo>bar',
@@ -122,7 +122,7 @@
 
         evented.unsubscribeFrom('myEvent', eventHandler);
 
-        e$.EventSpace.removeMocks();
+        evan.EventSpace.removeMocks();
     });
 
     test("Static one time subscription", function () {
@@ -130,7 +130,7 @@
 
         function eventHandler() {}
 
-        e$.EventSpace.addMocks({
+        evan.EventSpace.addMocks({
             subscribeToUntilTriggered: function (eventName, eventPath, handler) {
                 equal(eventName, 'myEvent', "should call EventSpace subscription with event name");
                 equal(eventPath.toString(), 'test>path',
@@ -141,7 +141,7 @@
 
         EventedStaticClass.subscribeToUntilTriggered('myEvent', eventHandler);
 
-        e$.EventSpace.removeMocks();
+        evan.EventSpace.removeMocks();
     });
 
     test("Instance level one time subscription", function () {
@@ -151,7 +151,7 @@
 
         function eventHandler() {}
 
-        e$.EventSpace.addMocks({
+        evan.EventSpace.addMocks({
             subscribeToUntilTriggered: function (eventName, eventPath, handler) {
                 equal(eventName, 'myEvent', "should call EventSpace subscription with event name");
                 equal(eventPath.toString(), 'test>path>foo>bar',
@@ -162,7 +162,7 @@
 
         evented.subscribeToUntilTriggered('myEvent', eventHandler);
 
-        e$.EventSpace.removeMocks();
+        evan.EventSpace.removeMocks();
     });
 
     test("Static delegation", function () {
@@ -170,7 +170,7 @@
 
         function eventHandler() {}
 
-        e$.EventSpace.addMocks({
+        evan.EventSpace.addMocks({
             delegateSubscriptionTo: function (eventName, capturePath, delegatePath, handler) {
                 equal(eventName, 'myEvent', "should call EventSpace delegation with event name");
                 equal(capturePath.toString(), 'test>path',
@@ -183,7 +183,7 @@
 
         EventedStaticClass.delegateSubscriptionTo('myEvent', 'test>path>foo'.toPath(), eventHandler);
 
-        e$.EventSpace.removeMocks();
+        evan.EventSpace.removeMocks();
     });
 
     test("Instance level delegation", function () {
@@ -193,7 +193,7 @@
 
         function eventHandler() {}
 
-        e$.EventSpace.addMocks({
+        evan.EventSpace.addMocks({
             delegateSubscriptionTo: function (eventName, capturePath, delegatePath, handler) {
                 equal(eventName, 'myEvent', "should call EventSpace delegation with event name");
                 equal(capturePath.toString(), 'test>path>foo>bar',
@@ -206,7 +206,7 @@
 
         evented.delegateSubscriptionTo('myEvent', 'test>path>foo>bar>hello>world'.toPath(), eventHandler);
 
-        e$.EventSpace.removeMocks();
+        evan.EventSpace.removeMocks();
     });
 
     test("Spawning event", function () {

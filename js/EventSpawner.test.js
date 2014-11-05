@@ -1,19 +1,19 @@
-/*global troop, sntls, e$, module, test, expect, ok, equal, strictEqual, notStrictEqual, deepEqual, raises */
+/*global troop, sntls, evan, module, test, expect, ok, equal, strictEqual, notStrictEqual, deepEqual, raises */
 (function () {
     "use strict";
 
     module("EventSpawner");
 
-    var eventSpace = e$.EventSpace.create(),
+    var eventSpace = evan.EventSpace.create(),
         EventSpawner = troop.Base.extend()
-            .addTrait(e$.EventSpawner)
+            .addTrait(evan.EventSpawner)
             .addMethods({
                 init: function () {
-                    e$.EventSpawner.init.call(this);
+                    evan.EventSpawner.init.call(this);
                 },
 
                 spawnPlainEvent: function (eventName) {
-                    return e$.Event.create(eventName, eventSpace);
+                    return evan.Event.create(eventName, eventSpace);
                 }
             });
 

@@ -1,11 +1,11 @@
-/*global sntls, e$, module, test, expect, ok, equal, strictEqual, deepEqual, raises */
+/*global sntls, evan, module, test, expect, ok, equal, strictEqual, deepEqual, raises */
 (function () {
     "use strict";
 
     module("EventSpace");
 
     test("Instantiation", function () {
-        var eventSpace = e$.EventSpace.create();
+        var eventSpace = evan.EventSpace.create();
         ok(eventSpace.eventRegistry.isA(sntls.Tree), "should set event registry as a Tree");
         deepEqual(eventSpace.eventRegistry.items, {}, "should initialize event registry Tree as empty");
     });
@@ -13,7 +13,7 @@
     test("Spawning event", function () {
         expect(1);
 
-        var eventSpace = e$.EventSpace.create();
+        var eventSpace = evan.EventSpace.create();
 
         eventSpace.addMocks({
             _prepareEvent: function (event) {
@@ -25,7 +25,7 @@
     });
 
     test("Subscription", function () {
-        var eventSpace = e$.EventSpace.create();
+        var eventSpace = evan.EventSpace.create();
 
         function handler1() {}
 
@@ -73,7 +73,7 @@
 
         function handler2() {}
 
-        var eventSpace = e$.EventSpace.create()
+        var eventSpace = evan.EventSpace.create()
             .subscribeTo('myEvent', 'test>event>path'.toPath(), handler1)
             .subscribeTo('myEvent', 'test>event>path'.toPath(), handler2);
 
@@ -98,7 +98,7 @@
 
         function handler2() {}
 
-        var eventSpace = e$.EventSpace.create()
+        var eventSpace = evan.EventSpace.create()
             .subscribeTo('myEvent', 'test>event>path'.toPath(), handler2);
 
         // attempting to unsubscribe non-existing handler
@@ -121,7 +121,7 @@
     test("Unsubscription from last handler", function () {
         function handler1() {}
 
-        var eventSpace = e$.EventSpace.create()
+        var eventSpace = evan.EventSpace.create()
             .subscribeTo('myEvent', 'test>event>path'.toPath(), handler1);
 
         eventSpace.unsubscribeFrom('myEvent', 'test>event>path'.toPath(), handler1);
@@ -143,7 +143,7 @@
 
         function handler2() {}
 
-        var eventSpace = e$.EventSpace.create()
+        var eventSpace = evan.EventSpace.create()
             .subscribeTo('myEvent', 'test>event>path'.toPath(), handler1)
             .subscribeTo('myEvent', 'test>event>path'.toPath(), handler2);
 
@@ -166,7 +166,7 @@
 
         function handler2() {}
 
-        var eventSpace = e$.EventSpace.create()
+        var eventSpace = evan.EventSpace.create()
             .subscribeTo('myEvent', 'test>event>path'.toPath(), handler1)
             .subscribeTo('otherEvent', 'test>event>path'.toPath(), handler2);
 
@@ -200,7 +200,7 @@
     test("Unsubscribing from single handler on multiple events (2)", function () {
         function handler1() {}
 
-        var eventSpace = e$.EventSpace.create()
+        var eventSpace = evan.EventSpace.create()
             .subscribeTo('myEvent', 'test>event>path'.toPath(), handler1)
             .subscribeTo('otherEvent', 'test>event>path'.toPath(), handler1);
 
@@ -232,7 +232,7 @@
     test("One time subscription", function () {
         function handler() {}
 
-        var eventSpace = e$.EventSpace.create(),
+        var eventSpace = evan.EventSpace.create(),
             result;
 
         result = eventSpace.subscribeToUntilTriggered('myEvent', 'test>event>path'.toPath(), handler);
@@ -267,10 +267,10 @@
     test("Path delegation", function () {
         expect(5);
 
-        var eventSpace = e$.EventSpace.create(),
+        var eventSpace = evan.EventSpace.create(),
             result;
 
-        function handler(/** e$.Event */ event) {
+        function handler(/** evan.Event */ event) {
             equal(event.currentPath.toString(), 'test>event>path',
                 "should call handler with currentPath set on event");
             equal(event.originalPath.toString(), 'test>event>path>foo',
@@ -294,10 +294,10 @@
     test("Query delegation", function () {
         expect(4);
 
-        var eventSpace = e$.EventSpace.create(),
+        var eventSpace = evan.EventSpace.create(),
             result;
 
-        function handler(/** e$.Event */ event) {
+        function handler(/** evan.Event */ event) {
             equal(event.currentPath.toString(), 'test>event>|>foo',
                 "should call handler with currentPath set on event to query");
             equal(event.originalPath.toString(), 'test>event>bar>foo>baz',
@@ -315,7 +315,7 @@
     });
 
     test("Unsubscribing from delegated event", function () {
-        var eventSpace = e$.EventSpace.create(),
+        var eventSpace = evan.EventSpace.create(),
             delegateHandler;
 
         function handler() {}
@@ -335,7 +335,7 @@
     test("Calling handlers for event", function () {
         expect(3);
 
-        var eventSpace = e$.EventSpace.create()
+        var eventSpace = evan.EventSpace.create()
                 .subscribeTo('myEvent', 'test>event', function (event, data) {
                     strictEqual(event, myEvent, "should call handler with spawned event");
                     strictEqual(data, event.payload, "should call handler with payload set on event");
@@ -353,7 +353,7 @@
     test("Calling handlers with stop-propagation", function () {
         expect(2);
 
-        var eventSpace = e$.EventSpace.create()
+        var eventSpace = evan.EventSpace.create()
                 .subscribeTo('event', 'test>event'.toPath(), function () {
                     ok(true, "should call handler only once");
                     return false;
@@ -367,7 +367,7 @@
     });
 
     test("Relative path query", function () {
-        var eventSpace = e$.EventSpace.create()
+        var eventSpace = evan.EventSpace.create()
                 .subscribeTo('myEvent', 'test>event'.toPath(), function () {})
                 .subscribeTo('myEvent', 'test>event>foo'.toPath(), function () {})
                 .subscribeTo('myEvent', 'test>event>foo>bar'.toPath(), function () {})
@@ -379,7 +379,7 @@
             result;
 
         result = eventSpace.getPathsRelativeTo('myEvent', 'test>event'.toPath());
-        ok(result.isA(e$.PathCollection), "should return PathCollection instance");
+        ok(result.isA(evan.PathCollection), "should return PathCollection instance");
         deepEqual(
             result.callOnEachItem('toString').items,
             [
@@ -407,7 +407,7 @@
     });
 
     test("Relative path query w/ no subscriptions", function () {
-        var eventSpace = e$.EventSpace.create();
+        var eventSpace = evan.EventSpace.create();
 
         deepEqual(
             eventSpace.getPathsRelativeTo('myEvent', 'test>event'.toPath()).items,
@@ -418,7 +418,7 @@
 
     // TODO: Why is this here and not in Event?
     test("Broadcasting with delegation", function () {
-        var eventSpace = e$.EventSpace.create(),
+        var eventSpace = evan.EventSpace.create(),
             event = eventSpace.spawnEvent('myEvent'),
             triggeredPaths;
 
