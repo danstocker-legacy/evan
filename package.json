@@ -1,6 +1,6 @@
 {
     "name"           : "evan",
-    "version"        : "0.4.3",
+    "version"        : "0.4.4",
     "description"    : "Universal events",
     "keywords"       : ["custom", "events", "event", "troop"],
     "author"         : "Dan Stocker <dan@kwaia.com>",
@@ -12,7 +12,7 @@
     },
     "dependencies"   : {
         "dessert": "~0.3.2",
-        "troop"  : "~0.7.1",
+        "troop"  : "~0.7.1 || 0.8.0",
         "sntls"  : "~0.17.0"
     },
     "devDependencies": {
@@ -28,6 +28,8 @@
         "common-gruntfile"    : "git://github.com/danstocker/common-gruntfile.git#0.1.5",
         "QUnitAdapter"        : "https://dl.dropboxusercontent.com/u/9258903/packages/QUnitAdapter-0.1.0.tgz"
     },
-    "files"          : ["evan.js"],
+    "files"          : [
+        "evan.js"
+    ],
     "main"           : "evan.js"
 }
