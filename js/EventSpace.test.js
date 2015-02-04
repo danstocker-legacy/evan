@@ -2,7 +2,29 @@
 (function () {
     "use strict";
 
-    module("EventSpace");
+    var testEventSpace;
+
+    function handler1() {
+    }
+
+    function handler2() {
+    }
+
+    function handler3() {
+    }
+
+    function handler4() {
+    }
+
+    module("EventSpace", {
+        setup: function () {
+            testEventSpace = evan.EventSpace.create()
+                .subscribeTo('eventA', 'test>event>path'.toPath(), handler1)
+                .subscribeTo('eventA', 'test>event>path'.toPath(), handler2)
+                .subscribeTo('eventB', 'test>event>path'.toPath(), handler3)
+                .subscribeTo('eventA', 'foo>bar>baz'.toPath(), handler4);
+        }
+    });
 
     test("Instantiation", function () {
         var eventSpace = evan.EventSpace.create();
@@ -21,245 +43,241 @@
             }
         });
 
-        eventSpace.spawnEvent('myEvent');
+        eventSpace.spawnEvent('eventA');
     });
 
-    test("Subscription", function () {
+    test("First subscription", function () {
         var eventSpace = evan.EventSpace.create();
 
-        function handler1() {}
-
-        function handler2() {}
+        function handler1() {
+        }
 
         raises(function () {
-            eventSpace.subscribeTo('myEvent', 'test>event>path'.toPath(), 123);
+            eventSpace.subscribeTo('eventA', 'test>event>path'.toPath(), 123);
         }, "should raise exception on invalid handler");
 
-        eventSpace.subscribeTo('myEvent', 'test>event>path'.toPath(), handler1);
+        strictEqual(eventSpace.subscribeTo('eventA', 'test>event>path'.toPath(), handler1), eventSpace,
+            "should be chainable");
 
         deepEqual(
-            eventSpace.eventRegistry.items.myEvent.handlers,
+            eventSpace.eventRegistry.items,
             {
-                'test>event>path': [handler1]
+                'test>event>path': {
+                    'eventA': [handler1]
+                }
             },
-            "should add event handler to handler registry (empty)"
-        );
-
-        deepEqual(
-            eventSpace.eventRegistry.items.myEvent.paths.items,
-            ['test>event>path'],
-            "should add subscription path to path registry (empty)"
-        );
-
-        eventSpace.subscribeTo('myEvent', 'test>event>path', handler2);
-
-        deepEqual(
-            eventSpace.eventRegistry.items.myEvent.handlers,
-            {
-                'test>event>path': [handler1, handler2]
-            },
-            "should add event handler to handler registry (non-empty)"
-        );
-
-        deepEqual(
-            eventSpace.eventRegistry.items.myEvent.paths.items,
-            ['test>event>path', 'test>event>path'],
-            "should add subscription path to path registry (non-empty)"
+            "should add first event handler to registry"
         );
     });
 
-    test("Unsubscription", function () {
-        function handler1() {}
+    test("Subsequent subscription to same event / path", function () {
+        var eventSpace = evan.EventSpace.create();
 
-        function handler2() {}
+        function handler1() {
+        }
 
-        var eventSpace = evan.EventSpace.create()
-            .subscribeTo('myEvent', 'test>event>path'.toPath(), handler1)
-            .subscribeTo('myEvent', 'test>event>path'.toPath(), handler2);
+        function handler2() {
+        }
 
-        eventSpace.unsubscribeFrom('myEvent', 'test>event>path'.toPath(), handler1);
+        eventSpace
+            .subscribeTo('eventA', 'test>event>path'.toPath(), handler1)
+            .subscribeTo('eventA', 'test>event>path'.toPath(), handler2);
 
         deepEqual(
-            eventSpace.eventRegistry.items.myEvent.handlers,
+            eventSpace.eventRegistry.items,
             {
-                'test>event>path': [handler2]
+                'test>event>path': {
+                    'eventA': [handler1, handler2]
+                }
+            },
+            "should add event handler to registry"
+        );
+    });
+
+    test("Subsequent subscription to different event / path", function () {
+        var eventSpace = evan.EventSpace.create();
+
+        function handler1() {
+        }
+
+        function handler2() {
+        }
+
+        eventSpace
+            .subscribeTo('eventA', 'test>event>path'.toPath(), handler1)
+            .subscribeTo('eventA', 'foo>bar>baz'.toPath(), handler2);
+
+        deepEqual(
+            eventSpace.eventRegistry.items,
+            {
+                'test>event>path': {
+                    'eventA': [handler1]
+                },
+                'foo>bar>baz'    : {
+                    'eventA': [handler2]
+                }
+            },
+            "should add event handler to registry"
+        );
+    });
+
+    test("Unsubscribing from specific event/path/handler", function () {
+        strictEqual(testEventSpace.unsubscribeFrom('eventA', 'test>event>path'.toPath(), handler1), testEventSpace,
+            "should be chainable");
+
+        deepEqual(
+            testEventSpace.eventRegistry.items,
+            {
+                'test>event>path': {
+                    'eventA': [handler2],
+                    'eventB': [handler3]
+                },
+
+                'foo>bar>baz': {
+                    'eventA': [handler4]
+                }
             },
             "should remove handler from handler registry"
         );
+    });
+
+    test("Unsubscribing from last handler for a given event/path", function () {
+        strictEqual(testEventSpace.unsubscribeFrom('eventB', 'test>event>path'.toPath(), handler3), testEventSpace,
+            "should be chainable");
+
         deepEqual(
-            eventSpace.eventRegistry.items.myEvent.paths.items,
-            ['test>event>path'],
-            "should remove path from path registry"
+            testEventSpace.eventRegistry.items,
+            {
+                'test>event>path': {
+                    'eventA': [handler1, handler2]
+                },
+
+                'foo>bar>baz': {
+                    'eventA': [handler4]
+                }
+            },
+            "should remove node for event/path"
         );
     });
 
-    test("Unsubscription from previously unsubscribed handler", function () {
-        function handler1() {}
-
-        function handler2() {}
-
-        var eventSpace = evan.EventSpace.create()
-            .subscribeTo('myEvent', 'test>event>path'.toPath(), handler2);
-
-        // attempting to unsubscribe non-existing handler
-        eventSpace.unsubscribeFrom('myEvent', 'test>event>path'.toPath(), handler1);
+    test("Unsubscribing from all handlers on event/path", function () {
+        strictEqual(testEventSpace.unsubscribeFrom('eventA', 'test>event>path'.toPath()), testEventSpace,
+            "should be chainable");
 
         deepEqual(
-            eventSpace.eventRegistry.items.myEvent.handlers,
+            testEventSpace.eventRegistry.items,
             {
-                'test>event>path': [handler2]
+                'test>event>path': {
+                    'eventB': [handler3]
+                },
+
+                'foo>bar>baz': {
+                    'eventA': [handler4]
+                }
+            },
+            "should remove all handlers for event/path from handler registry"
+        );
+    });
+
+    test("Unsubscribing from all handlers on a path", function () {
+        strictEqual(testEventSpace.unsubscribeFrom(null, 'test>event>path'.toPath()), testEventSpace,
+            "should be chainable");
+
+        deepEqual(
+            testEventSpace.eventRegistry.items,
+            {
+                'foo>bar>baz': {
+                    'eventA': [handler4]
+                }
+            },
+            "should remove all handlers for path from handler registry"
+        );
+    });
+
+    test("Unsubscribing from all handlers in event space", function () {
+        strictEqual(testEventSpace.unsubscribeFrom(), testEventSpace,
+            "should be chainable");
+
+        deepEqual(
+            testEventSpace.eventRegistry.items,
+            {},
+            "should completely empty handler registry"
+        );
+    });
+
+    test("Unsubscribing from invalid handler", function () {
+        // attempting to unsubscribe non-existing handler
+        testEventSpace.unsubscribeFrom('eventA', 'test>event>path'.toPath(), function () {
+        });
+
+        deepEqual(
+            testEventSpace.eventRegistry.items,
+            {
+                'test>event>path': {
+                    'eventA': [handler1, handler2],
+                    'eventB': [handler3]
+                },
+
+                'foo>bar>baz': {
+                    'eventA': [handler4]
+                }
             },
             "should leave handler registry intact"
         );
-        deepEqual(
-            eventSpace.eventRegistry.items.myEvent.paths.items,
-            ['test>event>path'],
-            "should leave path registry intact"
-        );
     });
 
-    test("Unsubscription from last handler", function () {
-        function handler1() {}
+    test("Unsubscribing from invalid path", function () {
+        // attempting to unsubscribe non-existing handler
+        testEventSpace.unsubscribeFrom('eventA', 'invalid>path'.toPath(), handler1);
 
-        var eventSpace = evan.EventSpace.create()
-            .subscribeTo('myEvent', 'test>event>path'.toPath(), handler1);
-
-        eventSpace.unsubscribeFrom('myEvent', 'test>event>path'.toPath(), handler1);
-
-        equal(
-            typeof eventSpace.eventRegistry.items.myEvent.handlers,
-            'undefined',
-            "should empty handler registry"
-        );
         deepEqual(
-            eventSpace.eventRegistry.items.myEvent.paths.items,
-            [],
-            "should empty path registry"
-        );
-    });
-
-    test("Unsubscribing from multiple handlers on same event", function () {
-        function handler1() {}
-
-        function handler2() {}
-
-        var eventSpace = evan.EventSpace.create()
-            .subscribeTo('myEvent', 'test>event>path'.toPath(), handler1)
-            .subscribeTo('myEvent', 'test>event>path'.toPath(), handler2);
-
-        eventSpace.unsubscribeFrom('myEvent', 'test>event>path'.toPath());
-
-        equal(
-            typeof eventSpace.eventRegistry.items.myEvent.handlers,
-            'undefined',
-            "should empty handler registry"
-        );
-        deepEqual(
-            eventSpace.eventRegistry.items.myEvent.paths.items,
-            [],
-            "should empty path registry"
-        );
-    });
-
-    test("Unsubscribing from single handler on multiple events", function () {
-        function handler1() {}
-
-        function handler2() {}
-
-        var eventSpace = evan.EventSpace.create()
-            .subscribeTo('myEvent', 'test>event>path'.toPath(), handler1)
-            .subscribeTo('otherEvent', 'test>event>path'.toPath(), handler2);
-
-        eventSpace.unsubscribeFrom(null, 'test>event>path'.toPath(), handler1);
-
-        equal(
-            typeof eventSpace.eventRegistry.items.myEvent.handlers,
-            'undefined',
-            "should remove specified handler from registry for all events"
-        );
-        deepEqual(
-            eventSpace.eventRegistry.items.otherEvent.handlers,
+            testEventSpace.eventRegistry.items,
             {
-                'test>event>path': [handler2]
+                'test>event>path': {
+                    'eventA': [handler1, handler2],
+                    'eventB': [handler3]
+                },
+
+                'foo>bar>baz': {
+                    'eventA': [handler4]
+                }
             },
-            "should leave other handler in registry intact"
-        );
-
-        deepEqual(
-            eventSpace.eventRegistry.items.myEvent.paths.items,
-            [],
-            "should remove path for specified handler from registry for all events"
-        );
-        deepEqual(
-            eventSpace.eventRegistry.items.otherEvent.paths.items,
-            ['test>event>path'],
-            "should leave paths for other handler intact"
-        );
-    });
-
-    test("Unsubscribing from single handler on multiple events (2)", function () {
-        function handler1() {}
-
-        var eventSpace = evan.EventSpace.create()
-            .subscribeTo('myEvent', 'test>event>path'.toPath(), handler1)
-            .subscribeTo('otherEvent', 'test>event>path'.toPath(), handler1);
-
-        eventSpace.unsubscribeFrom(null, 'test>event>path'.toPath(), handler1);
-
-        equal(
-            typeof eventSpace.eventRegistry.items.myEvent.handlers,
-            'undefined',
-            "should remove handlers from registry for first event"
-        );
-        deepEqual(
-            typeof eventSpace.eventRegistry.items.otherEvent.handlers,
-            'undefined',
-            "should remove handlers from registry for second event"
-        );
-
-        deepEqual(
-            eventSpace.eventRegistry.items.myEvent.paths.items,
-            [],
-            "should remove path from registry for first event"
-        );
-        deepEqual(
-            eventSpace.eventRegistry.items.otherEvent.paths.items,
-            [],
-            "should remove path from registry for second event"
+            "should leave handler registry intact"
         );
     });
 
     test("One time subscription", function () {
-        function handler() {}
+        function handler() {
+        }
 
         var eventSpace = evan.EventSpace.create(),
             result;
 
-        result = eventSpace.subscribeToUntilTriggered('myEvent', 'test>event>path'.toPath(), handler);
+        result = eventSpace.subscribeToUntilTriggered('eventA', 'test>event>path'.toPath(), handler);
 
         equal(typeof result, 'function', "should return wrapped handler");
         equal(
-            eventSpace.eventRegistry.items.myEvent.handlers['test>event>path'].length,
+            eventSpace.eventRegistry.items['test>event>path'].eventA.length,
             1,
             "should add handler to handler registry"
         );
 
         // unsubscribing event before triggering
-        eventSpace.unsubscribeFrom('myEvent', 'test>event>path'.toPath(), result);
+        eventSpace.unsubscribeFrom('eventA', 'test>event>path'.toPath(), result);
 
         equal(
-            eventSpace.eventRegistry.items.myEvent.hasOwnProperty('handlers'),
-            false,
+            typeof eventSpace.eventRegistry.getNode(['test>event>path', 'eventA'].toPath()),
+            'undefined',
             "should be able to unsubscribe from the returned wrapper"
         );
 
         // re binding and triggering event
-        eventSpace.subscribeToUntilTriggered('myEvent', 'test>event>path'.toPath(), handler);
-        eventSpace.spawnEvent('myEvent').triggerSync('test>event>path'.toPath());
+        eventSpace.subscribeToUntilTriggered('eventA', 'test>event>path'.toPath(), handler);
+        eventSpace.spawnEvent('eventA').triggerSync('test>event>path'.toPath());
 
         equal(
-            eventSpace.eventRegistry.items.myEvent.hasOwnProperty('handlers'),
-            false,
+            typeof eventSpace.eventRegistry.getNode(['test>event>path', 'eventA'].toPath()),
+            'undefined',
             "should unsubscribe after being triggered"
         );
     });
@@ -278,17 +296,17 @@
         }
 
         raises(function () {
-            eventSpace.delegateSubscriptionTo('myEvent', 'test>event'.toPath(), 'unrelated>path'.toPath(), handler);
+            eventSpace.delegateSubscriptionTo('eventA', 'test>event'.toPath(), 'unrelated>path'.toPath(), handler);
         }, "should raise exception on delegate path not relative to capture path");
 
         raises(function () {
-            eventSpace.delegateSubscriptionTo('myEvent', 'test>event'.toPath(), 'test>event>path'.toPath(), 'non-function');
+            eventSpace.delegateSubscriptionTo('eventA', 'test>event'.toPath(), 'test>event>path'.toPath(), 'non-function');
         }, "should raise exception on invalid event handler");
 
         // delegating event to path 'test>event>path'
-        result = eventSpace.delegateSubscriptionTo('myEvent', 'test>event'.toPath(), 'test>event>path'.toPath(), handler);
+        result = eventSpace.delegateSubscriptionTo('eventA', 'test>event'.toPath(), 'test>event>path'.toPath(), handler);
         equal(typeof result, 'function', "should return wrapped handler");
-        eventSpace.spawnEvent('myEvent').triggerSync('test>event>path>foo'.toPath());
+        eventSpace.spawnEvent('eventA').triggerSync('test>event>path>foo'.toPath());
     });
 
     test("Query delegation", function () {
@@ -305,30 +323,31 @@
         }
 
         raises(function () {
-            eventSpace.delegateSubscriptionTo('myEvent', 'test>event'.toPath(), 'test>|>path'.toPath(), handler);
+            eventSpace.delegateSubscriptionTo('eventA', 'test>event'.toPath(), 'test>|>path'.toPath(), handler);
         }, "should raise exception on delegate query not relative to capture path");
 
         // delegating event to query 'test>event>|>path'
-        result = eventSpace.delegateSubscriptionTo('myEvent', 'test>event'.toPath(), 'test>event>|>foo'.toQuery(), handler);
+        result = eventSpace.delegateSubscriptionTo('eventA', 'test>event'.toPath(), 'test>event>|>foo'.toQuery(), handler);
         equal(typeof result, 'function', "should return wrapped handler");
-        eventSpace.spawnEvent('myEvent').triggerSync('test>event>bar>foo>baz'.toPath());
+        eventSpace.spawnEvent('eventA').triggerSync('test>event>bar>foo>baz'.toPath());
     });
 
     test("Unsubscribing from delegated event", function () {
         var eventSpace = evan.EventSpace.create(),
             delegateHandler;
 
-        function handler() {}
+        function handler() {
+        }
 
         // delegating in a way that handler may be unsubscribed
-        delegateHandler = eventSpace.delegateSubscriptionTo('myEvent', 'test>event'.toPath(), 'test>event>path'.toPath(), handler);
+        delegateHandler = eventSpace.delegateSubscriptionTo('eventA', 'test>event'.toPath(), 'test>event>path'.toPath(), handler);
 
-        eventSpace.unsubscribeFrom('myEvent', 'test>event'.toPath(), delegateHandler);
+        eventSpace.unsubscribeFrom('eventA', 'test>event'.toPath(), delegateHandler);
 
         equal(
-            eventSpace.eventRegistry.items.myEvent.hasOwnProperty('handlers'),
-            false,
-            "should remove handler from handler regsitry"
+            typeof eventSpace.eventRegistry.getNode(['test>event', 'eventA'].toPath()),
+            'undefined',
+            "should remove handler from handler registry"
         );
     });
 
@@ -336,18 +355,30 @@
         expect(3);
 
         var eventSpace = evan.EventSpace.create()
-                .subscribeTo('myEvent', 'test>event', function (event, data) {
-                    strictEqual(event, myEvent, "should call handler with spawned event");
+                .subscribeTo('eventA', 'test>event', function (event, data) {
+                    strictEqual(event, eventA, "should call handler with spawned event");
                     strictEqual(data, event.payload, "should call handler with payload set on event");
                 }),
-            myEvent = eventSpace.spawnEvent('myEvent'),
+            eventA = eventSpace.spawnEvent('eventA'),
             result;
 
-        myEvent.originalPath = 'test>event'.toPath();
-        myEvent.currentPath = myEvent.originalPath.clone();
+        eventA.originalPath = 'test>event'.toPath();
+        eventA.currentPath = eventA.originalPath.clone();
 
-        result = eventSpace.callHandlers(myEvent);
+        result = eventSpace.callHandlers(eventA);
         strictEqual(result, 1, "should return number of handlers run");
+    });
+
+    test("Calling handlers for invalid event", function () {
+        var eventSpace = evan.EventSpace.create(),
+            eventA = eventSpace.spawnEvent('eventA'),
+            result;
+
+        eventA.originalPath = 'test>event'.toPath();
+        eventA.currentPath = eventA.originalPath.clone();
+
+        result = eventSpace.callHandlers(eventA);
+        strictEqual(result, 0, "should return zero");
     });
 
     test("Calling handlers with stop-propagation", function () {
@@ -368,18 +399,19 @@
 
     test("Relative path query", function () {
         var eventSpace = evan.EventSpace.create()
-                .subscribeTo('myEvent', 'test>event'.toPath(), function () {})
-                .subscribeTo('myEvent', 'test>event>foo'.toPath(), function () {})
-                .subscribeTo('myEvent', 'test>event>foo>bar'.toPath(), function () {})
-                .subscribeTo('myEvent', 'test>event>|>baz'.toQuery(), function () {})
-                .subscribeTo('myEvent', 'test>foo>bar'.toPath(), function () {})
-                .subscribeTo('myEvent', 'test>event>hello'.toPath(), function () {})
-                .subscribeTo('otherEvent', 'test>event'.toPath(), function () {})
-                .subscribeTo('otherEvent', 'test>event>foo'.toPath(), function () {}),
+                .subscribeTo('eventA', 'test>event'.toPath(), handler1)
+                .subscribeTo('eventA', 'test>event>foo'.toPath(), handler1)
+                .subscribeTo('eventA', 'test>event>foo>bar'.toPath(), handler1)
+                .subscribeTo('eventA', 'test>event>|>baz'.toQuery(), handler1)
+                .subscribeTo('eventA', 'test>foo>bar'.toPath(), handler1)
+                .subscribeTo('eventA', 'test>event>hello'.toPath(), handler1)
+                .subscribeTo('otherEvent', 'test>event'.toPath(), handler1)
+                .subscribeTo('otherEvent', 'test>event>foo'.toPath(), handler1),
             result;
 
-        result = eventSpace.getPathsRelativeTo('myEvent', 'test>event'.toPath());
+        result = eventSpace.getPathsRelativeTo('eventA', 'test>event'.toPath());
         ok(result.isA(evan.PathCollection), "should return PathCollection instance");
+
         deepEqual(
             result.callOnEachItem('toString').items,
             [
@@ -391,7 +423,7 @@
             "should fetch paths and queries for specified event, relative to the specified path (pass 1)"
         );
 
-        result = eventSpace.getPathsRelativeTo('myEvent', 'test>foo'.toPath());
+        result = eventSpace.getPathsRelativeTo('eventA', 'test>foo'.toPath());
         deepEqual(
             result.callOnEachItem('toString').items,
             ['test>foo>bar'],
@@ -410,7 +442,7 @@
         var eventSpace = evan.EventSpace.create();
 
         deepEqual(
-            eventSpace.getPathsRelativeTo('myEvent', 'test>event'.toPath()).items,
+            eventSpace.getPathsRelativeTo('eventA', 'test>event'.toPath()).items,
             [],
             "should fetch empty path collection"
         );
@@ -419,7 +451,7 @@
     // TODO: Why is this here and not in Event?
     test("Broadcasting with delegation", function () {
         var eventSpace = evan.EventSpace.create(),
-            event = eventSpace.spawnEvent('myEvent'),
+            event = eventSpace.spawnEvent('eventA'),
             triggeredPaths;
 
         function handler(event) {
@@ -427,12 +459,12 @@
         }
 
         eventSpace
-            .subscribeTo('myEvent', 'a>b>|>e'.toQuery(), handler)
-            .subscribeTo('myEvent', 'a>b'.toPath(), handler)
-            .subscribeTo('myEvent', 'a>b>other path'.toPath(), handler);
+            .subscribeTo('eventA', 'a>b>|>e'.toQuery(), handler)
+            .subscribeTo('eventA', 'a>b'.toPath(), handler)
+            .subscribeTo('eventA', 'a>b>other path'.toPath(), handler);
 
-        eventSpace.delegateSubscriptionTo('myEvent', 'a>b'.toPath(), 'a>b>c>d'.toPath(), handler);
-        eventSpace.delegateSubscriptionTo('myEvent', 'a>b'.toPath(), 'a>b>c>|>f'.toQuery(), handler);
+        eventSpace.delegateSubscriptionTo('eventA', 'a>b'.toPath(), 'a>b>c>d'.toPath(), handler);
+        eventSpace.delegateSubscriptionTo('eventA', 'a>b'.toPath(), 'a>b>c>|>f'.toQuery(), handler);
 
         triggeredPaths = {};
         event.broadcastSync('a'.toPath()); // triggers due to broadcast path < capture path

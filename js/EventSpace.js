@@ -62,6 +62,7 @@ troop.postpone(evan, 'EventSpace', function () {
 
             /**
              * Subscribes to event.
+             * TODO: Switch eventPath / eventName arguments. Breaking.
              * @param {string} eventName Name of event to be triggered.
              * @param {sntls.Path} eventPath Path we're listening to
              * @param {function} handler Event handler function that is called when the event
@@ -73,20 +74,13 @@ troop.postpone(evan, 'EventSpace', function () {
 
                 var eventRegistry = this.eventRegistry,
                     eventPathString = eventPath.toString(),
-                    handlers = /** @type {Array} */ eventRegistry.getOrSetNode(
-                        [eventName, 'handlers', eventPathString].toPath(),
+                    handlers = eventRegistry.getOrSetNode(
+                        [eventPathString, eventName].toPath(),
                         this._generateHandlersStub
-                    ),
-                    pathList = /** @type {sntls.OrderedStringList} */ eventRegistry.getOrSetNode(
-                        [eventName, 'paths'].toPath(),
-                        this._generatePathsStub
                     );
 
                 // adding handler to handlers
                 handlers.push(handler);
-
-                // adding paths to ordered path list
-                pathList.addItem(eventPathString);
 
                 return this;
             },
@@ -95,8 +89,10 @@ troop.postpone(evan, 'EventSpace', function () {
              * Unsubscribes from event. Removes entries associated with subscription
              * from event registry, both from the list of handlers and the list of
              * subscribed paths.
-             * @param {string} eventName Name of event to be triggered.
-             * @param {sntls.Path} eventPath Path we're listening to
+             * TODO: Switch eventPath / eventName arguments. Breaking.
+             * TODO: Consider changing unsetKey to unsetPath. Measure performance impact.
+             * @param {string} [eventName] Name of event to be triggered.
+             * @param {sntls.Path} [eventPath] Path we're listening to
              * @param {function} [handler] Event handler function
              * @return {evan.EventSpace}
              */
@@ -104,43 +100,38 @@ troop.postpone(evan, 'EventSpace', function () {
                 dessert.isFunctionOptional(handler, "Invalid event handler function");
 
                 var eventRegistry = this.eventRegistry,
-                    eventPathString = eventPath.toString(),
-                    handlersQuery = [eventName || '|'.toKVP(), 'handlers', eventPathString, handler ?
-                        '|'.toKVP().setValue(handler) :
-                        '|'.toKVP()
-                    ].toQuery(),
-                    handlerPaths = eventRegistry.queryPathsAsHash(handlersQuery)
-                        .toCollection(),
-                    pathsQuery,
-                    eventNames;
+                    handlers,
+                    handlerIndex;
 
-                // removing handlers from registry
-                handlerPaths
-                    .passEachItemTo(eventRegistry.unsetPath, eventRegistry, 0, true);
-
-                // obtaining affected events' names
-                eventNames = handlerPaths
-                    .toTree()
-                    // first item of each path holds event name
-                    .queryValuesAsHash('|>asArray>0'.toQuery())
-                    // getting unique event names
-                    .toStringDictionary()
-                    .reverse()
-                    .getKeys();
-
-                // removing affected paths from registry (path lookup list)
-                pathsQuery = [eventNames, 'paths'].toQuery();
-                eventRegistry.queryValuesAsHash(pathsQuery)
-                    .toCollection()
-                    .forEachItem(function (/**sntls.OrderedStringList*/pathList) {
+                if (eventPath) {
+                    if (eventName) {
                         if (handler) {
-                            // when handler is specified, remove one copy of event path
-                            pathList.removeItem(eventPathString);
+                            handlers = eventRegistry.getNode([eventPath, eventName].toPath());
+                            if (handlers) {
+                                // there are subscriptions on event/path
+                                if (handlers.length > 1) {
+                                    handlerIndex = handlers.indexOf(handler);
+                                    if (handlerIndex > -1) {
+                                        // specified handler is subscribed
+                                        handlers.splice(handlerIndex, 1);
+                                    }
+                                } else {
+                                    // removing last handler
+                                    eventRegistry.unsetKey([eventPath, eventName].toPath());
+                                }
+                            }
                         } else {
-                            // when handler is not specified, remove all copies of event path
-                            pathList.removeEvery(eventPathString);
+                            // removing all handlers
+                            eventRegistry.unsetKey([eventPath, eventName].toPath());
                         }
-                    });
+                    } else {
+                        // removing all handlers for specified path
+                        eventRegistry.unsetKey([eventPath].toPath());
+                    }
+                } else {
+                    // removing all event bindings
+                    this.eventRegistry.clear();
+                }
 
                 return this;
             },
@@ -216,33 +207,26 @@ troop.postpone(evan, 'EventSpace', function () {
              * Calls handlers associated with an event name and path.
              * Handlers are assumed to be synchronous.
              * @param {evan.Event} event
-             * @return {*}
+             * @return {number|boolean} Number of handlers processed, or false when one handler returned false.
              * @see evan.Event.trigger
              */
             callHandlers: function (event) {
-                var that = this,
-                    handlersQuery = [
-                        event.eventName,
-                        'handlers',
-                        event.currentPath.toString(),
-                        '|'.toKVP()
-                    ].toQuery(),
-                    handlers = this.eventRegistry
-                        .queryValuesAsHash(handlersQuery)
-                        .toCollection(),
-                    result = handlers.getKeyCount();
+                var handlersPath = [event.currentPath.toString(), event.eventName].toPath(),
+                    handlers = this.eventRegistry.getNode(handlersPath),
+                    i = 0, handler;
 
-                handlers.forEachItem(function (handler) {
-                    // stopping iteration when handler returns false
-                    if (handler.call(that, event, event.payload) === false) {
-                        result = false;
-                        return false;
-                    } else {
-                        return true;
+                if (handlers && handlers.length) {
+                    for (; i < handlers.length; i++) {
+                        handler = handlers[i];
+                        // calling handler, passing event and payload
+                        if (handler.call(this, event, event.payload) === false) {
+                            // stopping iteration when handler returns false
+                            return false;
+                        }
                     }
-                });
+                }
 
-                return result;
+                return i;
             },
 
             /**
@@ -254,9 +238,10 @@ troop.postpone(evan, 'EventSpace', function () {
              */
             getPathsRelativeTo: function (eventName, path) {
                 // obtaining all paths associated with event name
-                // node holds an OrderedStringList
-                var paths = this.eventRegistry
-                    .getNode([eventName, 'paths'].toPath());
+                var pathsQuery = ['{|}'.toKVP(), eventName].toQuery(),
+                    paths = this.eventRegistry
+                        .queryKeysAsHash(pathsQuery)
+                        .toOrderedStringList();
 
                 if (paths) {
                     // there are subscriptions matching eventName
