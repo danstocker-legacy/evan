@@ -91,7 +91,8 @@ troop.postpone(evan, 'Evented', function () {
              * @memberOf {evan.Evented}
              */
             setEventPath: function (eventPath) {
-                var baseEventPath = this.getBase().eventPath;
+                var baseEventPath = this.getBase().eventPath,
+                    subscriptionRegistry = this.subscriptionRegistry;
 
                 dessert
                     .isPath(eventPath, "Invalid event path")
@@ -99,10 +100,10 @@ troop.postpone(evan, 'Evented', function () {
                         !baseEventPath || eventPath.isRelativeTo(baseEventPath),
                         "Specified event path is not relative to static event path");
 
-                if (!this.subscriptionRegistry) {
+                if (!subscriptionRegistry) {
                     // initializing subscription registry
                     this.subscriptionRegistry = sntls.Dictionary.create();
-                } else {
+                } else if (subscriptionRegistry.getKeyCount()) {
                     // re-subscribing events
                     this._reSubscribe(this.eventPath, eventPath);
                 }
