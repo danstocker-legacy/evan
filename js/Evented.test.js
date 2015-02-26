@@ -47,10 +47,49 @@
         equal(evented.eventPath.toString(), 'test>path>foo', "should set relative event path");
     });
 
-    test("Static subscription", function () {
-        expect(3);
+    test("Re-subscription by altering event path", function () {
+        var handler1 = function () {
+            },
+            handler2 = function () {
+            },
+            evented = EventedClass.create('hello>world'.toPath())
+                .subscribeTo('foo', handler1)
+                .subscribeTo('bar', handler2),
+            unsubscribed = [],
+            subscribed = [];
 
-        function eventHandler() {}
+        evented.eventSpace.addMocks({
+            unsubscribeFrom: function (eventName, path, handler) {
+                unsubscribed.push([eventName, path.toString(), handler]);
+                return this;
+            },
+
+            subscribeTo: function (eventName, path, handler) {
+                subscribed.push([eventName, path.toString(), handler]);
+                return this;
+            }
+        });
+
+        evented.setEventPath('hi>all'.toPath());
+
+        evented.eventSpace.removeMocks();
+
+        deepEqual(unsubscribed, [
+            ['foo', 'hello>world', handler1],
+            ['bar', 'hello>world', handler2]
+        ], "should unsubscribe all handlers from old path");
+
+        deepEqual(subscribed, [
+            ['foo', 'hi>all', handler1],
+            ['bar', 'hi>all', handler2]
+        ], "should subscribe all handlers to new path");
+    });
+
+    test("Static subscription", function () {
+        expect(5);
+
+        function eventHandler() {
+        }
 
         evan.EventSpace.addMocks({
             subscribeTo: function (eventName, eventPath, handler) {
@@ -60,17 +99,26 @@
             }
         });
 
+        EventedStaticClass.subscriptionRegistry.addMocks({
+            addItem: function (eventName, handler) {
+                equal(eventName, 'myEvent', "should add event to registry");
+                strictEqual(handler, eventHandler, "should pass handler to registry addition");
+            }
+        });
+
         EventedStaticClass.subscribeTo('myEvent', eventHandler);
 
         evan.EventSpace.removeMocks();
+        EventedStaticClass.subscriptionRegistry.removeMocks();
     });
 
     test("Instance level subscription", function () {
-        expect(3);
+        expect(5);
 
         var evented = EventedClass.create('test>path>foo>bar'.toPath());
 
-        function eventHandler() {}
+        function eventHandler() {
+        }
 
         evan.EventSpace.addMocks({
             subscribeTo: function (eventName, eventPath, handler) {
@@ -81,15 +129,23 @@
             }
         });
 
+        evented.subscriptionRegistry.addMocks({
+            addItem: function (eventName, handler) {
+                equal(eventName, 'myEvent', "should add event to registry");
+                strictEqual(handler, eventHandler, "should pass handler to registry addition");
+            }
+        });
+
         evented.subscribeTo('myEvent', eventHandler);
 
         evan.EventSpace.removeMocks();
     });
 
     test("Static unsubscription", function () {
-        expect(3);
+        expect(5);
 
-        function eventHandler() {}
+        function eventHandler() {
+        }
 
         evan.EventSpace.addMocks({
             unsubscribeFrom: function (eventName, eventPath, handler) {
@@ -99,17 +155,26 @@
             }
         });
 
+        EventedStaticClass.subscriptionRegistry.addMocks({
+            removeItem: function (eventName, handler) {
+                equal(eventName, 'myEvent', "should remove event from registry");
+                strictEqual(handler, eventHandler, "should pass handler to registry removal");
+            }
+        });
+
         EventedStaticClass.unsubscribeFrom('myEvent', eventHandler);
 
         evan.EventSpace.removeMocks();
+        EventedStaticClass.subscriptionRegistry.removeMocks();
     });
 
     test("Instance level unsubscription", function () {
-        expect(3);
+        expect(5);
 
         var evented = EventedClass.create('test>path>foo>bar'.toPath());
 
-        function eventHandler() {}
+        function eventHandler() {
+        }
 
         evan.EventSpace.addMocks({
             unsubscribeFrom: function (eventName, eventPath, handler) {
@@ -120,15 +185,26 @@
             }
         });
 
+        evented.subscriptionRegistry.addMocks({
+            removeItem: function (eventName, handler) {
+                equal(eventName, 'myEvent', "should remove event from registry");
+                strictEqual(handler, eventHandler, "should pass handler to registry removal");
+            }
+        });
+
         evented.unsubscribeFrom('myEvent', eventHandler);
 
         evan.EventSpace.removeMocks();
     });
 
     test("Static one time subscription", function () {
-        expect(3);
+        expect(5);
 
-        function eventHandler() {}
+        function eventHandler() {
+        }
+
+        function oneHandler() {
+        }
 
         evan.EventSpace.addMocks({
             subscribeToUntilTriggered: function (eventName, eventPath, handler) {
@@ -136,20 +212,33 @@
                 equal(eventPath.toString(), 'test>path',
                     "should pass event path to subscription method");
                 strictEqual(handler, eventHandler, "should pass event handler function to subscription method");
+                return oneHandler;
+            }
+        });
+
+        EventedStaticClass.subscriptionRegistry.addMocks({
+            addItem: function (eventName, handler) {
+                equal(eventName, 'myEvent', "should add event to registry");
+                strictEqual(handler, oneHandler, "should pass one time handler to registry addition");
             }
         });
 
         EventedStaticClass.subscribeToUntilTriggered('myEvent', eventHandler);
 
         evan.EventSpace.removeMocks();
+        EventedStaticClass.subscriptionRegistry.removeMocks();
     });
 
     test("Instance level one time subscription", function () {
-        expect(3);
+        expect(5);
 
         var evented = EventedClass.create('test>path>foo>bar'.toPath());
 
-        function eventHandler() {}
+        function eventHandler() {
+        }
+
+        function oneHandler() {
+        }
 
         evan.EventSpace.addMocks({
             subscribeToUntilTriggered: function (eventName, eventPath, handler) {
@@ -157,6 +246,14 @@
                 equal(eventPath.toString(), 'test>path>foo>bar',
                     "should pass event path to subscription method");
                 strictEqual(handler, eventHandler, "should pass event handler function to subscription method");
+                return oneHandler;
+            }
+        });
+
+        evented.subscriptionRegistry.addMocks({
+            addItem: function (eventName, handler) {
+                equal(eventName, 'myEvent', "should add event to registry");
+                strictEqual(handler, oneHandler, "should pass one time handler to registry addition");
             }
         });
 
@@ -166,9 +263,13 @@
     });
 
     test("Static delegation", function () {
-        expect(4);
+        expect(6);
 
-        function eventHandler() {}
+        function eventHandler() {
+        }
+
+        function delegateHandler() {
+        }
 
         evan.EventSpace.addMocks({
             delegateSubscriptionTo: function (eventName, capturePath, delegatePath, handler) {
@@ -178,20 +279,33 @@
                 equal(delegatePath.toString(), 'test>path>foo',
                     "should pass delegate path to delegation method");
                 strictEqual(handler, eventHandler, "should pass event handler function to subscription method");
+                return delegateHandler;
+            }
+        });
+
+        EventedStaticClass.subscriptionRegistry.addMocks({
+            addItem: function (eventName, handler) {
+                equal(eventName, 'myEvent', "should add event to registry");
+                strictEqual(handler, delegateHandler, "should pass delegate handler to registry addition");
             }
         });
 
         EventedStaticClass.delegateSubscriptionTo('myEvent', 'test>path>foo'.toPath(), eventHandler);
 
         evan.EventSpace.removeMocks();
+        EventedStaticClass.subscriptionRegistry.removeMocks();
     });
 
     test("Instance level delegation", function () {
-        expect(4);
+        expect(6);
 
         var evented = EventedClass.create('test>path>foo>bar'.toPath());
 
-        function eventHandler() {}
+        function eventHandler() {
+        }
+
+        function delegateHandler() {
+        }
 
         evan.EventSpace.addMocks({
             delegateSubscriptionTo: function (eventName, capturePath, delegatePath, handler) {
@@ -201,6 +315,14 @@
                 equal(delegatePath.toString(), 'test>path>foo>bar>hello>world',
                     "should pass delegate path to delegation method");
                 strictEqual(handler, eventHandler, "should pass event handler function to subscription method");
+                return delegateHandler;
+            }
+        });
+
+        evented.subscriptionRegistry.addMocks({
+            addItem: function (eventName, handler) {
+                equal(eventName, 'myEvent', "should add event to registry");
+                strictEqual(handler, delegateHandler, "should pass delegate handler to registry addition");
             }
         });
 

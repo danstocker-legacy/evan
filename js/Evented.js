@@ -13,7 +13,65 @@ troop.postpone(evan, 'Evented', function () {
      * @extends evan.EventSpawner
      */
     evan.Evented = self
+        .addPrivateMethods(/** @lends evan.Evented# */{
+            /**
+             * @param {sntls.Dictionary} dictionary
+             * @returns {Array}
+             * @private
+             */
+            _flattenDictionary: function (dictionary) {
+                var result = [],
+                    items = dictionary.items,
+                    keys = Object.keys(items),
+                    i, key, values, handler,
+                    j;
+
+                for (i = 0; i < keys.length; i++) {
+                    key = keys[i];
+                    values = items[key];
+
+                    if (values instanceof Array) {
+                        for (j = 0; j < values.length; j++) {
+                            result.push([key, values[j]]);
+                        }
+                    } else {
+                        result.push([key, values]);
+                    }
+                }
+
+                return result;
+            },
+
+            /**
+             * @param {sntls.Path} oldEventPath
+             * @param {sntls.Path} newEventPath
+             * @private
+             */
+            _reSubscribe: function (oldEventPath, newEventPath) {
+                var that = this;
+                this._flattenDictionary(this.subscriptionRegistry)
+                    .toCollection()
+                    .forEachItem(function (keyValuePair) {
+                        var eventName = keyValuePair[0],
+                            handler = keyValuePair[1];
+                        that.eventSpace
+                            .unsubscribeFrom(eventName, oldEventPath, handler)
+                            .subscribeTo(eventName, newEventPath, handler);
+                    });
+            }
+        })
         .addMethods(/** @lends evan.Evented# */{
+            /** @ignore */
+            init: function () {
+                base.init.call(this);
+
+                /**
+                 * Stores event name - handler associations for the current evented instance.
+                 * @type {sntls.Dictionary}
+                 */
+                this.subscriptionRegistry = undefined;
+            },
+
             /**
              * Sets event space on current class or instance.
              * @param {evan.EventSpace} eventSpace
@@ -41,6 +99,15 @@ troop.postpone(evan, 'Evented', function () {
                         !baseEventPath || eventPath.isRelativeTo(baseEventPath),
                         "Specified event path is not relative to static event path");
 
+                if (!this.subscriptionRegistry) {
+                    // initializing subscription registry
+                    this.subscriptionRegistry = sntls.Dictionary.create();
+                } else {
+                    // re-subscribing events
+                    this._reSubscribe(this.eventPath, eventPath);
+                }
+
+                // storing new event path
                 this.eventPath = eventPath;
 
                 return this;
@@ -55,17 +122,25 @@ troop.postpone(evan, 'Evented', function () {
              */
             subscribeTo: function (eventName, handler) {
                 this.eventSpace.subscribeTo(eventName, this.eventPath, handler);
+                this.subscriptionRegistry.addItem(eventName, handler);
                 return this;
             },
 
             /**
              * Unsubscribes from event.
-             * @param {string} eventName Name of event to be triggered.
+             * @param {string} [eventName] Name of event to be triggered.
              * @param {function} [handler] Event handler function
              * @return {evan.Evented}
              */
             unsubscribeFrom: function (eventName, handler) {
                 this.eventSpace.unsubscribeFrom(eventName, this.eventPath, handler);
+
+                if (eventName) {
+                    this.subscriptionRegistry.removeItem(eventName, handler);
+                } else {
+                    this.subscriptionRegistry.clear();
+                }
+
                 return this;
             },
 
@@ -77,7 +152,8 @@ troop.postpone(evan, 'Evented', function () {
              * @return {evan.Evented}
              */
             subscribeToUntilTriggered: function (eventName, handler) {
-                this.eventSpace.subscribeToUntilTriggered(eventName, this.eventPath, handler);
+                var oneHandler = this.eventSpace.subscribeToUntilTriggered(eventName, this.eventPath, handler);
+                this.subscriptionRegistry.addItem(eventName, oneHandler);
                 return this;
             },
 
@@ -90,7 +166,8 @@ troop.postpone(evan, 'Evented', function () {
              * @return {evan.Evented}
              */
             delegateSubscriptionTo: function (eventName, delegatePath, handler) {
-                this.eventSpace.delegateSubscriptionTo(eventName, this.eventPath, delegatePath, handler);
+                var delegateHandler = this.eventSpace.delegateSubscriptionTo(eventName, this.eventPath, delegatePath, handler);
+                this.subscriptionRegistry.addItem(eventName, delegateHandler);
                 return this;
             },
 
