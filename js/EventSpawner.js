@@ -6,7 +6,7 @@
 
 /**
  * Sets payload for next event triggered.
- * @name evan.EventSpawner#setNextPayload
+ * @name evan.EventSpawner#pushPayload
  * @function
  * @param {*} nextPayload
  * @returns {evan.EventSpawner}
@@ -14,14 +14,14 @@
 
 /**
  * Clears payload for next event triggered.
- * @name evan.EventSpawner#clearNextPayload
+ * @name evan.EventSpawner#popPayload
  * @function
  * @returns {evan.EventSpawner}
  */
 
 /**
  * Sets original event for next event triggered.
- * @name evan.EventSpawner#setNextOriginalEvent
+ * @name evan.EventSpawner#pushOriginalEvent
  * @function
  * @param {evan.Event|*} nextOriginalEvent
  * @returns {evan.EventSpawner}
@@ -29,7 +29,7 @@
 
 /**
  * Clears original event for next event triggered.
- * @name evan.EventSpawner#clearNextOriginalEvent
+ * @name evan.EventSpawner#popOriginalEvent
  * @function
  * @returns {evan.EventSpawner}
  */

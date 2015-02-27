@@ -77,8 +77,8 @@ troop.postpone(evan, 'Evented', function () {
              * @returns {evan.Evented}
              * @deprecated
              */
-            setNextPayload: function (nextPayload) {
-                this.eventSpace.setNextPayload(nextPayload);
+            pushPayload: function (nextPayload) {
+                this.eventSpace.pushPayload(nextPayload);
                 return this;
             },
 
@@ -87,8 +87,8 @@ troop.postpone(evan, 'Evented', function () {
              * @returns {evan.Evented}
              * @deprecated
              */
-            clearNextPayload: function () {
-                this.eventSpace.clearNextPayload();
+            popPayload: function () {
+                this.eventSpace.popPayload();
                 return this;
             },
 
@@ -98,8 +98,8 @@ troop.postpone(evan, 'Evented', function () {
              * @returns {evan.Evented}
              * @deprecated
              */
-            setNextOriginalEvent: function (nextOriginalEvent) {
-                this.eventSpace.setNextOriginalEvent(nextOriginalEvent);
+            pushOriginalEvent: function (nextOriginalEvent) {
+                this.eventSpace.pushOriginalEvent(nextOriginalEvent);
                 return this;
             },
 
@@ -108,8 +108,8 @@ troop.postpone(evan, 'Evented', function () {
              * @returns {evan.Evented}
              * @deprecated
              */
-            clearNextOriginalEvent: function () {
-                this.eventSpace.clearNextOriginalEvent();
+            popOriginalEvent: function () {
+                this.eventSpace.popOriginalEvent();
                 return this;
             },
 
@@ -235,7 +235,7 @@ troop.postpone(evan, 'Evented', function () {
              * Shorthand for **triggering** an event in the event space
              * associated with the instance / class.
              * @param {string} eventName
-             * @param {*} [payload] Payload to be set on triggered event. Overrides nextPayload property.
+             * @param {*} [payload] Payload to be set on triggered event. Overrides payloadStack property.
              * @return {evan.Evented}
              */
             triggerSync: function (eventName, payload) {
@@ -248,7 +248,7 @@ troop.postpone(evan, 'Evented', function () {
              * Shorthand for **broadcasting** an event in the event space
              * associated with the instance / class.
              * @param {string} eventName
-             * @param {*} [payload] Payload to be set on triggered event. Overrides nextPayload property.
+             * @param {*} [payload] Payload to be set on triggered event. Overrides payloadStack property.
              * @return {evan.Evented}
              */
             broadcastSync: function (eventName, payload) {

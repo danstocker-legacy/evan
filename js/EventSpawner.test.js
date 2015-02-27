@@ -7,44 +7,42 @@
     test("Instantiation", function () {
         var eventSpawner = evan.EventSpace.create();
 
-        ok(eventSpawner.hasOwnProperty('nextPayload'), "should add nextPayload property");
-        equal(typeof eventSpawner.nextPayload, 'undefined', "should set nextPayload to undefined");
-        ok(eventSpawner.hasOwnProperty('nextOriginalEvent'), "should add nextOriginalEvent property");
-        equal(typeof eventSpawner.nextOriginalEvent, 'undefined', "should set nextOriginalEvent to undefined");
+        deepEqual(eventSpawner.payloadStack, [], "should set payloadStack property");
+        deepEqual(eventSpawner.originalEventStack, [], "should set originalEventStack property");
     });
 
     test("Next payload setter", function () {
         var payload = {},
             eventSpawner = evan.EventSpace.create()
-                .setNextPayload(payload);
+                .pushPayload(payload);
 
-        strictEqual(eventSpawner.nextPayload, payload, "should set nextPayload");
+        deepEqual(eventSpawner.payloadStack, [payload], "should add payload to stack");
     });
 
     test("Clearing next payload", function () {
         var payload = {},
             eventSpawner = evan.EventSpace.create()
-                .setNextPayload(payload)
-                .clearNextPayload();
+                .pushPayload(payload);
 
-        equal(typeof eventSpawner.nextPayload, 'undefined', "should set nextPayload to undefined");
+        strictEqual(eventSpawner.popPayload(), payload, "should return removed payload");
+        deepEqual(eventSpawner.payloadStack, [], "should remove payload from stack");
     });
 
     test("Next original event setter", function () {
         var originalEvent = {},
             eventSpawner = evan.EventSpace.create()
-                .setNextOriginalEvent(originalEvent);
+                .pushOriginalEvent(originalEvent);
 
-        strictEqual(eventSpawner.nextOriginalEvent, originalEvent, "should set nextOriginalEvent");
+        deepEqual(eventSpawner.originalEventStack, [originalEvent], "should add original event to stack");
     });
 
     test("Clearing next original event", function () {
-        var payload = {},
+        var originalEvent = {},
             eventSpawner = evan.EventSpace.create('foo>bar'.toPath())
-                .setNextOriginalEvent(payload)
-                .clearNextOriginalEvent();
+                .pushOriginalEvent(originalEvent);
 
-        equal(typeof eventSpawner.nextOriginalEvent, 'undefined', "should set nextOriginalEvent to undefined");
+        strictEqual(eventSpawner.popOriginalEvent(), originalEvent, "should return removed payload");
+        deepEqual(eventSpawner.originalEventStack, [], "should remove original event from stack");
     });
 
     test("Spawning event", function () {
@@ -56,8 +54,8 @@
                 customPayload: {}
             },
             eventSpawner = evan.EventSpace.create()
-                .setNextPayload(params.payload)
-                .setNextOriginalEvent(params.originalEvent);
+                .pushPayload(params.payload)
+                .pushOriginalEvent(params.originalEvent);
 
         eventSpawner
             .addMocks({
