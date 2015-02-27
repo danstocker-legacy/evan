@@ -28,11 +28,84 @@
 
     test("Instantiation", function () {
         var eventSpace = evan.EventSpace.create();
+
         ok(eventSpace.eventRegistry.isA(sntls.Tree), "should set event registry as a Tree");
         ok(eventSpace.hasOwnProperty('instanceId'), "should set instanceId property");
         deepEqual(eventSpace.eventRegistry.items, {}, "should initialize event registry Tree as empty");
         strictEqual(evan.eventSpaceRegistry.getItem(eventSpace.instanceId), eventSpace,
             "should set event space in registry");
+
+        deepEqual(eventSpace.payloadStack, [], "should set payloadStack property");
+        deepEqual(eventSpace.originalEventStack, [], "should set originalEventStack property");
+    });
+
+    test("Next payload setter", function () {
+        var payload = {},
+            eventSpace = evan.EventSpace.create()
+                .pushPayload(payload);
+
+        deepEqual(eventSpace.payloadStack, [payload], "should add payload to stack");
+    });
+
+    test("Clearing next payload", function () {
+        var payload = {},
+            eventSpace = evan.EventSpace.create()
+                .pushPayload(payload);
+
+        strictEqual(eventSpace.popPayload(), payload, "should return removed payload");
+        deepEqual(eventSpace.payloadStack, [], "should remove payload from stack");
+    });
+
+    test("Next original event setter", function () {
+        var originalEvent = {},
+            eventSpace = evan.EventSpace.create()
+                .pushOriginalEvent(originalEvent);
+
+        deepEqual(eventSpace.originalEventStack, [originalEvent], "should add original event to stack");
+    });
+
+    test("Clearing next original event", function () {
+        var originalEvent = {},
+            eventSpace = evan.EventSpace.create('foo>bar'.toPath())
+                .pushOriginalEvent(originalEvent);
+
+        strictEqual(eventSpace.popOriginalEvent(), originalEvent, "should return removed payload");
+        deepEqual(eventSpace.originalEventStack, [], "should remove original event from stack");
+    });
+
+    test("Spawning event", function () {
+        expect(4);
+
+        var params = {
+                originalEvent: {},
+                payload      : {},
+                customPayload: {}
+            },
+            eventSpace = evan.EventSpace.create()
+                .pushPayload(params.payload)
+                .pushOriginalEvent(params.originalEvent);
+
+        eventSpace
+            .addMocks({
+                _prepareEvent: function (event, payload) {
+                    params.event = event;
+                    ok(event.isA(evan.Event), "should prepare spawned event");
+                    equal(typeof payload, 'undefined', "should pass undefined as payload to preparation");
+                }
+            });
+
+        strictEqual(eventSpace.spawnEvent('event-name'), params.event, "should return spawned event");
+
+        eventSpace
+            .removeMocks()
+            .addMocks({
+                _prepareEvent: function (event, payload) {
+                    strictEqual(payload, params.customPayload,
+                        "should pass custom payload to preparation when specified");
+                }
+            });
+
+        eventSpace.spawnEvent('event-name', params.customPayload);
     });
 
     test("Spawning event", function () {
