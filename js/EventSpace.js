@@ -7,7 +7,9 @@ troop.postpone(evan, 'EventSpace', function () {
             .addTrait(evan.EventSpawner);
 
     /**
-     * Instantiates class.
+     * Instantiates an EventSpace.
+     * Make sure the number of event spaces are kept to a minimum, as all EventSpace instances
+     * will be permanently stored in evan.eventSpaceRegistry.
      * @name evan.EventSpace.create
      * @function
      * @return {evan.EventSpace}
@@ -17,6 +19,7 @@ troop.postpone(evan, 'EventSpace', function () {
      * Events traverse within a confined event space.
      * @class evan.EventSpace
      * @extends troop.Base
+     * @extends sntls.Documented
      * @extends evan.EventSpawner
      */
     evan.EventSpace = self
@@ -42,6 +45,8 @@ troop.postpone(evan, 'EventSpace', function () {
         .addMethods(/** @lends evan.EventSpace# */{
             /** @ignore */
             init: function () {
+                sntls.Documented.init.call(this);
+
                 /**
                  * Lookup for subscribed event handlers.
                  * @type {sntls.Tree}
@@ -49,6 +54,8 @@ troop.postpone(evan, 'EventSpace', function () {
                  * @example {myEvent: {handlers: {myPath: [func1, func2]}, paths: [myPath]}}
                  */
                 this.eventRegistry = sntls.Tree.create();
+
+                evan.eventSpaceRegistry.setItem(this.instanceId, this);
             },
 
             /**

@@ -29,7 +29,10 @@
     test("Instantiation", function () {
         var eventSpace = evan.EventSpace.create();
         ok(eventSpace.eventRegistry.isA(sntls.Tree), "should set event registry as a Tree");
+        ok(eventSpace.hasOwnProperty('instanceId'), "should set instanceId property");
         deepEqual(eventSpace.eventRegistry.items, {}, "should initialize event registry Tree as empty");
+        strictEqual(evan.eventSpaceRegistry.getItem(eventSpace.instanceId), eventSpace,
+            "should set event space in registry");
     });
 
     test("Spawning event", function () {
