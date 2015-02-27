@@ -332,17 +332,21 @@
     });
 
     test("Spawning event", function () {
-        expect(1);
+        expect(3);
 
-        var evented = EventedClass.create('test>path>foo>bar'.toPath());
+        var evented = EventedClass.create('test>path>foo>bar'.toPath()),
+            custom = {},
+            event = {};
 
-        evented.addMocks({
-            _prepareEvent: function (event) {
-                strictEqual(event.eventSpace, evented.eventSpace, "should set event space of spawned event");
+        evented.eventSpace.addMocks({
+            spawnEvent: function (eventName, payload) {
+                equal(eventName, 'event-name', "should have event space spawn an event");
+                strictEqual(payload, custom, "should pass payload to spawner");
+                return event;
             }
         });
 
-        evented.spawnEvent('event-name');
+        strictEqual(evented.spawnEvent('event-name', custom), event, "should return spawned event");
     });
 
     test("Triggering events", function () {

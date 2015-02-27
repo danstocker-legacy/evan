@@ -3,8 +3,7 @@ troop.postpone(evan, 'EventSpace', function () {
     "use strict";
 
     var base = troop.Base,
-        self = base.extend()
-            .addTrait(evan.EventSpawner);
+        self = base.extend();
 
     /**
      * Instantiates an EventSpace.
@@ -40,6 +39,26 @@ troop.postpone(evan, 'EventSpace', function () {
              */
             _generatePathsStub: function () {
                 return sntls.OrderedStringList.create();
+            },
+
+            /**
+             * Prepares spawned event for triggering.
+             * @param {evan.Event} event
+             * @param {*} [payload]
+             * @private
+             */
+            _prepareEvent: function (event, payload) {
+                payload = payload || this.nextPayload;
+
+                if (payload) {
+                    event.setPayload(payload);
+                }
+
+                var nextOriginalEvent = this.nextOriginalEvent;
+
+                if (nextOriginalEvent) {
+                    event.setOriginalEvent(nextOriginalEvent);
+                }
             }
         })
         .addMethods(/** @lends evan.EventSpace# */{
@@ -55,16 +74,68 @@ troop.postpone(evan, 'EventSpace', function () {
                  */
                 this.eventRegistry = sntls.Tree.create();
 
+                /**
+                 * Payload to be set on next trigger(s).
+                 * @type {*}
+                 */
+                this.nextPayload = undefined;
+
+                /**
+                 * Original event to be set on next trigger(s).
+                 * @type {evan.Event|*}
+                 */
+                this.nextOriginalEvent = undefined;
+
                 evan.eventSpaceRegistry.setItem(this.instanceId, this);
             },
 
             /**
-             * Creates an event in the context of the current event space.
-             * @param {string} eventName Event name
-             * @return {evan.Event} New event instance
+             * Sets payload for next event triggered.
+             * @param {*} nextPayload
+             * @returns {evan.EventSpace}
              */
-            spawnPlainEvent: function (eventName) {
-                return evan.Event.create(eventName, this);
+            setNextPayload: function (nextPayload) {
+                this.nextPayload = nextPayload;
+                return this;
+            },
+
+            /**
+             * Clears payload for next event triggered.
+             * @returns {evan.EventSpace}
+             */
+            clearNextPayload: function () {
+                this.nextPayload = undefined;
+                return this;
+            },
+
+            /**
+             * Sets original event for next event triggered.
+             * @param {evan.Event|*} nextOriginalEvent
+             * @returns {evan.EventSpace}
+             */
+            setNextOriginalEvent: function (nextOriginalEvent) {
+                this.nextOriginalEvent = nextOriginalEvent;
+                return this;
+            },
+
+            /**
+             * Clears original event for next event triggered.
+             * @returns {evan.EventSpace}
+             */
+            clearNextOriginalEvent: function () {
+                this.nextOriginalEvent = undefined;
+                return this;
+            },
+
+            /**
+             * @param {string} eventName
+             * @param {*} [payload]
+             * @return {evan.Event}
+             */
+            spawnEvent: function (eventName, payload) {
+                var event = evan.Event.create(eventName, this);
+                this._prepareEvent(event, payload);
+                return event;
             },
 
             /**

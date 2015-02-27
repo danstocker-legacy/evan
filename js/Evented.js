@@ -2,7 +2,7 @@
 troop.postpone(evan, 'Evented', function () {
     "use strict";
 
-    var base = evan.EventSpawner,
+    var base = troop.Base,
         self = base.extend();
 
     /**
@@ -10,6 +10,7 @@ troop.postpone(evan, 'Evented', function () {
      * Classes with this trait may trigger and capture
      * events on a specified event space directly.
      * @class evan.Evented
+     * @extends troop.Base
      * @extends evan.EventSpawner
      */
     evan.Evented = self
@@ -63,13 +64,63 @@ troop.postpone(evan, 'Evented', function () {
         .addMethods(/** @lends evan.Evented# */{
             /** @ignore */
             init: function () {
-                base.init.call(this);
-
                 /**
                  * Stores event name - handler associations for the current evented instance.
                  * @type {sntls.Dictionary}
                  */
                 this.subscriptionRegistry = undefined;
+            },
+
+            /**
+             * Sets payload for next event triggered.
+             * @param {*} nextPayload
+             * @returns {evan.Evented}
+             * @deprecated
+             */
+            setNextPayload: function (nextPayload) {
+                this.eventSpace.setNextPayload(nextPayload);
+                return this;
+            },
+
+            /**
+             * Clears payload for next event triggered.
+             * @returns {evan.Evented}
+             * @deprecated
+             */
+            clearNextPayload: function () {
+                this.eventSpace.clearNextPayload();
+                return this;
+            },
+
+            /**
+             * Sets original event for next event triggered.
+             * @param {evan.Event|*} nextOriginalEvent
+             * @returns {evan.Evented}
+             * @deprecated
+             */
+            setNextOriginalEvent: function (nextOriginalEvent) {
+                this.eventSpace.setNextOriginalEvent(nextOriginalEvent);
+                return this;
+            },
+
+            /**
+             * Clears original event for next event triggered.
+             * @returns {evan.Evented}
+             * @deprecated
+             */
+            clearNextOriginalEvent: function () {
+                this.eventSpace.clearNextOriginalEvent();
+                return this;
+            },
+
+            /**
+             * @param {string} eventName
+             * @param {*} [payload]
+             * @return {evan.Event}
+             * @deprecated
+             */
+            spawnEvent: function (eventName, payload) {
+                return this.eventSpace.spawnEvent(eventName, payload);
             },
 
             /**
