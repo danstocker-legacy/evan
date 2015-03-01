@@ -80,7 +80,10 @@ troop.postpone(evan, 'Event', function () {
 
                 /**
                  * Evan event or DOM event that led to triggering the current event.
+                 * In most cases, this property is not set directly, but through
+                 * evan.eventPropertyStack.pushOriginalEvent()
                  * @type {evan.Event|*}
+                 * @see evan.eventPropertyStack.pushOriginalEvent
                  */
                 this.originalEvent = undefined;
 
@@ -98,7 +101,10 @@ troop.postpone(evan, 'Event', function () {
 
                 /**
                  * Custom payload to be carried by the event
+                 * In most cases, this property is not set directly, but through
+                 * evan.eventPropertyStack.pushPayload()
                  * @type {*}
+                 * @see evan.eventPropertyStack.pushPayload
                  */
                 this.payload = undefined;
 
