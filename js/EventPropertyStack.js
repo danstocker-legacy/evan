@@ -6,12 +6,17 @@ troop.postpone(evan, 'EventPropertyStack', function () {
         self = base.extend();
 
     /**
+     * Creates an EventPropertyStack instance.
+     * Creating your own EventPropertyStack instance is rarely needed.
+     * Use evan.eventPropertyStack instead.
      * @name evan.EventPropertyStack.create
      * @function
      * @returns {evan.EventPropertyStack}
+     * @see evan.eventPropertyStack
      */
 
     /**
+     * Maintains a stack of payloads and original events.
      * @class
      * @extends troop.Base
      */
