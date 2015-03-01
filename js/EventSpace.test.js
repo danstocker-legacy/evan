@@ -39,7 +39,7 @@
         deepEqual(eventSpace.originalEventStack, [], "should set originalEventStack property");
     });
 
-    test("Next payload setter", function () {
+    test("Pushing payload", function () {
         var payload = {},
             eventSpace = evan.EventSpace.create()
                 .pushPayload(payload);
@@ -47,7 +47,7 @@
         deepEqual(eventSpace.payloadStack, [payload], "should add payload to stack");
     });
 
-    test("Clearing next payload", function () {
+    test("Popping payload", function () {
         var payload = {},
             eventSpace = evan.EventSpace.create()
                 .pushPayload(payload);
@@ -56,7 +56,18 @@
         deepEqual(eventSpace.payloadStack, [], "should remove payload from stack");
     });
 
-    test("Next original event setter", function () {
+    test("Getting next payload", function () {
+        var payload = {},
+            eventSpace = evan.EventSpace.create()
+                .pushPayload(payload);
+
+        strictEqual(eventSpace.getNextPayload(), payload,
+            "should return last added payload");
+        deepEqual(eventSpace.payloadStack, [payload],
+            "should NOT remove payload from stack");
+    });
+
+    test("Pushing original event", function () {
         var originalEvent = {},
             eventSpace = evan.EventSpace.create()
                 .pushOriginalEvent(originalEvent);
@@ -64,13 +75,24 @@
         deepEqual(eventSpace.originalEventStack, [originalEvent], "should add original event to stack");
     });
 
-    test("Clearing next original event", function () {
+    test("Popping original event", function () {
         var originalEvent = {},
             eventSpace = evan.EventSpace.create('foo>bar'.toPath())
                 .pushOriginalEvent(originalEvent);
 
         strictEqual(eventSpace.popOriginalEvent(), originalEvent, "should return removed payload");
         deepEqual(eventSpace.originalEventStack, [], "should remove original event from stack");
+    });
+
+    test("Getting next original event", function () {
+        var originalEvent = {},
+            eventSpace = evan.EventSpace.create()
+                .pushOriginalEvent(originalEvent);
+
+        strictEqual(eventSpace.getNextOriginalEvent(), originalEvent,
+            "should return last added original event");
+        deepEqual(eventSpace.originalEventStack, [originalEvent],
+            "should NOT remove original event from stack");
     });
 
     test("Spawning event", function () {

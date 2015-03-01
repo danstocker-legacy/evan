@@ -48,13 +48,13 @@ troop.postpone(evan, 'EventSpace', function () {
              * @private
              */
             _prepareEvent: function (event, payload) {
-                payload = payload || this.payloadStack[0];
+                payload = payload || this.getNextPayload();
 
                 if (payload) {
                     event.setPayload(payload);
                 }
 
-                var nextOriginalEvent = this.originalEventStack[0];
+                var nextOriginalEvent = this.getNextOriginalEvent();
 
                 if (nextOriginalEvent) {
                     event.setOriginalEvent(nextOriginalEvent);
@@ -108,6 +108,14 @@ troop.postpone(evan, 'EventSpace', function () {
             },
 
             /**
+             * Retrieves last added item from the payload stack.
+             * @returns {*}
+             */
+            getNextPayload: function () {
+                return this.payloadStack[0];
+            },
+
+            /**
              * Adds an original event to the original event stack.
              * @param {evan.Event|*} originalEvent
              * @returns {evan.EventSpace}
@@ -123,6 +131,14 @@ troop.postpone(evan, 'EventSpace', function () {
              */
             popOriginalEvent: function () {
                 return this.originalEventStack.shift();
+            },
+
+            /**
+             * Retrieves last added item from the original event stack.
+             * @returns {evan.Event|*}
+             */
+            getNextOriginalEvent: function () {
+                return this.originalEventStack[0];
             },
 
             /**
