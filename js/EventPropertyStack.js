@@ -28,13 +28,13 @@ troop.postpone(evan, 'EventPropertyStack', function () {
             init: function () {
                 /**
                  * Stack of payloads to be assigned to triggered events.
-                 * @type {*[]}
+                 * @type {Array}
                  */
                 this.payloadStack = [];
 
                 /**
                  * Stack of original events to be assigned to triggered events.
-                 * @type {evan.Event[]|*[]}
+                 * @type {evan.Event[]|Array}
                  */
                 this.originalEventStack = [];
             },
