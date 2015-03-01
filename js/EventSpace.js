@@ -19,7 +19,6 @@ troop.postpone(evan, 'EventSpace', function () {
      * @class evan.EventSpace
      * @extends troop.Base
      * @extends sntls.Documented
-     * @extends evan.EventSpawner
      */
     evan.EventSpace = self
         .addPrivateMethods(/** @lends evan.EventSpace */{

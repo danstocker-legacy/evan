@@ -7,7 +7,6 @@ module.exports = function (grunt) {
             'js/namespace.js',
             'js/PathCollection.js',
             'js/Event.js',
-            'js/EventSpawner.js',
             'js/EventSpace.js',
             'js/EventPropertyStack.js',
             'js/Evented.js',

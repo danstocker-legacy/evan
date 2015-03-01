@@ -11,7 +11,6 @@ troop.postpone(evan, 'Evented', function () {
      * events on a specified event space directly.
      * @class evan.Evented
      * @extends troop.Base
-     * @extends evan.EventSpawner
      */
     evan.Evented = self
         .addPrivateMethods(/** @lends evan.Evented# */{
