@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: PathCollection</title>
+    <title>JSDoc: Class: dessert</title>
     
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Class: PathCollection</h1>
+    <h1 class="page-title">Class: dessert</h1>
     
     
 
@@ -27,15 +27,22 @@
     
 <header>
     <h2>
-        <span class="ancestors"><a href="evan.html">evan</a>.</span>
-    
-    PathCollection
+    dessert
     </h2>
     
 </header>  
 
 <article>
     <div class="container-overview">
+    
+    
+    
+        
+<dt>
+    <h4 class="name" id="dessert"><span class="type-signature"></span>new dessert<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
 <dd>
     
     
@@ -69,12 +76,19 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathCollection.js.html">PathCollection.js</a>, line 9
+        <a href="namespace.js.html">namespace.js</a>, line 13
     </li></ul></dd>
     
     
     
     
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="https://github.com/production-minds/dessert">https://github.com/production-minds/dessert</a></li>
+        </ul>
+    </dd>
     
     
     
@@ -94,14 +108,6 @@
     </div>
     
     
-        <h3 class="subsection-title">Extends</h3>
-        
-        <ul>
-            <li>sntls.Collection</li>
-        
-            <li>sntls.Path</li>
-        </ul>
-    
     
     
     
@@ -119,7 +125,7 @@
         <dl>
             
 <dt>
-    <h4 class="name" id="create"><span class="type-signature">&lt;static> </span>create<span class="signature">(<span class="optional">items</span>)</span><span class="type-signature"> &rarr; {<a href="evan.PathCollection.html">evan.PathCollection</a>}</span></h4>
+    <h4 class="name" id="isEvent"><span class="type-signature">&lt;static> </span>isEvent<span class="signature">(expr)</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -145,8 +151,6 @@
 		<th>Type</th>
 		
 		
-		<th>Argument</th>
-		
 		
 		
 		
@@ -159,33 +163,23 @@
 	
         <tr>
             
-                <td class="name"><code>items</code></td>
+                <td class="name"><code>expr</code></td>
             
             
             <td class="type">
             
                 
-<span class="param-type">object</span>
+<span class="param-type"><a href="evan.Event.html">evan.Event</a></span>
 
 
             
             </td>
             
             
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-                    
-                
-                    
-                
-                </td>
             
             
             
-            
-            <td class="description last">Initial contents.</td>
+            <td class="description last"></td>
         </tr>
 	
 	
@@ -216,7 +210,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathCollection.js.html">PathCollection.js</a>, line 5
+        <a href="Event.js.html">Event.js</a>, line 395
     </li></ul></dd>
     
     
@@ -233,24 +227,115 @@
     
     
     
-    <h5>Returns:</h5>
     
-            
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type"><a href="evan.PathCollection.html">evan.PathCollection</a></span>
-
-
-	</dd>
-</dl>
+    
+</dd>
 
         
+            
+<dt>
+    <h4 class="name" id="isEventOptional"><span class="type-signature">&lt;static> </span>isEventOptional<span class="signature">(expr)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>expr</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="evan.Event.html">evan.Event</a></span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last"></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Event.js.html">Event.js</a>, line 400
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+    
+    
+    
+    
     
     
 </dd>
@@ -277,7 +362,7 @@
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Sun Mar 01 2015 16:37:32 GMT-0000 (GMT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Sun Mar 01 2015 16:37:31 GMT-0000 (GMT)
 </footer>
 
 <script> prettyPrint(); </script>

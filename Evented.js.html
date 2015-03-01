@@ -29,6 +29,9 @@
 troop.postpone(evan, 'Evented', function () {
     "use strict";
 
+    var base = troop.Base,
+        self = base.extend();
+
     /**
      * Trait.
      * Classes with this trait may trigger and capture
@@ -36,61 +39,72 @@ troop.postpone(evan, 'Evented', function () {
      * @class evan.Evented
      * @extends troop.Base
      */
-    evan.Evented = troop.Base.extend()
-        .addMethods(/** @lends evan.Evented# */{
+    evan.Evented = self
+        .addPrivateMethods(/** @lends evan.Evented# */{
             /**
-             * Call from init of host class.
+             * @param {sntls.Dictionary} dictionary
+             * @returns {Array}
+             * @private
              */
+            _flattenDictionary: function (dictionary) {
+                var result = [],
+                    items = dictionary.items,
+                    keys = Object.keys(items),
+                    i, key, values, handler,
+                    j;
+
+                for (i = 0; i &lt; keys.length; i++) {
+                    key = keys[i];
+                    values = items[key];
+
+                    if (values instanceof Array) {
+                        for (j = 0; j &lt; values.length; j++) {
+                            result.push([key, values[j]]);
+                        }
+                    } else {
+                        result.push([key, values]);
+                    }
+                }
+
+                return result;
+            },
+
+            /**
+             * @param {sntls.Path} oldEventPath
+             * @param {sntls.Path} newEventPath
+             * @private
+             */
+            _reSubscribe: function (oldEventPath, newEventPath) {
+                var that = this;
+                this._flattenDictionary(this.subscriptionRegistry)
+                    .toCollection()
+                    .forEachItem(function (keyValuePair) {
+                        var eventName = keyValuePair[0],
+                            handler = keyValuePair[1];
+                        that.eventSpace
+                            .unsubscribeFrom(eventName, oldEventPath, handler)
+                            .subscribeTo(eventName, newEventPath, handler);
+                    });
+            }
+        })
+        .addMethods(/** @lends evan.Evented# */{
+            /** @ignore */
             init: function () {
                 /**
-                 * Payload to be set on next trigger(s).
-                 * @type {*}
+                 * Stores event name - handler associations for the current evented instance.
+                 * @type {sntls.Dictionary}
                  */
-                this.nextPayload = undefined;
-
-                /**
-                 * Original event to be set on next trigger(s).
-                 * @type {evan.Event|*}
-                 */
-                this.nextOriginalEvent = undefined;
+                this.subscriptionRegistry = undefined;
             },
 
             /**
-             * Sets payload for next event triggered.
-             * @param {*} nextPayload
-             * @returns {evan.Evented}
+             * @param {string} eventName
+             * @param {*} [payload]
+             * @return {evan.Event}
+             * @deprecated
              */
-            setNextPayload: function (nextPayload) {
-                this.nextPayload = nextPayload;
-                return this;
-            },
-
-            /**
-             * Clears payload for next event triggered.
-             * @returns {evan.Evented}
-             */
-            clearNextPayload: function () {
-                this.nextPayload = undefined;
-                return this;
-            },
-
-            /**
-             * Sets original event for next event triggered.
-             * @param {evan.Event|*} nextOriginalEvent
-             * @returns {evan.Evented}
-             */
-            setNextOriginalEvent: function (nextOriginalEvent) {
-                this.nextOriginalEvent = nextOriginalEvent;
-                return this;
-            },
-
-            /**
-             * Clears original event for next event triggered.
-             * @returns {evan.Evented}
-             */
-            clearNextOriginalEvent: function () {
-                this.nextOriginalEvent = undefined;
-                return this;
+            spawnEvent: function (eventName, payload) {
+                return this.eventSpace.spawnEvent(eventName, payload);
             },
 
             /**
@@ -112,12 +126,24 @@ troop.postpone(evan, 'Evented', function () {
              * @memberOf {evan.Evented}
              */
             setEventPath: function (eventPath) {
+                var baseEventPath = this.getBase().eventPath,
+                    subscriptionRegistry = this.subscriptionRegistry;
+
                 dessert
                     .isPath(eventPath, "Invalid event path")
                     .assert(
-                        !this.eventPath || eventPath.isRelativeTo(this.eventPath),
+                        !baseEventPath || eventPath.isRelativeTo(baseEventPath),
                         "Specified event path is not relative to static event path");
 
+                if (!subscriptionRegistry) {
+                    // initializing subscription registry
+                    this.subscriptionRegistry = sntls.Dictionary.create();
+                } else if (subscriptionRegistry.getKeyCount()) {
+                    // re-subscribing events
+                    this._reSubscribe(this.eventPath, eventPath);
+                }
+
+                // storing new event path
                 this.eventPath = eventPath;
 
                 return this;
@@ -132,17 +158,25 @@ troop.postpone(evan, 'Evented', function () {
              */
             subscribeTo: function (eventName, handler) {
                 this.eventSpace.subscribeTo(eventName, this.eventPath, handler);
+                this.subscriptionRegistry.addItem(eventName, handler);
                 return this;
             },
 
             /**
              * Unsubscribes from event.
-             * @param {string} eventName Name of event to be triggered.
+             * @param {string} [eventName] Name of event to be triggered.
              * @param {function} [handler] Event handler function
              * @return {evan.Evented}
              */
             unsubscribeFrom: function (eventName, handler) {
                 this.eventSpace.unsubscribeFrom(eventName, this.eventPath, handler);
+
+                if (eventName) {
+                    this.subscriptionRegistry.removeItem(eventName, handler);
+                } else {
+                    this.subscriptionRegistry.clear();
+                }
+
                 return this;
             },
 
@@ -154,7 +188,8 @@ troop.postpone(evan, 'Evented', function () {
              * @return {evan.Evented}
              */
             subscribeToUntilTriggered: function (eventName, handler) {
-                this.eventSpace.subscribeToUntilTriggered(eventName, this.eventPath, handler);
+                var oneHandler = this.eventSpace.subscribeToUntilTriggered(eventName, this.eventPath, handler);
+                this.subscriptionRegistry.addItem(eventName, oneHandler);
                 return this;
             },
 
@@ -167,37 +202,24 @@ troop.postpone(evan, 'Evented', function () {
              * @return {evan.Evented}
              */
             delegateSubscriptionTo: function (eventName, delegatePath, handler) {
-                this.eventSpace.delegateSubscriptionTo(eventName, this.eventPath, delegatePath, handler);
+                var delegateHandler = this.eventSpace.delegateSubscriptionTo(eventName, this.eventPath, delegatePath, handler);
+                this.subscriptionRegistry.addItem(eventName, delegateHandler);
                 return this;
             },
 
             /**
-             * Spawns an event on the event space associated with the current class or instance,
-             * setting original event an payload according to current object state and/or arguments.
              * @param {string} eventName
-             * @param {*} [payload] Payload to be set on triggered event. Overrides nextPayload property.
              * @returns {evan.Event}
              */
-            spawnEvent: function (eventName, payload) {
-                var nextPayload = payload || this.nextPayload,
-                    event = this.eventSpace.spawnEvent(eventName);
-
-                if (nextPayload) {
-                    event.setPayload(nextPayload);
-                }
-
-                if (this.nextOriginalEvent) {
-                    event.setOriginalEvent(this.nextOriginalEvent);
-                }
-
-                return event;
+            spawnPlainEvent: function (eventName) {
+                return evan.Event.create(eventName, this.eventSpace);
             },
 
             /**
              * Shorthand for **triggering** an event in the event space
              * associated with the instance / class.
              * @param {string} eventName
-             * @param {*} [payload] Payload to be set on triggered event. Overrides nextPayload property.
+             * @param {*} [payload] Payload to be set on triggered event. Overrides payloadStack property.
              * @return {evan.Evented}
              */
             triggerSync: function (eventName, payload) {
@@ -210,7 +232,7 @@ troop.postpone(evan, 'Evented', function () {
              * Shorthand for **broadcasting** an event in the event space
              * associated with the instance / class.
              * @param {string} eventName
-             * @param {*} [payload] Payload to be set on triggered event. Overrides nextPayload property.
+             * @param {*} [payload] Payload to be set on triggered event. Overrides payloadStack property.
              * @return {evan.Evented}
              */
             broadcastSync: function (eventName, payload) {
@@ -230,13 +252,13 @@ troop.postpone(evan, 'Evented', function () {
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="evan.Event.html">Event</a></li><li><a href="evan.EventCollection.html">EventCollection</a></li><li><a href="evan.Evented.html">Evented</a></li><li><a href="evan.EventSpace.html">EventSpace</a></li><li><a href="evan.PathCollection.html">PathCollection</a></li></ul><h3>Namespaces</h3><ul><li><a href="evan.html">evan</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="dessert.html">dessert</a></li><li><a href="evan.Event.html">Event</a></li><li><a href="evan.EventCollection.html">EventCollection</a></li><li><a href="evan.Evented.html">Evented</a></li><li><a href="evan.EventPropertyStack.html">EventPropertyStack</a></li><li><a href="evan.EventSpace.html">EventSpace</a></li><li><a href="evan.PathCollection.html">PathCollection</a></li></ul><h3>Namespaces</h3><ul><li><a href="evan.html">evan</a></li><li><a href="sntls.html">sntls</a></li><li><a href="troop.html">troop</a></li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Sat Jul 05 2014 13:32:44 GMT+0100 (BST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Sun Mar 01 2015 16:37:31 GMT-0000 (GMT)
 </footer>
 
 <script> prettyPrint(); </script>
