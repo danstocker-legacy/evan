@@ -9,6 +9,7 @@ module.exports = function (grunt) {
             'js/Event.js',
             'js/EventSpawner.js',
             'js/EventSpace.js',
+            'js/EventSpaceCollection.js',
             'js/Evented.js',
             'js/globals/eventSpaceRegistry.js',
             'js/globals/eventSpace.js',

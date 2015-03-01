@@ -33,28 +33,21 @@ troop.postpone(evan, 'EventSpace', function () {
             },
 
             /**
-             * Generates a stub for empty paths buffer.
-             * @return {sntls.OrderedStringList}
-             * @private
-             */
-            _generatePathsStub: function () {
-                return sntls.OrderedStringList.create();
-            },
-
-            /**
              * Prepares spawned event for triggering.
              * @param {evan.Event} event
              * @param {*} [payload]
              * @private
              */
             _prepareEvent: function (event, payload) {
-                payload = payload || this.getNextPayload();
+                var eventSpaceRegistry = evan.eventSpaceRegistry;
+
+                payload = payload || eventSpaceRegistry.getNextPayload();
 
                 if (payload) {
                     event.setPayload(payload);
                 }
 
-                var nextOriginalEvent = this.getNextOriginalEvent();
+                var nextOriginalEvent = eventSpaceRegistry.getNextOriginalEvent();
 
                 if (nextOriginalEvent) {
                     event.setOriginalEvent(nextOriginalEvent);
@@ -74,71 +67,7 @@ troop.postpone(evan, 'EventSpace', function () {
                  */
                 this.eventRegistry = sntls.Tree.create();
 
-                /**
-                 * Stack of payloads to be assigned to triggered events.
-                 * @type {*[]}
-                 */
-                this.payloadStack = [];
-
-                /**
-                 * Stack of original events to be assigned to triggered events.
-                 * @type {evan.Event[]|*[]}
-                 */
-                this.originalEventStack = [];
-
                 evan.eventSpaceRegistry.setItem(this.instanceId, this);
-            },
-
-            /**
-             * Adds a payload to the payload stack.
-             * @param {*} payload
-             * @returns {evan.EventSpace}
-             */
-            pushPayload: function (payload) {
-                this.payloadStack.unshift(payload);
-                return this;
-            },
-
-            /**
-             * Removes and returns the last added payload from the payload stack.
-             * @returns {evan.Event|*}
-             */
-            popPayload: function () {
-                return this.payloadStack.shift();
-            },
-
-            /**
-             * Retrieves last added item from the payload stack.
-             * @returns {*}
-             */
-            getNextPayload: function () {
-                return this.payloadStack[0];
-            },
-
-            /**
-             * Adds an original event to the original event stack.
-             * @param {evan.Event|*} originalEvent
-             * @returns {evan.EventSpace}
-             */
-            pushOriginalEvent: function (originalEvent) {
-                this.originalEventStack.unshift(originalEvent);
-                return this;
-            },
-
-            /**
-             * Removes and returns the last added original event from the original event stack.
-             * @returns {evan.Event|*}
-             */
-            popOriginalEvent: function () {
-                return this.originalEventStack.shift();
-            },
-
-            /**
-             * Retrieves last added item from the original event stack.
-             * @returns {evan.Event|*}
-             */
-            getNextOriginalEvent: function () {
-                return this.originalEventStack[0];
             },
 
             /**

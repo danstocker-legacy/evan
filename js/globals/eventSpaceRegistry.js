@@ -1,4 +1,4 @@
-/*global troop, evan */
+/*global troop, sntls, evan */
 troop.postpone(evan, 'eventSpaceRegistry', function () {
     "use strict";
 
@@ -6,5 +6,5 @@ troop.postpone(evan, 'eventSpaceRegistry', function () {
      * Global registry for all event spaces.
      * @type {sntls.Collection}
      */
-    evan.eventSpaceRegistry = sntls.Collection.of(evan.EventSpace).create();
+    evan.eventSpaceRegistry = evan.EventSpaceCollection.create();
 });
