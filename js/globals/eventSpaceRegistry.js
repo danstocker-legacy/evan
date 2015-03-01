@@ -6,5 +6,5 @@ troop.postpone(evan, 'eventSpaceRegistry', function () {
      * Global registry for all event spaces.
      * @type {sntls.Collection}
      */
-    evan.eventSpaceRegistry = evan.EventSpaceCollection.create();
+    evan.eventSpaceRegistry = sntls.Collection.of(evan.EventSpace).create();
 });

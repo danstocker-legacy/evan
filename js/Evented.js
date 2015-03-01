@@ -72,48 +72,6 @@ troop.postpone(evan, 'Evented', function () {
             },
 
             /**
-             * Sets payload for next event triggered.
-             * @param {*} nextPayload
-             * @returns {evan.Evented}
-             * @deprecated
-             */
-            pushPayload: function (nextPayload) {
-                this.eventSpace.pushPayload(nextPayload);
-                return this;
-            },
-
-            /**
-             * Clears payload for next event triggered.
-             * @returns {evan.Evented}
-             * @deprecated
-             */
-            popPayload: function () {
-                this.eventSpace.popPayload();
-                return this;
-            },
-
-            /**
-             * Sets original event for next event triggered.
-             * @param {evan.Event|*} nextOriginalEvent
-             * @returns {evan.Evented}
-             * @deprecated
-             */
-            pushOriginalEvent: function (nextOriginalEvent) {
-                this.eventSpace.pushOriginalEvent(nextOriginalEvent);
-                return this;
-            },
-
-            /**
-             * Clears original event for next event triggered.
-             * @returns {evan.Evented}
-             * @deprecated
-             */
-            popOriginalEvent: function () {
-                this.eventSpace.popOriginalEvent();
-                return this;
-            },
-
-            /**
              * @param {string} eventName
              * @param {*} [payload]
              * @return {evan.Event}

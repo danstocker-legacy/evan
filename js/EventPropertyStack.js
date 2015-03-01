@@ -1,30 +1,26 @@
 /*global dessert, troop, sntls, evan */
-troop.postpone(evan, 'EventSpaceCollection', function () {
+troop.postpone(evan, 'EventPropertyStack', function () {
     "use strict";
 
-    var base = sntls.Collection.of(evan.EventSpace),
+    var base = troop.Base,
         self = base.extend();
 
     /**
-     * @name evan.EventSpaceCollection.create
+     * @name evan.EventPropertyStack.create
      * @function
-     * @param {object|evan.EventSpace[]} [items]
-     * @returns {evan.EventSpaceCollection}
+     * @returns {evan.EventPropertyStack}
      */
 
     /**
      * @class
      * @extends troop.Base
      */
-    evan.EventSpaceCollection = self
-        .addMethods(/** @lends evan.EventSpaceCollection# */{
+    evan.EventPropertyStack = self
+        .addMethods(/** @lends evan.EventPropertyStack# */{
             /**
-             * @param {object|evan.EventSpace[]} [items]
              * @ignore
              */
-            init: function (items) {
-                base.init.call(this, items);
-
+            init: function () {
                 /**
                  * Stack of payloads to be assigned to triggered events.
                  * @type {*[]}
@@ -41,7 +37,7 @@ troop.postpone(evan, 'EventSpaceCollection', function () {
             /**
              * Adds a payload to the payload stack.
              * @param {*} payload
-             * @returns {evan.EventSpaceCollection}
+             * @returns {evan.EventPropertyStack}
              */
             pushPayload: function (payload) {
                 this.payloadStack.unshift(payload);
@@ -67,7 +63,7 @@ troop.postpone(evan, 'EventSpaceCollection', function () {
             /**
              * Adds an original event to the original event stack.
              * @param {evan.Event|*} originalEvent
-             * @returns {evan.EventSpaceCollection}
+             * @returns {evan.EventPropertyStack}
              */
             pushOriginalEvent: function (originalEvent) {
                 this.originalEventStack.unshift(originalEvent);

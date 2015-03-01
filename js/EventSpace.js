@@ -39,15 +39,15 @@ troop.postpone(evan, 'EventSpace', function () {
              * @private
              */
             _prepareEvent: function (event, payload) {
-                var eventSpaceRegistry = evan.eventSpaceRegistry;
+                var eventPropertyStack = evan.eventPropertyStack;
 
-                payload = payload || eventSpaceRegistry.getNextPayload();
+                payload = payload || eventPropertyStack.getNextPayload();
 
                 if (payload) {
                     event.setPayload(payload);
                 }
 
-                var nextOriginalEvent = eventSpaceRegistry.getNextOriginalEvent();
+                var nextOriginalEvent = eventPropertyStack.getNextOriginalEvent();
 
                 if (nextOriginalEvent) {
                     event.setOriginalEvent(nextOriginalEvent);
