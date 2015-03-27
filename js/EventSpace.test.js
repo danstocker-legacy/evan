@@ -62,7 +62,7 @@
             },
             eventSpace = evan.EventSpace.create()
                 .pushPayload(params.payload)
-                .pushOriginalEvent(params.originalEvent);
+                .pushEvent(params.originalEvent);
 
         eventSpace
             .addMocks({

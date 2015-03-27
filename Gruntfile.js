@@ -8,10 +8,9 @@ module.exports = function (grunt) {
             'js/PathCollection.js',
             'js/Event.js',
             'js/EventSpace.js',
-            'js/EventPropertyStack.js',
             'js/Evented.js',
             'js/globals/eventSpaceRegistry.js',
-            'js/globals/eventPropertyStack.js',
+            'js/globals/originalEventStack.js',
             'js/globals/eventSpace.js',
             'js/exports.js'
         ],

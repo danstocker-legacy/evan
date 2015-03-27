@@ -37,12 +37,10 @@ troop.postpone(evan, 'EventSpace', function () {
              * @private
              */
             _prepareEvent: function (event) {
-                var eventPropertyStack = evan.eventPropertyStack,
-                    nextOriginalEvent = eventPropertyStack.getNextOriginalEvent();
-
                 // applying next payload on spawned event
                 event.setPayload(this.nextPayload);
 
+                var nextOriginalEvent = evan.originalEventStack[0];
                 if (nextOriginalEvent) {
                     event.setOriginalEvent(nextOriginalEvent);
                 }
