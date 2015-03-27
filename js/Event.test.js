@@ -27,14 +27,14 @@
 
         equal(typeof event.originalPath, 'undefined', "should clear original path");
         equal(typeof event.currentPath, 'undefined', "should clear current path");
-        deepEqual(event.payload, {}, "should set payload property");
+        ok(event.payload.isA(sntls.Collection), "should set payload property");
     });
 
     test("Cloning event", function () {
         var MyEvent = evan.Event.extend(),
             originalEvent = MyEvent.create('testEvent', eventSpace)
                 .setTargetPath('test.path.hello.world'.toPath())
-                .addPayload('foo', 'bar'),
+                .setPayloadItem('foo', 'bar'),
             cloneEvent,
             currentPath;
 
@@ -111,27 +111,29 @@
             "should set originalPath and currentPath with identical contents");
     });
 
-    test("Setting payload", function () {
+    test("Merging payload", function () {
         var event = evan.Event.create('testEvent', eventSpace),
-            payload = {};
+            payload = sntls.Collection.create({
+                foo: 'bar'
+            });
 
-        event.setPayload(payload);
+        event.mergePayload(payload);
 
-        deepEqual(event.payload, payload, "should set payload");
+        deepEqual(event.payload.items, payload.items, "should merge payload");
     });
 
-    test("Adding payload", function () {
+    test("Setting payload item", function () {
         var event = evan.Event.create('testEvent', eventSpace);
 
-        event.addPayload('foo', 'bar');
+        event.setPayloadItem('foo', 'bar');
 
-        deepEqual(event.payload, {
+        deepEqual(event.payload.items, {
             foo: 'bar'
         }, "should add payload");
 
-        event.addPayload('hello', 'world');
+        event.setPayloadItem('hello', 'world');
 
-        deepEqual(event.payload, {
+        deepEqual(event.payload.items, {
             foo  : 'bar',
             hello: 'world'
         }, "should add additional payload leaving old");
@@ -142,7 +144,7 @@
 
         var originalEvent = evan.Event.create('original-event', eventSpace),
             event = evan.Event.create('test-event', eventSpace)
-                .addPayload('foo', 'bar')
+                .setPayloadItem('foo', 'bar')
                 .setOriginalEvent(originalEvent),
             handledFlags = [],
             i = 0;
@@ -155,7 +157,7 @@
                     "should call handlers with correct original event path,");
                 equal(event.currentPath.toString(), ['test>path', 'test'][i++],
                     "should call handlers with correct current event path");
-                deepEqual(event.payload, {foo: 'bar'},
+                deepEqual(event.payload.items, {foo: 'bar'},
                     "should call handlers with correct payload");
 
                 handledFlags.push(event.handled);
@@ -171,7 +173,7 @@
 
         equal(event.originalPath.toString(), 'test>path', "should leave original path intact");
         deepEqual(event.currentPath.asArray, [], "should leave current path empty (traversed)");
-        deepEqual(event.payload, {foo: 'bar'}, "should leave payload intact");
+        deepEqual(event.payload.items, {foo: 'bar'}, "should leave payload intact");
         strictEqual(event.originalEvent, originalEvent, "should leave original event intact");
 
         evan.EventSpace.removeMocks();
@@ -245,12 +247,12 @@
             originalEvent = eventSpace.spawnEvent('original-event'),
             event = eventSpace.spawnEvent('my-event')
                 .setOriginalEvent(originalEvent)
-                .addPayload('foo', 'bar');
+                .setPayloadItem('foo', 'bar');
 
         evan.Event.addMocks({
             triggerSync: function () {
                 triggeredPaths.push(this.originalPath.toString());
-                deepEqual(this.payload, {foo: 'bar'}, "should set payload on spawned event");
+                deepEqual(this.payload.items, {foo: 'bar'}, "should set payload on spawned event");
                 strictEqual(this.originalEvent, originalEvent, "should set original event on spawned event");
             }
         });

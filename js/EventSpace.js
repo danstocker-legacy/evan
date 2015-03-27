@@ -38,7 +38,7 @@ troop.postpone(evan, 'EventSpace', function () {
              */
             _prepareEvent: function (event) {
                 // applying next payload on spawned event
-                event.setPayload(this.nextPayload);
+                event.mergePayload(this.nextPayload);
 
                 var nextOriginalEvent = evan.originalEventStack[0];
                 if (nextOriginalEvent) {
@@ -60,10 +60,10 @@ troop.postpone(evan, 'EventSpace', function () {
                 this.eventRegistry = sntls.Tree.create();
 
                 /**
-                 * Payload for the next event spawned on this event space.
-                 * @type {object}
+                 * Payload collection for the next event spawned on this event space.
+                 * @type {sntls.Collection}
                  */
-                this.nextPayload = {};
+                this.nextPayload = sntls.Collection.create();
 
                 evan.eventSpaceRegistry.setItem(this.instanceId, this);
             },
@@ -73,8 +73,8 @@ troop.postpone(evan, 'EventSpace', function () {
              * @param {*} payloadValue
              * @returns {evan.EventSpace}
              */
-            setNextPayload: function (payloadName, payloadValue) {
-                this.nextPayload[payloadName] = payloadValue;
+            setNextPayloadItem: function (payloadName, payloadValue) {
+                this.nextPayload.setItem(payloadName, payloadValue);
                 return this;
             },
 
@@ -82,8 +82,8 @@ troop.postpone(evan, 'EventSpace', function () {
              * @param {string} payloadName
              * @returns {evan.EventSpace}
              */
-            deleteNextPayload: function (payloadName) {
-                delete this.nextPayload[payloadName];
+            deleteNextPayloadItem: function (payloadName) {
+                this.nextPayload.deleteItem(payloadName);
                 return this;
             },
 

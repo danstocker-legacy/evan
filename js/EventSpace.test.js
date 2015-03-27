@@ -32,7 +32,7 @@
         ok(eventSpace.eventRegistry.isA(sntls.Tree), "should set event registry as a Tree");
         ok(eventSpace.hasOwnProperty('instanceId'), "should set instanceId property");
         deepEqual(eventSpace.eventRegistry.items, {}, "should initialize event registry Tree as empty");
-        deepEqual(eventSpace.nextPayload, {}, "should set nextPayload property");
+        ok(eventSpace.nextPayload.isA(sntls.Collection), "should set nextPayload property");
         strictEqual(evan.eventSpaceRegistry.getItem(eventSpace.instanceId), eventSpace,
             "should set event space in registry");
     });
@@ -40,16 +40,16 @@
     test("Setting next payload", function () {
         var eventSpace = evan.EventSpace.create();
 
-        strictEqual(eventSpace.setNextPayload('foo', 'bar'), eventSpace, "should be chainable");
-        deepEqual(eventSpace.nextPayload, {foo:'bar'}, "should set payload in nextPayload");
+        strictEqual(eventSpace.setNextPayloadItem('foo', 'bar'), eventSpace, "should be chainable");
+        deepEqual(eventSpace.nextPayload.items, {foo:'bar'}, "should set payload in nextPayload");
     });
 
     test("Deleting next payload", function () {
         var eventSpace = evan.EventSpace.create()
-            .setNextPayload('foo', 'bar');
+            .setNextPayloadItem('foo', 'bar');
 
-        strictEqual(eventSpace.deleteNextPayload('foo'), eventSpace, "should be chainable");
-        deepEqual(eventSpace.nextPayload, {}, "should remove payload from nextPayload");
+        strictEqual(eventSpace.deleteNextPayloadItem('foo'), eventSpace, "should be chainable");
+        deepEqual(eventSpace.nextPayload.items, {}, "should remove payload from nextPayload");
     });
 
     test("Spawning event", function () {
