@@ -18,6 +18,7 @@ Features
 - Event bubbling
 - Delegation (capturing closer to the root than the actually observed node)
 - Broadcasting (triggering many subscribed paths at once)
+- Chaining original events
 - Evented behavior to be assigned to classes and instances. Most of the event management will be done through this, as the tutorial below illustrates.
 
 Tutorial
