@@ -22,47 +22,13 @@ troop.postpone(evan, 'EventPropertyStack', function () {
      */
     evan.EventPropertyStack = self
         .addMethods(/** @lends evan.EventPropertyStack# */{
-            /**
-             * @ignore
-             */
+            /** @ignore */
             init: function () {
                 /**
-                 * Stack of payloads to be assigned to triggered events.
-                 * @type {Array}
-                 */
-                this.payloadStack = [];
-
-                /**
-                 * Stack of original events to be assigned to triggered events.
+                 * Original events to be assigned to triggered events.
                  * @type {evan.Event[]|Array}
                  */
-                this.originalEventStack = [];
-            },
-
-            /**
-             * Adds a payload to the payload stack.
-             * @param {*} payload
-             * @returns {evan.EventPropertyStack}
-             */
-            pushPayload: function (payload) {
-                this.payloadStack.unshift(payload);
-                return this;
-            },
-
-            /**
-             * Removes and returns the last added payload from the payload stack.
-             * @returns {evan.Event|*}
-             */
-            popPayload: function () {
-                return this.payloadStack.shift();
-            },
-
-            /**
-             * Retrieves last added item from the payload stack.
-             * @returns {*}
-             */
-            getNextPayload: function () {
-                return this.payloadStack[0];
+                this.originalEvents = [];
             },
 
             /**
@@ -71,7 +37,7 @@ troop.postpone(evan, 'EventPropertyStack', function () {
              * @returns {evan.EventPropertyStack}
              */
             pushOriginalEvent: function (originalEvent) {
-                this.originalEventStack.unshift(originalEvent);
+                this.originalEvents.unshift(originalEvent);
                 return this;
             },
 
@@ -80,7 +46,7 @@ troop.postpone(evan, 'EventPropertyStack', function () {
              * @returns {evan.Event|*}
              */
             popOriginalEvent: function () {
-                return this.originalEventStack.shift();
+                return this.originalEvents.shift();
             },
 
             /**
@@ -88,7 +54,7 @@ troop.postpone(evan, 'EventPropertyStack', function () {
              * @returns {evan.Event|*}
              */
             getNextOriginalEvent: function () {
-                return this.originalEventStack[0];
+                return this.originalEvents[0];
             }
         });
 });
