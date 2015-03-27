@@ -103,10 +103,10 @@ troop.postpone(evan, 'Event', function () {
                  * Custom payload to be carried by the event
                  * In most cases, this property is not set directly, but through
                  * evan.eventPropertyStack.pushPayload()
-                 * @type {*}
+                 * @type {object}
                  * @see evan.eventPropertyStack.pushPayload
                  */
-                this.payload = undefined;
+                this.payload = {};
 
                 /**
                  * Path reflecting current state of bubbling
@@ -244,11 +244,24 @@ troop.postpone(evan, 'Event', function () {
 
             /**
              * Sets event payload. Payload is a reference carried by the event as it bubbles.
-             * @param {*} [payload]
+             * Use this for copying all payloads from one event to another.
+             * @param {object} payload
              * @return {evan.Event}
              */
             setPayload: function (payload) {
                 this.payload = payload;
+                return this;
+            },
+
+            /**
+             * Adds event payload. An event may carry multiple payloads set by multiple sources.
+             * See payload stack.
+             * @param {string} payloadName
+             * @param {*} payloadValue
+             * @return {evan.Event}
+             */
+            addPayload: function (payloadName, payloadValue) {
+                this.payload[payloadName] = payloadValue;
                 return this;
             },
 
@@ -258,17 +271,12 @@ troop.postpone(evan, 'Event', function () {
              * between stages of bubbling, hence holding on to an event instance in an async handler
              * may not reflect the current paths and payload carried.
              * @param {sntls.Path} [targetPath] Path on which to trigger event.
-             * @param {*} [payload] Extra payload to be passed along with event to handlers.
              * @return {evan.Event}
              */
-            triggerSync: function (targetPath, payload) {
+            triggerSync: function (targetPath) {
                 // preparing event for trigger
                 if (targetPath) {
                     this.setTargetPath(targetPath);
-                }
-
-                if (payload) {
-                    this.setPayload(payload);
                 }
 
                 var currentPath = this.currentPath,
@@ -309,10 +317,9 @@ troop.postpone(evan, 'Event', function () {
              * on the specified broadcast path. It is necessary for delegates to react to
              * broadcasts.
              * @param {sntls.Path} broadcastPath Target root for broadcast
-             * @param {*} [payload] Extra payload to be passed along with event to handlers.
              * @return {evan.Event}
              */
-            broadcastSync: function (broadcastPath, payload) {
+            broadcastSync: function (broadcastPath) {
                 var mainEvent = this._spawnMainBroadcastEvent(broadcastPath),
                     broadcastEvents = this.eventSpace
                         // obtaining subscribed paths relative to broadcast path
@@ -325,7 +332,7 @@ troop.postpone(evan, 'Event', function () {
 
                 // triggering all affected events
                 broadcastEvents
-                    .setPayload(payload || this.payload)
+                    .setPayload(this.payload)
                     .setOriginalEvent(this.originalEvent)
                     .triggerSync();
 

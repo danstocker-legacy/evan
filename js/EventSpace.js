@@ -34,19 +34,16 @@ troop.postpone(evan, 'EventSpace', function () {
             /**
              * Prepares spawned event for triggering.
              * @param {evan.Event} event
-             * @param {*} [payload]
              * @private
              */
-            _prepareEvent: function (event, payload) {
-                var eventPropertyStack = evan.eventPropertyStack;
+            _prepareEvent: function (event) {
+                var eventPropertyStack = evan.eventPropertyStack,
+                    nextPayload = eventPropertyStack.getNextPayload(),
+                    nextOriginalEvent = eventPropertyStack.getNextOriginalEvent();
 
-                payload = payload || eventPropertyStack.getNextPayload();
-
-                if (payload) {
-                    event.setPayload(payload);
+                if (nextPayload) {
+                    event.setPayload(nextPayload);
                 }
-
-                var nextOriginalEvent = eventPropertyStack.getNextOriginalEvent();
 
                 if (nextOriginalEvent) {
                     event.setOriginalEvent(nextOriginalEvent);
@@ -71,12 +68,11 @@ troop.postpone(evan, 'EventSpace', function () {
 
             /**
              * @param {string} eventName
-             * @param {*} [payload]
              * @return {evan.Event}
              */
-            spawnEvent: function (eventName, payload) {
+            spawnEvent: function (eventName) {
                 var event = evan.Event.create(eventName, this);
-                this._prepareEvent(event, payload);
+                this._prepareEvent(event);
                 return event;
             },
 

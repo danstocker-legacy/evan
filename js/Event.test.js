@@ -27,14 +27,14 @@
 
         equal(typeof event.originalPath, 'undefined', "should clear original path");
         equal(typeof event.currentPath, 'undefined', "should clear current path");
-        equal(typeof event.payload, 'undefined', "should clear custom data");
+        deepEqual(event.payload, {}, "should set payload property");
     });
 
     test("Cloning event", function () {
         var MyEvent = evan.Event.extend(),
             originalEvent = MyEvent.create('testEvent', eventSpace)
                 .setTargetPath('test.path.hello.world'.toPath())
-                .setPayload({foo: 'bar'}),
+                .addPayload('foo', 'bar'),
             cloneEvent,
             currentPath;
 
@@ -112,20 +112,37 @@
     });
 
     test("Setting payload", function () {
+        var event = evan.Event.create('testEvent', eventSpace),
+            payload = {};
+
+        event.setPayload(payload);
+
+        strictEqual(event.payload, payload, "should set payload");
+    });
+
+    test("Adding payload", function () {
         var event = evan.Event.create('testEvent', eventSpace);
 
-        event.setPayload('foo');
+        event.addPayload('foo', 'bar');
 
-        equal(event.payload, 'foo', "should set payload");
+        deepEqual(event.payload, {
+            foo: 'bar'
+        }, "should add payload");
+
+        event.addPayload('hello', 'world');
+
+        deepEqual(event.payload, {
+            foo  : 'bar',
+            hello: 'world'
+        }, "should add additional payload leaving old");
     });
 
     test("Triggering event", function () {
         expect(13);
 
         var originalEvent = evan.Event.create('original-event', eventSpace),
-            payload = {foo: 'bar'},
             event = evan.Event.create('test-event', eventSpace)
-                .setPayload(payload)
+                .addPayload('foo', 'bar')
                 .setOriginalEvent(originalEvent),
             handledFlags = [],
             i = 0;
@@ -138,7 +155,7 @@
                     "should call handlers with correct original event path,");
                 equal(event.currentPath.toString(), ['test>path', 'test'][i++],
                     "should call handlers with correct current event path");
-                strictEqual(event.payload, payload,
+                deepEqual(event.payload, {foo: 'bar'},
                     "should call handlers with correct payload");
 
                 handledFlags.push(event.handled);
@@ -154,7 +171,7 @@
 
         equal(event.originalPath.toString(), 'test>path', "should leave original path intact");
         deepEqual(event.currentPath.asArray, [], "should leave current path empty (traversed)");
-        strictEqual(event.payload, payload, "should leave payload intact");
+        deepEqual(event.payload, {foo: 'bar'}, "should leave payload intact");
         strictEqual(event.originalEvent, originalEvent, "should leave original event intact");
 
         evan.EventSpace.removeMocks();
@@ -217,7 +234,6 @@
         expect(9);
 
         var triggeredPaths = [],
-            payload = {foo: "bar"},
             eventSpace = evan.EventSpace.create()
                 .subscribeTo('my-event', 'test.event'.toPath(), function () {})
                 .subscribeTo('my-event', 'test.event.foo'.toPath(), function () {})
@@ -229,24 +245,24 @@
             originalEvent = eventSpace.spawnEvent('original-event'),
             event = eventSpace.spawnEvent('my-event')
                 .setOriginalEvent(originalEvent)
-                .setPayload(payload);
+                .addPayload('foo', 'bar');
 
         evan.Event.addMocks({
             triggerSync: function () {
                 triggeredPaths.push(this.originalPath.toString());
-                strictEqual(this.payload, payload, "should set payload on spawned event");
+                deepEqual(this.payload, {foo: 'bar'}, "should set payload on spawned event");
                 strictEqual(this.originalEvent, originalEvent, "should set original event on spawned event");
             }
         });
 
         event.broadcastSync('test.event'.toPath());
 
+        evan.Event.removeMocks();
+
         deepEqual(
             triggeredPaths,
             ['test.event.foo', 'test.event.foo.bar', 'test.event.hello', 'test.event'],
             "should trigger event on all paths below broadcast path"
         );
-
-        evan.Event.removeMocks();
     });
 }());
