@@ -117,7 +117,7 @@
 
         event.setPayload(payload);
 
-        strictEqual(event.payload, payload, "should set payload");
+        deepEqual(event.payload, payload, "should set payload");
     });
 
     test("Adding payload", function () {

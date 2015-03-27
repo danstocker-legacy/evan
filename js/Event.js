@@ -249,7 +249,7 @@ troop.postpone(evan, 'Event', function () {
              * @return {evan.Event}
              */
             setPayload: function (payload) {
-                this.payload = payload;
+                this.payload = sntls.Utils.shallowCopy(payload);
                 return this;
             },
 
