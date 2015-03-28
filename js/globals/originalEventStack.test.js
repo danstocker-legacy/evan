@@ -5,11 +5,14 @@
     module("originalEventStack");
 
     test("Pushing original event", function () {
-        var originalEvent = {};
+        var originalEvent = {},
+            stackBefore = sntls.Utils.shallowCopy(evan.originalEventStack);
+
+        stackBefore.unshift(originalEvent);
 
         evan.pushOriginalEvent(originalEvent);
 
-        deepEqual(evan.originalEventStack, [originalEvent], "should add original event to stack");
+        deepEqual(evan.originalEventStack, stackBefore, "should add original event to stack");
     });
 
     test("Popping original event", function () {
