@@ -71,6 +71,9 @@ troop.postpone(evan, 'Evented', function () {
             },
 
             /**
+             * Spawns an event in the current event space, prepared with the current event path
+             * as the target path. Returned event may be triggered without specifying a target path.
+             * Current eventSpace and eventPath properties must not be undefined.
              * @param {string} eventName
              * @return {evan.Event}
              */
