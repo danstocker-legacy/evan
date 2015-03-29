@@ -339,14 +339,17 @@
             event = {};
 
         evented.eventSpace.addMocks({
-            spawnEvent: function (eventName, payload) {
+            spawnEvent: function (eventName) {
                 equal(eventName, 'event-name', "should have event space spawn an event");
-                strictEqual(payload, custom, "should pass payload to spawner");
+                strictEqual(eventSpace.nextPayload.getItem('foo'), custom,
+                    "should set payload");
                 return event;
             }
         });
 
+        eventSpace.setNextPayloadItem('foo', custom);
         strictEqual(evented.spawnEvent('event-name', custom), event, "should return spawned event");
+        eventSpace.deleteNextPayloadItem('foo');
     });
 
     test("Triggering events", function () {

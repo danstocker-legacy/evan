@@ -72,12 +72,11 @@ troop.postpone(evan, 'Evented', function () {
 
             /**
              * @param {string} eventName
-             * @param {*} [payload]
              * @return {evan.Event}
              * @deprecated
              */
-            spawnEvent: function (eventName, payload) {
-                return this.eventSpace.spawnEvent(eventName, payload);
+            spawnEvent: function (eventName) {
+                return this.eventSpace.spawnEvent(eventName);
             },
 
             /**
@@ -192,11 +191,10 @@ troop.postpone(evan, 'Evented', function () {
              * Shorthand for **triggering** an event in the event space
              * associated with the instance / class.
              * @param {string} eventName
-             * @param {*} [payload] Payload to be set on triggered event. Overrides payloadStack property.
              * @return {evan.Evented}
              */
-            triggerSync: function (eventName, payload) {
-                this.spawnEvent(eventName, payload)
+            triggerSync: function (eventName) {
+                this.spawnEvent(eventName)
                     .triggerSync(this.eventPath);
                 return this;
             },
@@ -205,11 +203,10 @@ troop.postpone(evan, 'Evented', function () {
              * Shorthand for **broadcasting** an event in the event space
              * associated with the instance / class.
              * @param {string} eventName
-             * @param {*} [payload] Payload to be set on triggered event. Overrides payloadStack property.
              * @return {evan.Evented}
              */
-            broadcastSync: function (eventName, payload) {
-                this.spawnEvent(eventName, payload)
+            broadcastSync: function (eventName) {
+                this.spawnEvent(eventName)
                     .broadcastSync(this.eventPath);
                 return this;
             }
