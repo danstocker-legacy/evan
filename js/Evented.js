@@ -73,10 +73,10 @@ troop.postpone(evan, 'Evented', function () {
             /**
              * @param {string} eventName
              * @return {evan.Event}
-             * @deprecated
              */
             spawnEvent: function (eventName) {
-                return this.eventSpace.spawnEvent(eventName);
+                return this.eventSpace.spawnEvent(eventName)
+                    .setTargetPath(this.eventPath);
             },
 
             /**

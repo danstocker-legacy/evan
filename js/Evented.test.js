@@ -335,21 +335,24 @@
         expect(3);
 
         var evented = EventedClass.create('test>path>foo>bar'.toPath()),
-            custom = {},
-            event = {};
+            event = eventSpace.spawnEvent('event-name');
 
         evented.eventSpace.addMocks({
             spawnEvent: function (eventName) {
                 equal(eventName, 'event-name', "should have event space spawn an event");
-                strictEqual(eventSpace.nextPayload.getItem('foo'), custom,
-                    "should set payload");
                 return event;
             }
         });
 
-        eventSpace.setNextPayloadItem('foo', custom);
-        strictEqual(evented.spawnEvent('event-name', custom), event, "should return spawned event");
-        eventSpace.deleteNextPayloadItem('foo');
+        event.addMocks({
+            setTargetPath: function (targetPath) {
+                strictEqual(targetPath, evented.eventPath, "should set target path");
+                return this;
+            }
+        });
+
+        strictEqual(evented.spawnEvent('event-name'), event,
+            "should return spawned event");
     });
 
     test("Triggering events", function () {
