@@ -37,19 +37,42 @@
             "should set event space in registry");
     });
 
-    test("Setting next payload", function () {
+    test("Setting next payload item", function () {
         var eventSpace = evan.EventSpace.create();
 
         strictEqual(eventSpace.setNextPayloadItem('foo', 'bar'), eventSpace, "should be chainable");
         deepEqual(eventSpace.nextPayload.items, {foo: 'bar'}, "should set payload in nextPayload");
     });
 
-    test("Deleting next payload", function () {
+    test("Setting multiple next payload items", function () {
+        var eventSpace = evan.EventSpace.create();
+
+        strictEqual(eventSpace.setNextPayloadItems({
+            'foo'  : 'bar',
+            'hello': 'world'
+        }), eventSpace, "should be chainable");
+        deepEqual(eventSpace.nextPayload.items, {
+            'foo'  : 'bar',
+            'hello': 'world'
+        }, "should set payloads in nextPayload");
+    });
+
+    test("Deleting next payload item", function () {
         var eventSpace = evan.EventSpace.create()
             .setNextPayloadItem('foo', 'bar');
 
         strictEqual(eventSpace.deleteNextPayloadItem('foo'), eventSpace, "should be chainable");
         deepEqual(eventSpace.nextPayload.items, {}, "should remove payload from nextPayload");
+    });
+
+    test("Deleting multiple next payload items", function () {
+        var eventSpace = evan.EventSpace.create()
+            .setNextPayloadItem('foo', 'bar')
+            .setNextPayloadItem('hello', 'world');
+
+        strictEqual(eventSpace.deleteNextPayloadItems('foo', 'hello'), eventSpace,
+            "should be chainable");
+        deepEqual(eventSpace.nextPayload.items, {}, "should remove payloads from nextPayload");
     });
 
     test("Spawning event", function () {

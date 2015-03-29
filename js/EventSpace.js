@@ -71,6 +71,7 @@ troop.postpone(evan, 'EventSpace', function () {
             },
 
             /**
+             * Sets a single item in the next payload.
              * @param {string} payloadName
              * @param {*} payloadValue
              * @returns {evan.EventSpace}
@@ -81,11 +82,41 @@ troop.postpone(evan, 'EventSpace', function () {
             },
 
             /**
+             * Merges specified payload with current next payload.
+             * @param {object} payload
+             * @returns {evan.EventSpace}
+             */
+            setNextPayloadItems: function (payload) {
+                var nextPayload = this.nextPayload,
+                    itemNames = Object.keys(payload),
+                    i, itemName;
+                for (i = 0; i < itemNames.length; i++) {
+                    itemName = itemNames[i];
+                    nextPayload.setItem(itemName, payload[itemName]);
+                }
+                return this;
+            },
+
+            /**
+             * Removes a single item from the next payload.
              * @param {string} payloadName
              * @returns {evan.EventSpace}
              */
             deleteNextPayloadItem: function (payloadName) {
                 this.nextPayload.deleteItem(payloadName);
+                return this;
+            },
+
+            /**
+             * Removes all specified payload items from the next payload.
+             * @returns {evan.EventSpace}
+             */
+            deleteNextPayloadItems: function () {
+                var nextPayload = this.nextPayload,
+                    i;
+                for (i = 0; i < arguments.length; i++) {
+                    nextPayload.deleteItem(arguments[i]);
+                }
                 return this;
             },
 
@@ -115,8 +146,7 @@ troop.postpone(evan, 'EventSpace', function () {
                     eventPathString = eventPath.toString(),
                     handlers = eventRegistry.getOrSetNode(
                         [eventPathString, eventName].toPath(),
-                        this._generateHandlersStub
-                    );
+                        this._generateHandlersStub);
 
                 // adding handler to handlers
                 handlers.push(handler);
