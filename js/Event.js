@@ -17,8 +17,9 @@ troop.postpone(evan, 'Event', function () {
     /**
      * An event is an object that may traverse in an event space.
      * Events carry all information regarding their position & properties.
-     * @class evan.Event
+     * @class
      * @extends troop.Base
+     * @extends evan.EventSource
      */
     evan.Event = self
         .addPrivateMethods(/** @lends evan.Event# */{

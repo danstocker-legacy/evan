@@ -9,8 +9,11 @@ troop.postpone(evan, 'Evented', function () {
      * Trait.
      * Classes with this trait may trigger and capture
      * events on a specified event space directly.
-     * @class evan.Evented
+     * @class
      * @extends troop.Base
+     * @extends evan.EventSpawner
+     * @extends evan.EventSource
+     * @extends evan.EventTarget
      */
     evan.Evented = self
         .addPrivateMethods(/** @lends evan.Evented# */{

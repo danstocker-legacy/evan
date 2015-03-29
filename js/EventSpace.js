@@ -16,9 +16,11 @@ troop.postpone(evan, 'EventSpace', function () {
 
     /**
      * Events traverse within a confined event space.
-     * @class evan.EventSpace
+     * @class
      * @extends troop.Base
      * @extends sntls.Documented
+     * @extends evan.EventSpawner
+     * @extends evan.EventTarget
      */
     evan.EventSpace = self
         .addPrivateMethods(/** @lends evan.EventSpace */{
