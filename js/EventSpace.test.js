@@ -41,7 +41,7 @@
         var eventSpace = evan.EventSpace.create();
 
         strictEqual(eventSpace.setNextPayloadItem('foo', 'bar'), eventSpace, "should be chainable");
-        deepEqual(eventSpace.nextPayload.items, {foo:'bar'}, "should set payload in nextPayload");
+        deepEqual(eventSpace.nextPayload.items, {foo: 'bar'}, "should set payload in nextPayload");
     });
 
     test("Deleting next payload", function () {
@@ -53,52 +53,22 @@
     });
 
     test("Spawning event", function () {
-        expect(4);
+        var eventSpace = evan.EventSpace.create(),
+            spawnedEvent;
 
-        var params = {
-                originalEvent: {},
-                payload      : {},
-                customPayload: {}
-            },
-            eventSpace = evan.EventSpace.create()
-                .pushPayload(params.payload)
-                .pushEvent(params.originalEvent);
+        evan.pushOriginalEvent(evan.Event.create('foo', eventSpace));
+        eventSpace.setNextPayloadItem('foo', {});
 
-        eventSpace
-            .addMocks({
-                _prepareEvent: function (event, payload) {
-                    params.event = event;
-                    ok(event.isA(evan.Event), "should prepare spawned event");
-                    equal(typeof payload, 'undefined', "should pass undefined as payload to preparation");
-                }
-            });
+        spawnedEvent = eventSpace.spawnEvent('eventA');
 
-        strictEqual(eventSpace.spawnEvent('event-name'), params.event, "should return spawned event");
+        ok(spawnedEvent.isA(evan.Event), "should return Event instance");
+        deepEqual(spawnedEvent.payload.items, eventSpace.nextPayload.items,
+            "should prepare event payload based on next payload on event space");
+        strictEqual(spawnedEvent.originalEvent, evan.originalEventStack[0],
+            "should set original event");
 
-        eventSpace
-            .removeMocks()
-            .addMocks({
-                _prepareEvent: function (event, payload) {
-                    strictEqual(payload, params.customPayload,
-                        "should pass custom payload to preparation when specified");
-                }
-            });
-
-        eventSpace.spawnEvent('event-name', params.customPayload);
-    });
-
-    test("Spawning event", function () {
-        expect(1);
-
-        var eventSpace = evan.EventSpace.create();
-
-        eventSpace.addMocks({
-            _prepareEvent: function (event) {
-                strictEqual(event.eventSpace, eventSpace, "should set event space of spawned event");
-            }
-        });
-
-        eventSpace.spawnEvent('eventA');
+        evan.popOriginalEvent();
+        eventSpace.deleteNextPayloadItem('foo');
     });
 
     test("First subscription", function () {
