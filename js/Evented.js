@@ -23,7 +23,7 @@ troop.postpone(evan, 'Evented', function () {
                 var result = [],
                     items = dictionary.items,
                     keys = Object.keys(items),
-                    i, key, values, handler,
+                    i, key, values,
                     j;
 
                 for (i = 0; i < keys.length; i++) {
@@ -177,14 +177,6 @@ troop.postpone(evan, 'Evented', function () {
                 var delegateHandler = this.eventSpace.delegateSubscriptionTo(eventName, this.eventPath, delegatePath, handler);
                 this.subscriptionRegistry.addItem(eventName, delegateHandler);
                 return this;
-            },
-
-            /**
-             * @param {string} eventName
-             * @returns {evan.Event}
-             */
-            spawnPlainEvent: function (eventName) {
-                return evan.Event.create(eventName, this.eventSpace);
             },
 
             /**
