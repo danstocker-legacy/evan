@@ -6,7 +6,7 @@ troop.postpone(evan, 'originalEventStack', function () {
      * Global stack for original events.
      * @type {Array}
      */
-    evan.originalEventStack = [];
+    evan.originalEventStack = evan.EventStack.create();
 });
 
 troop.postpone(evan, 'pushOriginalEvent', function () {
@@ -17,7 +17,7 @@ troop.postpone(evan, 'pushOriginalEvent', function () {
      * @param {evan.Event|*} originalEvent
      */
     evan.pushOriginalEvent = function (originalEvent) {
-        evan.originalEventStack.unshift(originalEvent);
+        evan.originalEventStack.pushEvent(originalEvent);
     };
 });
 
@@ -29,6 +29,6 @@ troop.postpone(evan, 'popOriginalEvent', function () {
      * @returns {evan.Event|*}
      */
     evan.popOriginalEvent = function () {
-        return evan.originalEventStack.shift();
+        return evan.originalEventStack.popEvent();
     };
 });

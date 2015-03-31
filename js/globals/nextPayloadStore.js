@@ -6,10 +6,10 @@ troop.postpone(evan, 'nextPayloadStore', function () {
      * Temporary storage for event payload.
      * @type {evan.PayloadStore}
      */
-    evan.payloadStore = evan.PayloadStore.create();
+    evan.nextPayloadStore = evan.PayloadStore.create();
 });
 
-troop.postpone(evan, 'setPayloadItem', function () {
+troop.postpone(evan, 'setNextPayloadItem', function () {
     "use strict";
 
     /**
@@ -20,11 +20,11 @@ troop.postpone(evan, 'setPayloadItem', function () {
      * @param {*} payloadItemValue
      */
     evan.setNextPayloadItem = function (eventName, payloadItemName, payloadItemValue) {
-        evan.payloadStore.setPayloadItem(eventName, payloadItemName, payloadItemValue);
+        evan.nextPayloadStore.setPayloadItem(eventName, payloadItemName, payloadItemValue);
     };
 });
 
-troop.postpone(evan, 'setPayloadItems', function () {
+troop.postpone(evan, 'setNextPayloadItems', function () {
     "use strict";
 
     /**
@@ -33,11 +33,11 @@ troop.postpone(evan, 'setPayloadItems', function () {
      * @param {object} payload
      */
     evan.setNextPayloadItems = function (eventName, payload) {
-        evan.payloadStore.setPayloadItems(eventName, payload);
+        evan.nextPayloadStore.setPayloadItems(eventName, payload);
     };
 });
 
-troop.postpone(evan, 'deletePayloadItem', function () {
+troop.postpone(evan, 'deleteNextPayloadItem', function () {
     "use strict";
 
     /**
@@ -46,11 +46,11 @@ troop.postpone(evan, 'deletePayloadItem', function () {
      * @param {string} payloadItemName
      */
     evan.deleteNextPayloadItem = function (eventName, payloadItemName) {
-        evan.payloadStore.deletePayloadItem(eventName, payloadItemName);
+        evan.nextPayloadStore.deletePayloadItem(eventName, payloadItemName);
     };
 });
 
-troop.postpone(evan, 'deletePayloadItems', function () {
+troop.postpone(evan, 'deleteNextPayloadItems', function () {
     "use strict";
 
     /**
@@ -58,7 +58,7 @@ troop.postpone(evan, 'deletePayloadItems', function () {
      * Pass item names following the first argument.
      * @param {string} eventName
      */
-    evan.deletePayloadItems = function (eventName) {
-        evan.payloadStore.deletePayloadItems.apply(this, arguments);
+    evan.deleteNextPayloadItems = function (eventName) {
+        evan.nextPayloadStore.deletePayloadItems.apply(this, arguments);
     };
 });
