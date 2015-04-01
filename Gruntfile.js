@@ -14,7 +14,6 @@ module.exports = function (grunt) {
             'js/Evented.js',
             'js/EventStack.js',
             'js/PayloadStore.js',
-            'js/globals/eventSpaceRegistry.js',
             'js/globals/originalEventStack.js',
             'js/globals/nextPayloadStore.js',
             'js/globals/eventSpace.js',

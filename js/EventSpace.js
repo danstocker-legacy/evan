@@ -18,7 +18,6 @@ troop.postpone(evan, 'EventSpace', function () {
      * Events traverse within a confined event space.
      * @class
      * @extends troop.Base
-     * @extends sntls.Documented
      * @extends evan.EventSpawner
      * @extends evan.EventTarget
      */
@@ -39,11 +38,16 @@ troop.postpone(evan, 'EventSpace', function () {
              * @private
              */
             _prepareEvent: function (event) {
-                // applying next payload on spawned event
-                event.mergePayload(this.nextPayload);
+                var nextPayloadItems = evan.nextPayloadStore.getPayload(event.eventName),
+                    nextOriginalEvent = evan.originalEventStack.getFirstEvent();
 
-                var nextOriginalEvent = evan.originalEventStack[0];
+                if (nextPayloadItems) {
+                    // applying next payload on spawned event
+                    event.mergePayload(sntls.Collection.create(nextPayloadItems));
+                }
+
                 if (nextOriginalEvent) {
+                    // setting next original event on spawned event
                     event.setOriginalEvent(nextOriginalEvent);
                 }
             }
@@ -51,8 +55,6 @@ troop.postpone(evan, 'EventSpace', function () {
         .addMethods(/** @lends evan.EventSpace# */{
             /** @ignore */
             init: function () {
-                sntls.Documented.init.call(this);
-
                 /**
                  * Lookup for subscribed event handlers.
                  * @type {sntls.Tree}
@@ -60,64 +62,6 @@ troop.postpone(evan, 'EventSpace', function () {
                  * @example {myEvent: {handlers: {myPath: [func1, func2]}, paths: [myPath]}}
                  */
                 this.eventRegistry = sntls.Tree.create();
-
-                /**
-                 * Payload collection for the next event spawned on this event space.
-                 * @type {sntls.Collection}
-                 */
-                this.nextPayload = sntls.Collection.create();
-
-                evan.eventSpaceRegistry.setItem(this.instanceId, this);
-            },
-
-            /**
-             * Sets a single item in the next payload.
-             * @param {string} payloadName
-             * @param {*} payloadValue
-             * @returns {evan.EventSpace}
-             */
-            setNextPayloadItem: function (payloadName, payloadValue) {
-                this.nextPayload.setItem(payloadName, payloadValue);
-                return this;
-            },
-
-            /**
-             * Merges specified payload with current next payload.
-             * @param {object} payload
-             * @returns {evan.EventSpace}
-             */
-            setNextPayloadItems: function (payload) {
-                var nextPayload = this.nextPayload,
-                    itemNames = Object.keys(payload),
-                    i, itemName;
-                for (i = 0; i < itemNames.length; i++) {
-                    itemName = itemNames[i];
-                    nextPayload.setItem(itemName, payload[itemName]);
-                }
-                return this;
-            },
-
-            /**
-             * Removes a single item from the next payload.
-             * @param {string} payloadName
-             * @returns {evan.EventSpace}
-             */
-            deleteNextPayloadItem: function (payloadName) {
-                this.nextPayload.deleteItem(payloadName);
-                return this;
-            },
-
-            /**
-             * Removes all specified payload items from the next payload.
-             * @returns {evan.EventSpace}
-             */
-            deleteNextPayloadItems: function () {
-                var nextPayload = this.nextPayload,
-                    i;
-                for (i = 0; i < arguments.length; i++) {
-                    nextPayload.deleteItem(arguments[i]);
-                }
-                return this;
             },
 
             /**
