@@ -7,22 +7,22 @@
     test("Instantiation", function () {
         var chain = evan.OpenChain.create();
 
-        ok(chain.firstLink.instanceOf(evan.EndLink), "should add firstLink property");
-        ok(chain.lastLink.instanceOf(evan.EndLink), "should add lastLink property");
+        ok(chain.firstLink.instanceOf(evan.Link), "should add firstLink property");
+        ok(chain.lastLink.instanceOf(evan.Link), "should add lastLink property");
         strictEqual(chain.lastLink.beforeLink, chain.firstLink, "should link first to last link");
         strictEqual(chain.firstLink.afterLink, chain.lastLink, "should link last to first link");
     });
 
     test("Link push", function () {
         var chain = evan.OpenChain.create(),
-            link = evan.Link.create();
+            link = evan.MutableLink.create();
 
         strictEqual(chain.pushLink(link), chain, "should be chainable");
         strictEqual(chain.firstLink.afterLink, link, "should set pushed link in chain");
     });
 
     test("Link pop", function () {
-        var link = evan.Link.create(),
+        var link = evan.MutableLink.create(),
             chain = evan.OpenChain.create()
                 .pushLink(link);
 
@@ -32,14 +32,14 @@
 
     test("Link unshift", function () {
         var chain = evan.OpenChain.create(),
-            link = evan.Link.create();
+            link = evan.MutableLink.create();
 
         strictEqual(chain.unshiftLink(link), chain, "should be chainable");
         strictEqual(chain.firstLink.afterLink, link, "should set un-shifted link in chain");
     });
 
     test("Link shift", function () {
-        var link = evan.Link.create(),
+        var link = evan.MutableLink.create(),
             chain = evan.OpenChain.create()
                 .unshiftLink(link);
 

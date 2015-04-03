@@ -2,7 +2,7 @@
 troop.postpone(evan, 'Link', function () {
     "use strict";
 
-    var base = evan.EndLink,
+    var base = troop.Base,
         self = base.extend();
 
     /**
@@ -12,43 +12,66 @@ troop.postpone(evan, 'Link', function () {
      */
 
     /**
-     * Link in a OpenChain structure.
+     * Serves as end link in an open chain or master link in a closed chain.
+     * Cannot be added to, or removed from other links, but other links can be added to / removed from it.
      * @class
-     * @extends evan.EndLink
+     * @extends troop.Base
      */
     evan.Link = self
         .addMethods(/** @lends evan.Link# */{
             /** @ignore */
             init: function () {
-                base.init.call(this);
+                /**
+                 * Link that comes before the current link in the chain.
+                 * @type {evan.Link}
+                 */
+                this.linkBefore = undefined;
 
                 /**
-                 * Payload associated with link.
-                 * @type {*}
+                 * Link that comes after the current link in the chain.
+                 * @type {evan.Link}
                  */
-                this.value = undefined;
+                this.linkAfter = undefined;
             },
 
             /**
-             * Sets link value.
-             * @param {*} value
+             * Adds current link after the specified link.
+             * @param {evan.Link} beforeLink
              * @returns {evan.Link}
              */
-            setValue: function (value) {
-                this.value = value;
+            addAfter: function (beforeLink) {
+                // setting links on current link
+                this.beforeLink = beforeLink;
+                this.afterLink = beforeLink.afterLink;
+
+                // setting self as before link on old after link
+                if (beforeLink.afterLink) {
+                    beforeLink.afterLink.beforeLink = this;
+                }
+
+                // setting self as after link on old before link
+                beforeLink.afterLink = this;
+
                 return this;
             },
 
             /**
-             * Removes link from the chain.
+             * Adds current link before the specified link.
+             * @param {evan.Link} afterLink
              * @returns {evan.Link}
              */
-            remove: function () {
-                this.afterLink.beforeLink = this.beforeLink;
-                this.beforeLink.afterLink = this.afterLink;
+            addBefore: function (afterLink) {
+                // setting links on current link
+                this.afterLink = afterLink;
+                this.beforeLink = afterLink.beforeLink;
 
-                this.beforeLink = undefined;
-                this.afterLink = undefined;
+                // setting self as after link on old before link
+                if (afterLink.beforeLink) {
+                    afterLink.beforeLink.afterLink = this;
+                }
+
+                // setting self as before link on old after link
+                afterLink.beforeLink = this;
 
                 return this;
             }

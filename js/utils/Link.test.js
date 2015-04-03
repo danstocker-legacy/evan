@@ -7,28 +7,53 @@
     test("Instantiation", function () {
         var link = evan.Link.create();
 
-        ok(link.hasOwnProperty('value'), "should add value property");
+        ok(link.hasOwnProperty('linkBefore'), "should add linkBefore property");
+        ok(link.hasOwnProperty('linkAfter'), "should add linkAfter property");
     });
 
-    test("Value setter", function () {
+    test("Adding link after disconnected link", function () {
         var link = evan.Link.create(),
-            value = {};
+            beforeLink = evan.Link.create();
 
-        strictEqual(link.setValue(value), link, "should be chainable");
-        strictEqual(link.value, value, "should set value property");
+        strictEqual(link.addAfter(beforeLink), link, "should be chainable");
+        strictEqual(link.beforeLink, beforeLink, "should set beforeLink on link");
+        strictEqual(beforeLink.afterLink, link, "should set afterLink on before link");
     });
 
-    test("Link removal", function () {
+    test("Adding link after connected link", function () {
         var link = evan.Link.create(),
+            beforeLink = evan.Link.create(),
             afterLink = evan.Link.create()
-                .addAfter(link),
-            beforeLink = evan.Link.create()
-                .addBefore(link);
+                .addAfter(beforeLink);
 
-        strictEqual(link.remove(), link, "should be chainable");
-        ok(!link.afterLink, "should remove afterLink");
-        ok(!link.beforeLink, "should remove beforeLink");
-        strictEqual(afterLink.beforeLink, beforeLink, "should set beforeLink on old after link");
-        strictEqual(beforeLink.afterLink, afterLink, "should set afterLink on old before link");
+        link.addAfter(beforeLink);
+
+        strictEqual(link.beforeLink, beforeLink, "should set beforeLink on link");
+        strictEqual(link.afterLink, afterLink, "should set afterLink on link");
+        strictEqual(beforeLink.afterLink, link, "should set afterLink on before link");
+        strictEqual(afterLink.beforeLink, link, "should set beforeLink on after link");
     });
+
+    test("Adding link before disconnected link", function () {
+        var link = evan.Link.create(),
+            afterLink = evan.Link.create();
+
+        strictEqual(link.addBefore(afterLink), link, "should be chainable");
+        strictEqual(link.afterLink, afterLink, "should set afterLink on link");
+        strictEqual(afterLink.beforeLink, link, "should set beforeLink on after link");
+    });
+
+    test("Adding link before connected link", function () {
+        var link = evan.Link.create(),
+            afterLink = evan.Link.create(),
+            beforeLink = evan.Link.create()
+                .addBefore(afterLink);
+
+        link.addBefore(afterLink);
+
+        strictEqual(link.afterLink, afterLink, "should set afterLink on link");
+        strictEqual(link.beforeLink, beforeLink, "should set beforeLink on link");
+        strictEqual(afterLink.beforeLink, link, "should set beforeLink on after link");
+        strictEqual(beforeLink.afterLink, link, "should set afterLink on before link");
+    });    
 }());
