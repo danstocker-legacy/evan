@@ -286,6 +286,8 @@ troop.postpone(evan, 'Event', function () {
              * @return {evan.Event}
              */
             triggerSync: function (targetPath) {
+                dessert.isPathOptional(targetPath, "Invalid target path");
+
                 // preparing event for trigger
                 if (targetPath) {
                     this.setTargetPath(targetPath);
@@ -295,7 +297,6 @@ troop.postpone(evan, 'Event', function () {
                     eventSpace = this.eventSpace,
                     handlerCount;
 
-                dessert.assert(currentPath, "Event is not ready to be triggered");
 
                 if (!this.canBubble || this.originalPath.isA(sntls.Query)) {
                     // event can't bubble because it's not allowed to
@@ -328,10 +329,15 @@ troop.postpone(evan, 'Event', function () {
              * Events spawned by a broadcast do not bubble except for the one that is triggered
              * on the specified broadcast path. It is necessary for delegates to react to
              * broadcasts.
-             * @param {sntls.Path} broadcastPath Target root for broadcast
+             * @param {sntls.Path} [broadcastPath] Target root for broadcast.
              * @return {evan.Event}
              */
             broadcastSync: function (broadcastPath) {
+                dessert.isPathOptional(broadcastPath, "Invalid broadcast path");
+
+                // defaulting to current path in case broadcast path was omitted
+                broadcastPath = broadcastPath || this.currentPath;
+
                 var mainEvent = this._spawnMainBroadcastEvent(broadcastPath),
                     broadcastEvents = this.eventSpace
                         // obtaining subscribed paths relative to broadcast path

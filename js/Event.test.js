@@ -143,7 +143,7 @@
     });
 
     test("Triggering event", function () {
-        expect(13);
+        expect(14);
 
         var originalEvent = evan.Event.create('original-event', eventSpace),
             event = evan.Event.create('test-event', eventSpace)
@@ -151,6 +151,10 @@
                 .setOriginalEvent(originalEvent),
             handledFlags = [],
             i = 0;
+
+        raises(function () {
+            event.triggerSync('foo');
+        }, "should raise exception on invalid target path");
 
         evan.EventSpace.addMocks({
             callHandlers: function (event) {
@@ -235,22 +239,47 @@
         evan.EventSpace.removeMocks();
     });
 
+    test("Triggering with pre-set target", function () {
+        expect(1);
+
+        var event = evan.Event.create('testEvent', eventSpace)
+            .setTargetPath('test>path'.toPath());
+
+        evan.EventSpace.addMocks({
+            callHandlers: function (event) {
+                equal(event.currentPath.toString(), 'test>path',
+                    "should call handlers on pre-set path");
+
+                // stops propagation after first bubbling
+                return false;
+            }
+        });
+
+        event.triggerSync();
+
+        evan.EventSpace.removeMocks();
+    });
+
     test("Broadcasting event", function () {
-        expect(9);
+        expect(10);
 
         var triggeredPaths = [],
             eventSpace = evan.EventSpace.create()
-                .subscribeTo('my-event', 'test.event'.toPath(), function () {})
-                .subscribeTo('my-event', 'test.event.foo'.toPath(), function () {})
-                .subscribeTo('my-event', 'test.event.foo.bar'.toPath(), function () {})
-                .subscribeTo('my-event', 'test.foo.bar'.toPath(), function () {})
-                .subscribeTo('my-event', 'test.event.hello'.toPath(), function () {})
-                .subscribeTo('other-event', 'test.event'.toPath(), function () {})
-                .subscribeTo('other-event', 'test.event.foo'.toPath(), function () {}),
+                .subscribeTo('my-event', 'test>event'.toPath(), function () {})
+                .subscribeTo('my-event', 'test>event>foo'.toPath(), function () {})
+                .subscribeTo('my-event', 'test>event>foo>bar'.toPath(), function () {})
+                .subscribeTo('my-event', 'test>foo>bar'.toPath(), function () {})
+                .subscribeTo('my-event', 'test>event>hello'.toPath(), function () {})
+                .subscribeTo('other-event', 'test>event'.toPath(), function () {})
+                .subscribeTo('other-event', 'test>event>foo'.toPath(), function () {}),
             originalEvent = eventSpace.spawnEvent('original-event'),
             event = eventSpace.spawnEvent('my-event')
                 .setOriginalEvent(originalEvent)
                 .setPayloadItem('foo', 'bar');
+
+        raises(function () {
+            event.broadcastSync('foo');
+        }, "should raise exception on invalid broadcast path");
 
         evan.Event.addMocks({
             triggerSync: function () {
@@ -260,14 +289,34 @@
             }
         });
 
-        event.broadcastSync('test.event'.toPath());
+        event.broadcastSync('test>event'.toPath());
 
         evan.Event.removeMocks();
 
         deepEqual(
             triggeredPaths,
-            ['test.event.foo', 'test.event.foo.bar', 'test.event.hello', 'test.event'],
+            ['test>event>foo', 'test>event>foo>bar', 'test>event>hello', 'test>event'],
             "should trigger event on all paths below broadcast path"
         );
+    });
+
+    test("Broadcasting with pre-set target", function () {
+        expect(1);
+
+        var event = eventSpace.spawnEvent('my-event')
+            .setTargetPath('test>path'.toPath());
+
+        event.addMocks({
+            _spawnMainBroadcastEvent: function (broadcastPath) {
+                equal(broadcastPath.toString(), 'test>path',
+                    "should call handlers on pre-set path");
+
+                // just so the rest of the method can complete
+                return evan.Event.create('foo', eventSpace)
+                    .setTargetPath(broadcastPath);
+            }
+        });
+
+        event.broadcastSync();
     });
 }());
