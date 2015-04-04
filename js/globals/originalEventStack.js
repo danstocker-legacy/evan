@@ -15,20 +15,9 @@ troop.postpone(evan, 'pushOriginalEvent', function () {
     /**
      * Adds an original event to the stack.
      * @param {evan.Event|*} originalEvent
+     * @returns {evan.MutableLink}
      */
     evan.pushOriginalEvent = function (originalEvent) {
-        evan.originalEventStack.pushEvent(originalEvent);
-    };
-});
-
-troop.postpone(evan, 'popOriginalEvent', function () {
-    "use strict";
-
-    /**
-     * Removes the last added original event from the stack.
-     * @returns {evan.Event|*}
-     */
-    evan.popOriginalEvent = function () {
-        return evan.originalEventStack.popEvent();
+        return evan.originalEventStack.pushEvent(originalEvent);
     };
 });

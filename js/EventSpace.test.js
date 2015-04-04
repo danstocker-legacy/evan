@@ -35,9 +35,10 @@
 
     test("Spawning event", function () {
         var eventSpace = evan.EventSpace.create(),
+            link,
             spawnedEvent;
 
-        evan.pushOriginalEvent(evan.Event.create('foo', eventSpace));
+        link = evan.pushOriginalEvent(evan.Event.create('foo', eventSpace));
         evan.setNextPayloadItem('eventA', 'foo', {});
 
         spawnedEvent = eventSpace.spawnEvent('eventA');
@@ -45,10 +46,10 @@
         ok(spawnedEvent.isA(evan.Event), "should return Event instance");
         deepEqual(spawnedEvent.payload.items, evan.nextPayloadStore.getPayload('eventA'),
             "should prepare event payload based on next payload on event space");
-        strictEqual(spawnedEvent.originalEvent, evan.originalEventStack.getFirstEvent(),
+        strictEqual(spawnedEvent.originalEvent, evan.originalEventStack.getLastEvent(),
             "should set original event");
 
-        evan.popOriginalEvent();
+        link.remove();
         evan.deleteNextPayloadItem('eventA', 'foo');
     });
 

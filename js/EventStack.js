@@ -12,7 +12,8 @@ troop.postpone(evan, 'EventStack', function () {
      */
 
     /**
-     * Stores events in a stack structure.
+     * Stores events in a quasi-stack structure.
+     *
      * @class
      * @extends troop.Base
      */
@@ -22,33 +23,27 @@ troop.postpone(evan, 'EventStack', function () {
              * @ignore
              */
             init: function () {
-                this.events = [];
+                /** @type {evan.OpenChain} */
+                this.events = evan.OpenChain.create();
             },
 
             /**
              * Adds an event to the stack.
              * @param {evan.Event|*} event
-             * @returns {evan.EventStack}
+             * @returns {evan.MutableLink}
              */
             pushEvent: function (event) {
-                this.events.unshift(event);
-                return this;
+                var link = evan.MutableLink.create().setValue(event);
+                this.events.pushLink(link);
+                return link;
             },
 
             /**
-             * Removes the last added event from the stack.
+             * Retrieves the last added event from the stack.
              * @returns {evan.Event|*}
              */
-            popEvent: function () {
-                return this.events.shift();
-            },
-
-            /**
-             * Retrieves the first event from the stack.
-             * @returns {evan.Event|*}
-             */
-            getFirstEvent: function () {
-                return this.events[0];
+            getLastEvent: function () {
+                return this.events.lastLink.beforeLink.value;
             }
         });
 });

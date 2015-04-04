@@ -7,36 +7,60 @@
     test("Instantiation", function () {
         var eventStack = evan.EventStack.create();
 
-        deepEqual(eventStack.events, [], "should add events property");
+        ok(eventStack.events.isA(evan.OpenChain), "should add events property");
     });
 
     test("Pushing event", function () {
+        expect(3);
+
         var eventStack = evan.EventStack.create(),
-            event = {};
+            event = {},
+            link;
 
-        strictEqual(eventStack.pushEvent(event), eventStack, "should be chainable");
-        deepEqual(eventStack.events, [event], "should add event to stack");
-    });
+        eventStack.events.addMocks({
+            pushLink: function (link) {
+                strictEqual(link.value, event, "should push link to chain");
+            }
+        });
 
-    test("Popping event", function () {
-        var eventStack = evan.EventStack.create(),
-            event = {};
+        link = eventStack.pushEvent(event);
 
-        eventStack.pushEvent(event);
-
-        strictEqual(eventStack.popEvent(), event, "should return removed event");
-        deepEqual(eventStack.events, [], "should remove event from stack");
+        ok(link.isA(evan.MutableLink), "should return MutableLink instance");
+        strictEqual(link.value, event, "should set event as link value");
     });
 
     test("First event getter", function () {
         var eventStack = evan.EventStack.create(),
             event = {};
 
-        eventStack
-            .pushEvent({})
-            .pushEvent(event);
+        eventStack.pushEvent({});
+        eventStack.pushEvent(event);
 
-        strictEqual(eventStack.getFirstEvent(), event, "should return first event");
-        deepEqual(eventStack.events, [{}, {}], "should not remove event from stack");
+        strictEqual(eventStack.getLastEvent(), event, "should return first event");
+    });
+
+    test("Unordered pop", function () {
+        var eventStack = evan.EventStack.create(),
+            link1 = eventStack.pushEvent(1), // will be sync
+            link2 = eventStack.pushEvent(2), // will be async
+            link3 = eventStack.pushEvent(3); // will be sync
+
+        deepEqual(eventStack.events.getValues(), [1, 2, 3],
+            "should start with all events in the stack");
+
+        link1.remove();
+
+        deepEqual(eventStack.events.getValues(), [2, 3],
+            "should then remove first sync link from stack");
+
+        link3.remove();
+
+        deepEqual(eventStack.events.getValues(), [2],
+            "should then remove second sync link from stack");
+
+        link2.remove();
+
+        deepEqual(eventStack.events.getValues(), [],
+            "should then remove async link from stack");
     });
 }());
