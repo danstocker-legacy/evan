@@ -27,7 +27,7 @@
 
         equal(typeof event.originalPath, 'undefined', "should clear original path");
         equal(typeof event.currentPath, 'undefined', "should clear current path");
-        ok(event.payload.isA(sntls.Collection), "should set payload property");
+        deepEqual(event.payload, {}, "should set payload property");
     });
 
     test("Cloning event", function () {
@@ -111,32 +111,35 @@
             "should set originalPath and currentPath with identical contents");
     });
 
-    test("Merging payload", function () {
-        var event = evan.Event.create('testEvent', eventSpace),
-            payload = sntls.Collection.create({
-                foo: 'bar'
-            });
-
-        event.mergePayload(payload);
-
-        deepEqual(event.payload.items, payload.items, "should merge payload");
-    });
-
-    test("Setting payload item", function () {
+    test("Setting single payload item", function () {
         var event = evan.Event.create('testEvent', eventSpace);
 
-        event.setPayloadItem('foo', 'bar');
+        strictEqual(event.setPayloadItem('foo', 'bar'), event, "should be chainable");
 
-        deepEqual(event.payload.items, {
+        deepEqual(event.payload, {
             foo: 'bar'
         }, "should add payload");
 
         event.setPayloadItem('hello', 'world');
 
-        deepEqual(event.payload.items, {
+        deepEqual(event.payload, {
             foo  : 'bar',
             hello: 'world'
         }, "should add additional payload leaving old");
+    });
+
+    test("Setting multiple payload item", function () {
+        var event = evan.Event.create('testEvent', eventSpace);
+
+        strictEqual(event.setPayloadItems({
+            foo  : 'bar',
+            hello: 'world'
+        }), event, "should be chainable");
+
+        deepEqual(event.payload, {
+            foo  : 'bar',
+            hello: 'world'
+        }, "should add payload items");
     });
 
     test("Triggering event", function () {
@@ -157,7 +160,7 @@
                     "should call handlers with correct original event path,");
                 equal(event.currentPath.toString(), ['test>path', 'test'][i++],
                     "should call handlers with correct current event path");
-                deepEqual(event.payload.items, {foo: 'bar'},
+                deepEqual(event.payload, {foo: 'bar'},
                     "should call handlers with correct payload");
 
                 handledFlags.push(event.handled);
@@ -173,7 +176,7 @@
 
         equal(event.originalPath.toString(), 'test>path', "should leave original path intact");
         deepEqual(event.currentPath.asArray, [], "should leave current path empty (traversed)");
-        deepEqual(event.payload.items, {foo: 'bar'}, "should leave payload intact");
+        deepEqual(event.payload, {foo: 'bar'}, "should leave payload intact");
         strictEqual(event.originalEvent, originalEvent, "should leave original event intact");
 
         evan.EventSpace.removeMocks();
@@ -252,7 +255,7 @@
         evan.Event.addMocks({
             triggerSync: function () {
                 triggeredPaths.push(this.originalPath.toString());
-                deepEqual(this.payload.items, {foo: 'bar'}, "should set payload on spawned event");
+                deepEqual(this.payload, {foo: 'bar'}, "should set payload on spawned event");
                 strictEqual(this.originalEvent, originalEvent, "should set original event on spawned event");
             }
         });

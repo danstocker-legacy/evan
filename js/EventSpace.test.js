@@ -44,7 +44,7 @@
         spawnedEvent = eventSpace.spawnEvent('eventA');
 
         ok(spawnedEvent.isA(evan.Event), "should return Event instance");
-        deepEqual(spawnedEvent.payload.items, evan.nextPayloadStore.getPayload('eventA'),
+        deepEqual(spawnedEvent.payload, evan.nextPayloadStore.getPayload('eventA'),
             "should prepare event payload based on next payload on event space");
         strictEqual(spawnedEvent.originalEvent, evan.originalEventStack.getLastEvent(),
             "should set original event");

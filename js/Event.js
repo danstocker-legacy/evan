@@ -101,13 +101,13 @@ troop.postpone(evan, 'Event', function () {
                 this.handled = false;
 
                 /**
-                 * Custom payload to be carried by the event
+                 * Custom payload to be carried by the event.
                  * In most cases, this property is not modified directly, but through
-                 * EventSpace#setNextPayloadItem()
-                 * @type {sntls.Collection}
-                 * @see evan.EventSpace#setNextPayloadItem()
+                 * evan.setNextPayloadItem()
+                 * @type {object}
+                 * @see evan.setNextPayloadItem()
                  */
-                this.payload = sntls.Collection.create();
+                this.payload = {};
 
                 /**
                  * Path reflecting current state of bubbling
@@ -244,28 +244,36 @@ troop.postpone(evan, 'Event', function () {
             },
 
             /**
-             * Merges specified payload collection into the current payload.
-             * @param {sntls.Collection} payload
-             * @return {evan.Event}
-             */
-            mergePayload: function (payload) {
-                if (payload.getKeyCount()) {
-                    this.payload = this.payload.mergeWith(payload);
-                }
-                return this;
-            },
-
-            /**
              * Sets an item on the event payload.
              * An event may carry multiple payload items set by multiple sources.
-             * User payloads are usually set via EventSpace#setNextPayloadItem.
+             * User payloads are usually set via evan.setNextPayloadItem.
              * @param {string} payloadName
              * @param {*} payloadValue
              * @return {evan.Event}
              * @see evan.EventSpace#setNextPayloadItem
              */
             setPayloadItem: function (payloadName, payloadValue) {
-                this.payload.setItem(payloadName, payloadValue);
+                this.payload[payloadName] = payloadValue;
+                return this;
+            },
+
+            /**
+             * Sets multiple payload items in the current event's payload.
+             * An event may carry multiple payload items set by multiple sources.
+             * User payloads are usually set via evan.setNextPayloadItems.
+             * @param {object} payloadItems
+             * @return {evan.Event}
+             */
+            setPayloadItems: function (payloadItems) {
+                var payload = this.payload,
+                    payloadNames = Object.keys(payloadItems),
+                    i, payloadName;
+
+                for (i = 0; i < payloadNames.length; i++) {
+                    payloadName = payloadNames[i];
+                    payload[payloadName] = payloadItems[payloadName];
+                }
+
                 return this;
             },
 
@@ -336,7 +344,7 @@ troop.postpone(evan, 'Event', function () {
 
                 // triggering all affected events
                 broadcastEvents
-                    .mergePayload(this.payload)
+                    .setPayloadItems(this.payload)
                     .setOriginalEvent(this.originalEvent)
                     .triggerSync();
 

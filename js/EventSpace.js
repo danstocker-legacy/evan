@@ -43,7 +43,7 @@ troop.postpone(evan, 'EventSpace', function () {
 
                 if (nextPayloadItems) {
                     // applying next payload on spawned event
-                    event.mergePayload(sntls.Collection.create(nextPayloadItems));
+                    event.setPayloadItems(nextPayloadItems);
                 }
 
                 if (nextOriginalEvent) {
