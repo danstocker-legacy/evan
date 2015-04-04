@@ -49,7 +49,7 @@
         strictEqual(spawnedEvent.originalEvent, evan.originalEventStack.getLastEvent(),
             "should set original event");
 
-        link.remove();
+        link.unLink();
         evan.deleteNextPayloadItem('eventA', 'foo');
     });
 

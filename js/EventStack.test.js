@@ -48,17 +48,17 @@
         deepEqual(eventStack.events.getValues(), [1, 2, 3],
             "should start with all events in the stack");
 
-        link1.remove();
+        link1.unLink();
 
         deepEqual(eventStack.events.getValues(), [2, 3],
             "should then remove first sync link from stack");
 
-        link3.remove();
+        link3.unLink();
 
         deepEqual(eventStack.events.getValues(), [2],
             "should then remove second sync link from stack");
 
-        link2.remove();
+        link2.unLink();
 
         deepEqual(eventStack.events.getValues(), [],
             "should then remove async link from stack");

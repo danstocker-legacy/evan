@@ -49,7 +49,7 @@ troop.postpone(evan, 'OpenChain', function () {
              */
             popLink: function () {
                 return this.lastLink.beforeLink
-                    .remove();
+                    .unLink();
             },
 
             /**
@@ -67,7 +67,7 @@ troop.postpone(evan, 'OpenChain', function () {
              */
             shiftLink: function () {
                 return this.firstLink.afterLink
-                    .remove();
+                    .unLink();
             },
 
             /**

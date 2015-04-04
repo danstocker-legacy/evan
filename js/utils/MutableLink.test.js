@@ -25,7 +25,7 @@
             beforeLink = evan.MutableLink.create()
                 .addBefore(link);
 
-        strictEqual(link.remove(), link, "should be chainable");
+        strictEqual(link.unLink(), link, "should be chainable");
         ok(!link.afterLink, "should remove afterLink");
         ok(!link.beforeLink, "should remove beforeLink");
         strictEqual(afterLink.beforeLink, beforeLink, "should set beforeLink on old after link");

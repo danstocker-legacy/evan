@@ -43,7 +43,7 @@ troop.postpone(evan, 'MutableLink', function () {
              * Removes link from the chain.
              * @returns {evan.MutableLink}
              */
-            remove: function () {
+            unLink: function () {
                 this.afterLink.beforeLink = this.beforeLink;
                 this.beforeLink.afterLink = this.afterLink;
 
