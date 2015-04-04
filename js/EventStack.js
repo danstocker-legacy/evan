@@ -43,7 +43,7 @@ troop.postpone(evan, 'EventStack', function () {
              * @returns {evan.Event|*}
              */
             getLastEvent: function () {
-                return this.events.lastLink.beforeLink.value;
+                return this.events.lastLink.previousLink.value;
             }
         });
 });

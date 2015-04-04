@@ -9,8 +9,8 @@
 
         ok(chain.firstLink.instanceOf(evan.Link), "should add firstLink property");
         ok(chain.lastLink.instanceOf(evan.Link), "should add lastLink property");
-        strictEqual(chain.lastLink.beforeLink, chain.firstLink, "should link first to last link");
-        strictEqual(chain.firstLink.afterLink, chain.lastLink, "should link last to first link");
+        strictEqual(chain.lastLink.previousLink, chain.firstLink, "should link first to last link");
+        strictEqual(chain.firstLink.nextLink, chain.lastLink, "should link last to first link");
     });
 
     test("Link push", function () {
@@ -18,7 +18,7 @@
             link = evan.ValueLink.create();
 
         strictEqual(chain.pushLink(link), chain, "should be chainable");
-        strictEqual(chain.firstLink.afterLink, link, "should set pushed link in chain");
+        strictEqual(chain.firstLink.nextLink, link, "should set pushed link in chain");
     });
 
     test("Link pop", function () {
@@ -27,7 +27,7 @@
                 .pushLink(link);
 
         strictEqual(chain.popLink(), link, "should return removed link");
-        strictEqual(chain.firstLink.afterLink, chain.lastLink, "should remove link from chain");
+        strictEqual(chain.firstLink.nextLink, chain.lastLink, "should remove link from chain");
     });
 
     test("Link unshift", function () {
@@ -35,7 +35,7 @@
             link = evan.ValueLink.create();
 
         strictEqual(chain.unshiftLink(link), chain, "should be chainable");
-        strictEqual(chain.firstLink.afterLink, link, "should set un-shifted link in chain");
+        strictEqual(chain.firstLink.nextLink, link, "should set un-shifted link in chain");
     });
 
     test("Link shift", function () {
@@ -44,7 +44,7 @@
                 .unshiftLink(link);
 
         strictEqual(chain.shiftLink(), link, "should return removed link");
-        strictEqual(chain.firstLink.afterLink, chain.lastLink, "should remove link from chain");
+        strictEqual(chain.firstLink.nextLink, chain.lastLink, "should remove link from chain");
     });
 
     test("Values getter", function () {

@@ -7,53 +7,53 @@
     test("Instantiation", function () {
         var link = evan.Link.create();
 
-        ok(link.hasOwnProperty('linkBefore'), "should add linkBefore property");
-        ok(link.hasOwnProperty('linkAfter'), "should add linkAfter property");
+        ok(link.hasOwnProperty('previousLink'), "should add previousLink property");
+        ok(link.hasOwnProperty('nextLink'), "should add nextLink property");
     });
 
     test("Adding link after disconnected link", function () {
         var link = evan.Link.create(),
-            beforeLink = evan.Link.create();
+            previousLink = evan.Link.create();
 
-        strictEqual(link.addAfter(beforeLink), link, "should be chainable");
-        strictEqual(link.beforeLink, beforeLink, "should set beforeLink on link");
-        strictEqual(beforeLink.afterLink, link, "should set afterLink on before link");
+        strictEqual(link.addAfter(previousLink), link, "should be chainable");
+        strictEqual(link.previousLink, previousLink, "should set previousLink on link");
+        strictEqual(previousLink.nextLink, link, "should set nextLink on previous link");
     });
 
     test("Adding link after connected link", function () {
         var link = evan.Link.create(),
-            beforeLink = evan.Link.create(),
-            afterLink = evan.Link.create()
-                .addAfter(beforeLink);
+            previousLink = evan.Link.create(),
+            nextLink = evan.Link.create()
+                .addAfter(previousLink);
 
-        link.addAfter(beforeLink);
+        link.addAfter(previousLink);
 
-        strictEqual(link.beforeLink, beforeLink, "should set beforeLink on link");
-        strictEqual(link.afterLink, afterLink, "should set afterLink on link");
-        strictEqual(beforeLink.afterLink, link, "should set afterLink on before link");
-        strictEqual(afterLink.beforeLink, link, "should set beforeLink on after link");
+        strictEqual(link.previousLink, previousLink, "should set previousLink on link");
+        strictEqual(link.nextLink, nextLink, "should set nextLink on link");
+        strictEqual(previousLink.nextLink, link, "should set nextLink on previous link");
+        strictEqual(nextLink.previousLink, link, "should set previousLink on next link");
     });
 
     test("Adding link before disconnected link", function () {
         var link = evan.Link.create(),
-            afterLink = evan.Link.create();
+            nextLink = evan.Link.create();
 
-        strictEqual(link.addBefore(afterLink), link, "should be chainable");
-        strictEqual(link.afterLink, afterLink, "should set afterLink on link");
-        strictEqual(afterLink.beforeLink, link, "should set beforeLink on after link");
+        strictEqual(link.addBefore(nextLink), link, "should be chainable");
+        strictEqual(link.nextLink, nextLink, "should set nextLink on link");
+        strictEqual(nextLink.previousLink, link, "should set previousLink on after link");
     });
 
     test("Adding link before connected link", function () {
         var link = evan.Link.create(),
-            afterLink = evan.Link.create(),
-            beforeLink = evan.Link.create()
-                .addBefore(afterLink);
+            nextLink = evan.Link.create(),
+            previousLink = evan.Link.create()
+                .addBefore(nextLink);
 
-        link.addBefore(afterLink);
+        link.addBefore(nextLink);
 
-        strictEqual(link.afterLink, afterLink, "should set afterLink on link");
-        strictEqual(link.beforeLink, beforeLink, "should set beforeLink on link");
-        strictEqual(afterLink.beforeLink, link, "should set beforeLink on after link");
-        strictEqual(beforeLink.afterLink, link, "should set afterLink on before link");
+        strictEqual(link.nextLink, nextLink, "should set nextLink on link");
+        strictEqual(link.previousLink, previousLink, "should set previousLink on link");
+        strictEqual(nextLink.previousLink, link, "should set previousLink on next link");
+        strictEqual(previousLink.nextLink, link, "should set nextLink on previous link");
     });    
 }());

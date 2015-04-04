@@ -45,11 +45,11 @@ troop.postpone(evan, 'ValueLink', function () {
              * @returns {evan.ValueLink}
              */
             unLink: function () {
-                this.afterLink.beforeLink = this.beforeLink;
-                this.beforeLink.afterLink = this.afterLink;
+                this.nextLink.previousLink = this.previousLink;
+                this.previousLink.nextLink = this.nextLink;
 
-                this.beforeLink = undefined;
-                this.afterLink = undefined;
+                this.previousLink = undefined;
+                this.nextLink = undefined;
 
                 return this;
             }

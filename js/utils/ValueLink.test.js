@@ -26,9 +26,9 @@
                 .addBefore(link);
 
         strictEqual(link.unLink(), link, "should be chainable");
-        ok(!link.afterLink, "should remove afterLink");
-        ok(!link.beforeLink, "should remove beforeLink");
-        strictEqual(afterLink.beforeLink, beforeLink, "should set beforeLink on old after link");
-        strictEqual(beforeLink.afterLink, afterLink, "should set afterLink on old before link");
+        ok(!link.nextLink, "should remove nextLink");
+        ok(!link.previousLink, "should remove previousLink");
+        strictEqual(afterLink.previousLink, beforeLink, "should set previousLink on old next link");
+        strictEqual(beforeLink.nextLink, afterLink, "should set nextLink on old previous link");
     });
 }());

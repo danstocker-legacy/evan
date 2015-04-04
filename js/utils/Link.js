@@ -25,53 +25,53 @@ troop.postpone(evan, 'Link', function () {
                  * Link that comes before the current link in the chain.
                  * @type {evan.Link}
                  */
-                this.linkBefore = undefined;
+                this.previousLink = undefined;
 
                 /**
                  * Link that comes after the current link in the chain.
                  * @type {evan.Link}
                  */
-                this.linkAfter = undefined;
+                this.nextLink = undefined;
             },
 
             /**
              * Adds current link after the specified link.
-             * @param {evan.Link} beforeLink
+             * @param {evan.Link} link
              * @returns {evan.Link}
              */
-            addAfter: function (beforeLink) {
+            addAfter: function (link) {
                 // setting links on current link
-                this.beforeLink = beforeLink;
-                this.afterLink = beforeLink.afterLink;
+                this.previousLink = link;
+                this.nextLink = link.nextLink;
 
-                // setting self as before link on old after link
-                if (beforeLink.afterLink) {
-                    beforeLink.afterLink.beforeLink = this;
+                // setting self as previous link on old next link
+                if (link.nextLink) {
+                    link.nextLink.previousLink = this;
                 }
 
-                // setting self as after link on old before link
-                beforeLink.afterLink = this;
+                // setting self as next link on target link
+                link.nextLink = this;
 
                 return this;
             },
 
             /**
              * Adds current link before the specified link.
-             * @param {evan.Link} afterLink
+             * @param {evan.Link} link
              * @returns {evan.Link}
              */
-            addBefore: function (afterLink) {
+            addBefore: function (link) {
                 // setting links on current link
-                this.afterLink = afterLink;
-                this.beforeLink = afterLink.beforeLink;
+                this.nextLink = link;
+                this.previousLink = link.previousLink;
 
-                // setting self as after link on old before link
-                if (afterLink.beforeLink) {
-                    afterLink.beforeLink.afterLink = this;
+                // setting self as next link on old previous link
+                if (link.previousLink) {
+                    link.previousLink.nextLink = this;
                 }
 
-                // setting self as before link on old after link
-                afterLink.beforeLink = this;
+                // setting self as previous link on target link
+                link.previousLink = this;
 
                 return this;
             }
