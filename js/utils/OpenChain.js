@@ -68,6 +68,23 @@ troop.postpone(evan, 'OpenChain', function () {
             shiftLink: function () {
                 return this.firstLink.afterLink
                     .remove();
+            },
+
+            /**
+             * Retrieves the values stored in the chain's links as an array.
+             * O(n) complexity.
+             * @returns {Array}
+             */
+            getValues: function () {
+                var link = this.firstLink.afterLink,
+                    result = [];
+
+                while (link !== this.lastLink) {
+                    result.push(link.value);
+                    link = link.afterLink;
+                }
+
+                return result;
             }
         });
 });

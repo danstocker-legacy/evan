@@ -46,4 +46,14 @@
         strictEqual(chain.shiftLink(), link, "should return removed link");
         strictEqual(chain.firstLink.afterLink, chain.lastLink, "should remove link from chain");
     });
+
+    test("Values getter", function () {
+        var chain = evan.OpenChain.create()
+            .pushLink(evan.MutableLink.create().setValue(3))
+            .unshiftLink(evan.MutableLink.create().setValue(2))
+            .unshiftLink(evan.MutableLink.create().setValue(1))
+            .pushLink(evan.MutableLink.create().setValue(4));
+
+        deepEqual(chain.getValues(), [1, 2, 3, 4], "should return values in order of links");
+    });
 }());
