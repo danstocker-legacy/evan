@@ -6,13 +6,16 @@ troop.postpone(evan, 'OpenChain', function () {
         self = base.extend();
 
     /**
+     * Creates an OpenChain instance.
      * @name evan.OpenChain.create
      * @function
      * @returns {evan.OpenChain}
      */
 
     /**
-     * OpenChain data structure.
+     * Chain data structure with two fixed ends and value carrying links in between.
+     * OpenChain behaves like a stack in that you may append and prepend the chain
+     * using a stack-like API. (push, pop, etc.)
      * @class
      * @extends troop.Base
      */
@@ -21,13 +24,13 @@ troop.postpone(evan, 'OpenChain', function () {
             /** @ignore */
             init: function () {
                 /**
-                 * First link in the chain.
+                 * First (fixed) link in the chain.
                  * @type {evan.MutableLink}
                  */
                 this.firstLink = evan.Link.create();
 
                 /**
-                 * Last link in the chain.
+                 * Last (fixed) link in the chain.
                  * @type {evan.MutableLink}
                  */
                 this.lastLink = evan.Link.create()

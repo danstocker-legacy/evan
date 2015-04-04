@@ -6,14 +6,14 @@ troop.postpone(evan, 'Link', function () {
         self = base.extend();
 
     /**
+     * Creates a Link instance.
      * @name evan.Link.create
      * @function
      * @returns {evan.Link}
      */
 
     /**
-     * Serves as end link in an open chain or master link in a closed chain.
-     * Cannot be added to, or removed from other links, but other links can be added to / removed from it.
+     * Basic link, can chain other links to it.
      * @class
      * @extends troop.Base
      */

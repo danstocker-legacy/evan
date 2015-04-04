@@ -6,13 +6,14 @@ troop.postpone(evan, 'MutableLink', function () {
         self = base.extend();
 
     /**
+     * Creates a MutableLink instance.
      * @name evan.MutableLink.create
      * @function
      * @returns {evan.MutableLink}
      */
 
     /**
-     * Link in a cain structure.
+     * Link that carries a value, and has the option to be unlinked.
      * @class
      * @extends evan.Link
      */
@@ -23,7 +24,7 @@ troop.postpone(evan, 'MutableLink', function () {
                 base.init.call(this);
 
                 /**
-                 * Payload associated with link.
+                 * Value associated with link.
                  * @type {*}
                  */
                 this.value = undefined;
