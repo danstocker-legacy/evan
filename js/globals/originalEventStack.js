@@ -15,7 +15,7 @@ troop.postpone(evan, 'pushOriginalEvent', function () {
     /**
      * Adds an original event to the stack.
      * @param {evan.Event|*} originalEvent
-     * @returns {evan.MutableLink}
+     * @returns {evan.ValueLink}
      */
     evan.pushOriginalEvent = function (originalEvent) {
         return evan.originalEventStack.pushEvent(originalEvent);

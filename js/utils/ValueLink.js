@@ -1,15 +1,15 @@
 /*global dessert, troop, sntls, evan */
-troop.postpone(evan, 'MutableLink', function () {
+troop.postpone(evan, 'ValueLink', function () {
     "use strict";
 
     var base = evan.Link,
         self = base.extend();
 
     /**
-     * Creates a MutableLink instance.
-     * @name evan.MutableLink.create
+     * Creates a ValueLink instance.
+     * @name evan.ValueLink.create
      * @function
-     * @returns {evan.MutableLink}
+     * @returns {evan.ValueLink}
      */
 
     /**
@@ -17,8 +17,8 @@ troop.postpone(evan, 'MutableLink', function () {
      * @class
      * @extends evan.Link
      */
-    evan.MutableLink = self
-        .addMethods(/** @lends evan.MutableLink# */{
+    evan.ValueLink = self
+        .addMethods(/** @lends evan.ValueLink# */{
             /** @ignore */
             init: function () {
                 base.init.call(this);
@@ -33,7 +33,7 @@ troop.postpone(evan, 'MutableLink', function () {
             /**
              * Sets link value.
              * @param {*} value
-             * @returns {evan.MutableLink}
+             * @returns {evan.ValueLink}
              */
             setValue: function (value) {
                 this.value = value;
@@ -42,7 +42,7 @@ troop.postpone(evan, 'MutableLink', function () {
 
             /**
              * Removes link from the chain.
-             * @returns {evan.MutableLink}
+             * @returns {evan.ValueLink}
              */
             unLink: function () {
                 this.afterLink.beforeLink = this.beforeLink;

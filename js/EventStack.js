@@ -30,10 +30,10 @@ troop.postpone(evan, 'EventStack', function () {
             /**
              * Adds an event to the stack.
              * @param {evan.Event|*} event
-             * @returns {evan.MutableLink}
+             * @returns {evan.ValueLink}
              */
             pushEvent: function (event) {
-                var link = evan.MutableLink.create().setValue(event);
+                var link = evan.ValueLink.create().setValue(event);
                 this.events.pushLink(link);
                 return link;
             },

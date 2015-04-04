@@ -9,7 +9,7 @@ module.exports = function (grunt) {
             'js/interfaces/EventSource.js',
             'js/interfaces/EventTarget.js',
             'js/utils/Link.js',
-            'js/utils/MutableLink.js',
+            'js/utils/ValueLink.js',
             'js/utils/OpenChain.js',
             'js/PathCollection.js',
             'js/Event.js',

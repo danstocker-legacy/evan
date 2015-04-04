@@ -15,14 +15,14 @@
 
     test("Link push", function () {
         var chain = evan.OpenChain.create(),
-            link = evan.MutableLink.create();
+            link = evan.ValueLink.create();
 
         strictEqual(chain.pushLink(link), chain, "should be chainable");
         strictEqual(chain.firstLink.afterLink, link, "should set pushed link in chain");
     });
 
     test("Link pop", function () {
-        var link = evan.MutableLink.create(),
+        var link = evan.ValueLink.create(),
             chain = evan.OpenChain.create()
                 .pushLink(link);
 
@@ -32,14 +32,14 @@
 
     test("Link unshift", function () {
         var chain = evan.OpenChain.create(),
-            link = evan.MutableLink.create();
+            link = evan.ValueLink.create();
 
         strictEqual(chain.unshiftLink(link), chain, "should be chainable");
         strictEqual(chain.firstLink.afterLink, link, "should set un-shifted link in chain");
     });
 
     test("Link shift", function () {
-        var link = evan.MutableLink.create(),
+        var link = evan.ValueLink.create(),
             chain = evan.OpenChain.create()
                 .unshiftLink(link);
 
@@ -49,10 +49,10 @@
 
     test("Values getter", function () {
         var chain = evan.OpenChain.create()
-            .pushLink(evan.MutableLink.create().setValue(3))
-            .unshiftLink(evan.MutableLink.create().setValue(2))
-            .unshiftLink(evan.MutableLink.create().setValue(1))
-            .pushLink(evan.MutableLink.create().setValue(4));
+            .pushLink(evan.ValueLink.create().setValue(3))
+            .unshiftLink(evan.ValueLink.create().setValue(2))
+            .unshiftLink(evan.ValueLink.create().setValue(1))
+            .pushLink(evan.ValueLink.create().setValue(4));
 
         deepEqual(chain.getValues(), [1, 2, 3, 4], "should return values in order of links");
     });

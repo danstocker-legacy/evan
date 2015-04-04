@@ -2,16 +2,16 @@
 (function () {
     "use strict";
 
-    module("MutableLink");
+    module("ValueLink");
 
     test("Instantiation", function () {
-        var link = evan.MutableLink.create();
+        var link = evan.ValueLink.create();
 
         ok(link.hasOwnProperty('value'), "should add value property");
     });
 
     test("Value setter", function () {
-        var link = evan.MutableLink.create(),
+        var link = evan.ValueLink.create(),
             value = {};
 
         strictEqual(link.setValue(value), link, "should be chainable");
@@ -19,10 +19,10 @@
     });
 
     test("Link removal", function () {
-        var link = evan.MutableLink.create(),
-            afterLink = evan.MutableLink.create()
+        var link = evan.ValueLink.create(),
+            afterLink = evan.ValueLink.create()
                 .addAfter(link),
-            beforeLink = evan.MutableLink.create()
+            beforeLink = evan.ValueLink.create()
                 .addBefore(link);
 
         strictEqual(link.unLink(), link, "should be chainable");

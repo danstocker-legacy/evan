@@ -25,13 +25,13 @@ troop.postpone(evan, 'OpenChain', function () {
             init: function () {
                 /**
                  * First (fixed) link in the chain.
-                 * @type {evan.MutableLink}
+                 * @type {evan.ValueLink}
                  */
                 this.firstLink = evan.Link.create();
 
                 /**
                  * Last (fixed) link in the chain.
-                 * @type {evan.MutableLink}
+                 * @type {evan.ValueLink}
                  */
                 this.lastLink = evan.Link.create()
                     .addAfter(this.firstLink);
@@ -39,7 +39,7 @@ troop.postpone(evan, 'OpenChain', function () {
 
             /**
              * Adds link at the end of the chain.
-             * @param {evan.MutableLink} link
+             * @param {evan.ValueLink} link
              */
             pushLink: function (link) {
                 link.addBefore(this.lastLink);
@@ -48,7 +48,7 @@ troop.postpone(evan, 'OpenChain', function () {
 
             /**
              * Removes link from the end of the chain and returns removed link.
-             * @returns {evan.MutableLink}
+             * @returns {evan.ValueLink}
              */
             popLink: function () {
                 return this.lastLink.beforeLink
@@ -57,7 +57,7 @@ troop.postpone(evan, 'OpenChain', function () {
 
             /**
              * Adds link at the start of the chain.
-             * @param {evan.MutableLink} link
+             * @param {evan.ValueLink} link
              */
             unshiftLink: function (link) {
                 link.addAfter(this.firstLink);
@@ -66,7 +66,7 @@ troop.postpone(evan, 'OpenChain', function () {
 
             /**
              * Removes link from the start of the chain and returns removed link.
-             * @returns {evan.MutableLink}
+             * @returns {evan.ValueLink}
              */
             shiftLink: function () {
                 return this.firstLink.afterLink

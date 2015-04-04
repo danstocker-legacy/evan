@@ -25,7 +25,7 @@
 
         link = eventStack.pushEvent(event);
 
-        ok(link.isA(evan.MutableLink), "should return MutableLink instance");
+        ok(link.isA(evan.ValueLink), "should return ValueLink instance");
         strictEqual(link.value, event, "should set event as link value");
     });
 
