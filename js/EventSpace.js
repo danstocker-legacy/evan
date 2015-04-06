@@ -7,8 +7,6 @@ troop.postpone(evan, 'EventSpace', function () {
 
     /**
      * Instantiates an EventSpace.
-     * Make sure the number of event spaces are kept to a minimum, as all EventSpace instances
-     * will be permanently stored in evan.eventSpaceRegistry.
      * @name evan.EventSpace.create
      * @function
      * @return {evan.EventSpace}
@@ -56,10 +54,9 @@ troop.postpone(evan, 'EventSpace', function () {
             /** @ignore */
             init: function () {
                 /**
-                 * Lookup for subscribed event handlers.
+                 * Lookup for subscribed event handlers. Indexed by event name, then event path (stringified), then handler index.
                  * @type {sntls.Tree}
                  * @constant
-                 * @example {myEvent: {handlers: {myPath: [func1, func2]}, paths: [myPath]}}
                  */
                 this.eventRegistry = sntls.Tree.create();
             },
