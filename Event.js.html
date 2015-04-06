@@ -44,8 +44,9 @@ troop.postpone(evan, 'Event', function () {
     /**
      * An event is an object that may traverse in an event space.
      * Events carry all information regarding their position & properties.
-     * @class evan.Event
+     * @class
      * @extends troop.Base
+     * @extends evan.EventSource
      */
     evan.Event = self
         .addPrivateMethods(/** @lends evan.Event# */{
@@ -108,9 +109,9 @@ troop.postpone(evan, 'Event', function () {
                 /**
                  * Evan event or DOM event that led to triggering the current event.
                  * In most cases, this property is not set directly, but through
-                 * evan.eventPropertyStack.pushOriginalEvent()
+                 * evan.pushOriginalEvent()
                  * @type {evan.Event|*}
-                 * @see evan.eventPropertyStack.pushOriginalEvent
+                 * @see evan.pushOriginalEvent
                  */
                 this.originalEvent = undefined;
 
@@ -127,13 +128,13 @@ troop.postpone(evan, 'Event', function () {
                 this.handled = false;
 
                 /**
-                 * Custom payload to be carried by the event
-                 * In most cases, this property is not set directly, but through
-                 * evan.eventPropertyStack.pushPayload()
-                 * @type {*}
-                 * @see evan.eventPropertyStack.pushPayload
+                 * Custom payload to be carried by the event.
+                 * In most cases, this property is not modified directly, but through
+                 * evan.setNextPayloadItem()
+                 * @type {object}
+                 * @see evan.setNextPayloadItem
                  */
-                this.payload = undefined;
+                this.payload = {};
 
                 /**
                  * Path reflecting current state of bubbling
@@ -270,12 +271,36 @@ troop.postpone(evan, 'Event', function () {
             },
 
             /**
-             * Sets event payload. Payload is a reference carried by the event as it bubbles.
-             * @param {*} [payload]
+             * Sets an item on the event payload.
+             * An event may carry multiple payload items set by multiple sources.
+             * User payloads are usually set via evan.setNextPayloadItem.
+             * @param {string} payloadName
+             * @param {*} payloadValue
+             * @return {evan.Event}
+             * @see evan.EventSpace#setNextPayloadItem
+             */
+            setPayloadItem: function (payloadName, payloadValue) {
+                this.payload[payloadName] = payloadValue;
+                return this;
+            },
+
+            /**
+             * Sets multiple payload items in the current event's payload.
+             * An event may carry multiple payload items set by multiple sources.
+             * User payloads are usually set via evan.setNextPayloadItems.
+             * @param {object} payloadItems
              * @return {evan.Event}
              */
-            setPayload: function (payload) {
-                this.payload = payload;
+            setPayloadItems: function (payloadItems) {
+                var payload = this.payload,
+                    payloadNames = Object.keys(payloadItems),
+                    i, payloadName;
+
+                for (i = 0; i &lt; payloadNames.length; i++) {
+                    payloadName = payloadNames[i];
+                    payload[payloadName] = payloadItems[payloadName];
+                }
+
                 return this;
             },
 
@@ -285,24 +310,20 @@ troop.postpone(evan, 'Event', function () {
              * between stages of bubbling, hence holding on to an event instance in an async handler
              * may not reflect the current paths and payload carried.
              * @param {sntls.Path} [targetPath] Path on which to trigger event.
-             * @param {*} [payload] Extra payload to be passed along with event to handlers.
              * @return {evan.Event}
              */
-            triggerSync: function (targetPath, payload) {
+            triggerSync: function (targetPath) {
+                dessert.isPathOptional(targetPath, "Invalid target path");
+
                 // preparing event for trigger
                 if (targetPath) {
                     this.setTargetPath(targetPath);
-                }
-
-                if (payload) {
-                    this.setPayload(payload);
                 }
 
                 var currentPath = this.currentPath,
                     eventSpace = this.eventSpace,
                     handlerCount;
 
-                dessert.assert(currentPath, "Event is not ready to be triggered");
 
                 if (!this.canBubble || this.originalPath.isA(sntls.Query)) {
                     // event can't bubble because it's not allowed to
@@ -335,11 +356,15 @@ troop.postpone(evan, 'Event', function () {
              * Events spawned by a broadcast do not bubble except for the one that is triggered
              * on the specified broadcast path. It is necessary for delegates to react to
              * broadcasts.
-             * @param {sntls.Path} broadcastPath Target root for broadcast
-             * @param {*} [payload] Extra payload to be passed along with event to handlers.
+             * @param {sntls.Path} [broadcastPath] Target root for broadcast.
              * @return {evan.Event}
              */
-            broadcastSync: function (broadcastPath, payload) {
+            broadcastSync: function (broadcastPath) {
+                dessert.isPathOptional(broadcastPath, "Invalid broadcast path");
+
+                // defaulting to current path in case broadcast path was omitted
+                broadcastPath = broadcastPath || this.currentPath;
+
                 var mainEvent = this._spawnMainBroadcastEvent(broadcastPath),
                     broadcastEvents = this.eventSpace
                         // obtaining subscribed paths relative to broadcast path
@@ -352,7 +377,7 @@ troop.postpone(evan, 'Event', function () {
 
                 // triggering all affected events
                 broadcastEvents
-                    .setPayload(payload || this.payload)
+                    .setPayloadItems(this.payload)
                     .setOriginalEvent(this.originalEvent)
                     .triggerSync();
 
@@ -440,13 +465,13 @@ troop.postpone(evan, 'EventCollection', function () {
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="dessert.html">dessert</a></li><li><a href="evan.Event.html">Event</a></li><li><a href="evan.EventCollection.html">EventCollection</a></li><li><a href="evan.Evented.html">Evented</a></li><li><a href="evan.EventPropertyStack.html">EventPropertyStack</a></li><li><a href="evan.EventSpace.html">EventSpace</a></li><li><a href="evan.PathCollection.html">PathCollection</a></li></ul><h3>Namespaces</h3><ul><li><a href="evan.html">evan</a></li><li><a href="sntls.html">sntls</a></li><li><a href="troop.html">troop</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="dessert.html">dessert</a></li><li><a href="evan.Event.html">Event</a></li><li><a href="evan.EventCollection.html">EventCollection</a></li><li><a href="evan.Evented.html">Evented</a></li><li><a href="evan.EventSource.html">EventSource</a></li><li><a href="evan.EventSpace.html">EventSpace</a></li><li><a href="evan.EventSpawner.html">EventSpawner</a></li><li><a href="evan.EventStack.html">EventStack</a></li><li><a href="evan.EventTarget.html">EventTarget</a></li><li><a href="evan.Link.html">Link</a></li><li><a href="evan.OpenChain.html">OpenChain</a></li><li><a href="evan.PathCollection.html">PathCollection</a></li><li><a href="evan.PayloadStore.html">PayloadStore</a></li><li><a href="evan.ValueLink.html">ValueLink</a></li></ul><h3>Namespaces</h3><ul><li><a href="evan.html">evan</a></li><li><a href="sntls.html">sntls</a></li><li><a href="troop.html">troop</a></li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Sun Mar 01 2015 16:37:31 GMT-0000 (GMT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Mon Apr 06 2015 12:36:27 GMT+0100 (BST)
 </footer>
 
 <script> prettyPrint(); </script>

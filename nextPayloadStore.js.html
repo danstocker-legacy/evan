@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: PathCollection.js</title>
+    <title>JSDoc: Source: globals/nextPayloadStore.js</title>
     
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Source: PathCollection.js</h1>
+    <h1 class="page-title">Source: globals/nextPayloadStore.js</h1>
     
     
 
@@ -26,27 +26,68 @@
     <section>
         <article>
             <pre class="prettyprint source"><code>/*global dessert, troop, sntls, evan */
-troop.postpone(evan, 'PathCollection', function () {
+troop.postpone(evan, 'nextPayloadStore', function () {
     "use strict";
 
     /**
-     * @name evan.PathCollection.create
-     * @function
-     * @param {object} [items] Initial contents.
-     * @return {evan.PathCollection}
+     * Temporary storage for event payload.
+     * @type {evan.PayloadStore}
      */
+    evan.nextPayloadStore = evan.PayloadStore.create();
+});
+
+troop.postpone(evan, 'setNextPayloadItem', function () {
+    "use strict";
 
     /**
-     * @name evan.PathCollection#asArray
-     * @ignore
+     * Associates a payload item with an event name.
+     * Subsequent events by the specified name will carry the specified payload item.
+     * @param {string} eventName
+     * @param {string} payloadItemName
+     * @param {*} payloadItemValue
      */
+    evan.setNextPayloadItem = function (eventName, payloadItemName, payloadItemValue) {
+        evan.nextPayloadStore.setPayloadItem(eventName, payloadItemName, payloadItemValue);
+    };
+});
+
+troop.postpone(evan, 'setNextPayloadItems', function () {
+    "use strict";
 
     /**
-     * @class evan.PathCollection
-     * @extends sntls.Collection
-     * @extends sntls.Path
+     * Associates multiple payload items with an event name.
+     * @param {string} eventName
+     * @param {object} payload
      */
-    evan.PathCollection = sntls.Collection.of(sntls.Path);
+    evan.setNextPayloadItems = function (eventName, payload) {
+        evan.nextPayloadStore.setPayloadItems(eventName, payload);
+    };
+});
+
+troop.postpone(evan, 'deleteNextPayloadItem', function () {
+    "use strict";
+
+    /**
+     * Dissociates a payload item from an event name.
+     * @param {string} eventName
+     * @param {string} payloadItemName
+     */
+    evan.deleteNextPayloadItem = function (eventName, payloadItemName) {
+        evan.nextPayloadStore.deletePayloadItem(eventName, payloadItemName);
+    };
+});
+
+troop.postpone(evan, 'deleteNextPayloadItems', function () {
+    "use strict";
+
+    /**
+     * Dissociates multiple payload items from an event name.
+     * Pass item names following the first argument.
+     * @param {string} eventName
+     */
+    evan.deleteNextPayloadItems = function (eventName) {
+        evan.nextPayloadStore.deletePayloadItems.apply(this, arguments);
+    };
 });
 </code></pre>
         </article>

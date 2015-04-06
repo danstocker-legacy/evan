@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Namespace: evan</title>
+    <title>JSDoc: Class: PayloadStore</title>
     
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Namespace: evan</h1>
+    <h1 class="page-title">Class: PayloadStore</h1>
     
     
 
@@ -27,19 +27,30 @@
     
 <header>
     <h2>
-    evan
+        <span class="ancestors"><a href="evan.html">evan</a>.</span>
+    
+    PayloadStore
     </h2>
     
 </header>  
 
 <article>
     <div class="container-overview">
+<dd>
+    
+    
+    <div class="description">
+        Stores event payload items indexed by event name and item name.
+    </div>
+    
+
     
     
     
-        
-        
-        
+    
+    
+    
+    
 <dl class="details">
     
         
@@ -62,7 +73,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="namespace.js.html">namespace.js</a>, line 6
+        <a href="PayloadStore.js.html">PayloadStore.js</a>, line 19
     </li></ul></dd>
     
     
@@ -73,60 +84,31 @@
     
 </dl>
 
-        
-        
+    
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
     
     </div>
     
     
+        <h3 class="subsection-title">Extends</h3>
+        
+        <ul>
+            <li>troop.Base</li>
+        </ul>
     
     
     
     
     
     
-        <h3 class="subsection-title">Classes</h3>
-        
-        <dl>
-            <dt><a href="evan.Event.html">Event</a></dt>
-            <dd></dd>
-        
-            <dt><a href="evan.EventCollection.html">EventCollection</a></dt>
-            <dd></dd>
-        
-            <dt><a href="evan.Evented.html">Evented</a></dt>
-            <dd></dd>
-        
-            <dt><a href="evan.EventSource.html">EventSource</a></dt>
-            <dd></dd>
-        
-            <dt><a href="evan.EventSpace.html">EventSpace</a></dt>
-            <dd></dd>
-        
-            <dt><a href="evan.EventSpawner.html">EventSpawner</a></dt>
-            <dd></dd>
-        
-            <dt><a href="evan.EventStack.html">EventStack</a></dt>
-            <dd></dd>
-        
-            <dt><a href="evan.EventTarget.html">EventTarget</a></dt>
-            <dd></dd>
-        
-            <dt><a href="evan.Link.html">Link</a></dt>
-            <dd></dd>
-        
-            <dt><a href="evan.OpenChain.html">OpenChain</a></dt>
-            <dd></dd>
-        
-            <dt><a href="evan.PathCollection.html">PathCollection</a></dt>
-            <dd></dd>
-        
-            <dt><a href="evan.PayloadStore.html">PayloadStore</a></dt>
-            <dd></dd>
-        
-            <dt><a href="evan.ValueLink.html">ValueLink</a></dt>
-            <dd></dd>
-        </dl>
     
     
     
@@ -137,15 +119,11 @@
         <dl>
             
 <dt>
-    <h4 class="name" id="eventSpace"><span class="type-signature">&lt;static> </span>eventSpace<span class="type-signature"> :<a href="evan.EventSpace.html">evan.EventSpace</a></span></h4>
+    <h4 class="name" id="payloads"><span class="type-signature"></span>payloads<span class="type-signature"> :sntls.Tree</span></h4>
     
     
 </dt>
 <dd>
-    
-    <div class="description">
-        Global, shared event space.
-    </div>
     
     
     
@@ -171,111 +149,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="eventSpace.js_.html">globals/eventSpace.js</a>, line 9
-    </li></ul></dd>
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="nextPayloadStore"><span class="type-signature">&lt;static> </span>nextPayloadStore<span class="type-signature"> :<a href="evan.PayloadStore.html">evan.PayloadStore</a></span></h4>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        Temporary storage for event payload.
-    </div>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="nextPayloadStore.js.html">globals/nextPayloadStore.js</a>, line 9
-    </li></ul></dd>
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="originalEventStack"><span class="type-signature">&lt;static> </span>originalEventStack<span class="type-signature"> :Array</span></h4>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        Global stack for original events.
-    </div>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="originalEventStack.js.html">globals/originalEventStack.js</a>, line 9
+        <a href="PayloadStore.js.html">PayloadStore.js</a>, line 26
     </li></ul></dd>
     
     
@@ -299,7 +173,86 @@
         <dl>
             
 <dt>
-    <h4 class="name" id="deleteNextPayloadItem"><span class="type-signature">&lt;static> </span>deleteNextPayloadItem<span class="signature">(eventName, payloadItemName)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="create"><span class="type-signature">&lt;static> </span>create<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="evan.PayloadStore.html">evan.PayloadStore</a>}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="PayloadStore.js.html">PayloadStore.js</a>, line 8
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type"><a href="evan.PayloadStore.html">evan.PayloadStore</a></span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="deletePayloadItem"><span class="type-signature"></span>deletePayloadItem<span class="signature">(eventName, payloadItemName)</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -411,7 +364,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="nextPayloadStore.js.html">globals/nextPayloadStore.js</a>, line 48
+        <a href="PayloadStore.js.html">PayloadStore.js</a>, line 64
     </li></ul></dd>
     
     
@@ -435,7 +388,7 @@
         
             
 <dt>
-    <h4 class="name" id="deleteNextPayloadItems"><span class="type-signature">&lt;static> </span>deleteNextPayloadItems<span class="signature">(eventName)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="deletePayloadItems"><span class="type-signature"></span>deletePayloadItems<span class="signature">(eventName)</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -525,7 +478,7 @@ Pass item names following the first argument.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="nextPayloadStore.js.html">globals/nextPayloadStore.js</a>, line 61
+        <a href="PayloadStore.js.html">PayloadStore.js</a>, line 74
     </li></ul></dd>
     
     
@@ -549,16 +502,12 @@ Pass item names following the first argument.
         
             
 <dt>
-    <h4 class="name" id="pushOriginalEvent"><span class="type-signature">&lt;static> </span>pushOriginalEvent<span class="signature">(originalEvent)</span><span class="type-signature"> &rarr; {<a href="evan.ValueLink.html">evan.ValueLink</a>}</span></h4>
+    <h4 class="name" id="getPayload"><span class="type-signature"></span>getPayload<span class="signature">(eventName)</span><span class="type-signature"> &rarr; {object}</span></h4>
     
     
 </dt>
 <dd>
     
-    
-    <div class="description">
-        Adds an original event to the stack.
-    </div>
     
 
     
@@ -591,16 +540,13 @@ Pass item names following the first argument.
 	
         <tr>
             
-                <td class="name"><code>originalEvent</code></td>
+                <td class="name"><code>eventName</code></td>
             
             
             <td class="type">
             
                 
-<span class="param-type"><a href="evan.Event.html">evan.Event</a></span>
-|
-
-<span class="param-type">*</span>
+<span class="param-type">string</span>
 
 
             
@@ -641,7 +587,7 @@ Pass item names following the first argument.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="originalEventStack.js.html">globals/originalEventStack.js</a>, line 20
+        <a href="PayloadStore.js.html">PayloadStore.js</a>, line 90
     </li></ul></dd>
     
     
@@ -669,7 +615,7 @@ Pass item names following the first argument.
 	</dt>
 	<dd>
 		
-<span class="param-type"><a href="evan.ValueLink.html">evan.ValueLink</a></span>
+<span class="param-type">object</span>
 
 
 	</dd>
@@ -683,7 +629,7 @@ Pass item names following the first argument.
         
             
 <dt>
-    <h4 class="name" id="setNextPayloadItem"><span class="type-signature">&lt;static> </span>setNextPayloadItem<span class="signature">(eventName, payloadItemName, payloadItemValue)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="setPayloadItem"><span class="type-signature"></span>setPayloadItem<span class="signature">(eventName, payloadItemName, payloadItemValue)</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -819,7 +765,7 @@ Subsequent events by the specified name will carry the specified payload item.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="nextPayloadStore.js.html">globals/nextPayloadStore.js</a>, line 22
+        <a href="PayloadStore.js.html">PayloadStore.js</a>, line 36
     </li></ul></dd>
     
     
@@ -843,7 +789,7 @@ Subsequent events by the specified name will carry the specified payload item.
         
             
 <dt>
-    <h4 class="name" id="setNextPayloadItems"><span class="type-signature">&lt;static> </span>setNextPayloadItems<span class="signature">(eventName, payload)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="setPayloadItems"><span class="type-signature"></span>setPayloadItems<span class="signature">(eventName, payload)</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -955,7 +901,7 @@ Subsequent events by the specified name will carry the specified payload item.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="nextPayloadStore.js.html">globals/nextPayloadStore.js</a>, line 35
+        <a href="PayloadStore.js.html">PayloadStore.js</a>, line 46
     </li></ul></dd>
     
     
@@ -998,7 +944,7 @@ Subsequent events by the specified name will carry the specified payload item.
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Mon Apr 06 2015 12:36:27 GMT+0100 (BST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Mon Apr 06 2015 12:36:28 GMT+0100 (BST)
 </footer>
 
 <script> prettyPrint(); </script>

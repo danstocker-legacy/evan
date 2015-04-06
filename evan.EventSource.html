@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: PathCollection</title>
+    <title>JSDoc: Class: EventSource</title>
     
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Class: PathCollection</h1>
+    <h1 class="page-title">Class: EventSource</h1>
     
     
 
@@ -29,7 +29,7 @@
     <h2>
         <span class="ancestors"><a href="evan.html">evan</a>.</span>
     
-    PathCollection
+    EventSource
     </h2>
     
 </header>  
@@ -38,6 +38,10 @@
     <div class="container-overview">
 <dd>
     
+    
+    <div class="description">
+        Interface that marks a class as a source of events, ie. triggering and broadcasting events.
+    </div>
     
 
     
@@ -69,7 +73,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathCollection.js.html">PathCollection.js</a>, line 9
+        <a href="EventSource.js.html">interfaces/EventSource.js</a>, line 1
     </li></ul></dd>
     
     
@@ -97,9 +101,7 @@
         <h3 class="subsection-title">Extends</h3>
         
         <ul>
-            <li>sntls.Collection</li>
-        
-            <li>sntls.Path</li>
+            <li>troop.Base</li>
         </ul>
     
     
@@ -119,78 +121,24 @@
         <dl>
             
 <dt>
-    <h4 class="name" id="create"><span class="type-signature">&lt;static> </span>create<span class="signature">(<span class="optional">items</span>)</span><span class="type-signature"> &rarr; {<a href="evan.PathCollection.html">evan.PathCollection</a>}</span></h4>
+    <h4 class="name" id="broadcastSync"><span class="type-signature"></span>broadcastSync<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="evan.EventSource.html">evan.EventSource</a>}</span></h4>
     
     
 </dt>
 <dd>
     
     
+    <div class="description">
+        Broadcasts an event of a specific type on a specific path in a specific event space.
+These parameters may be passed to this method, or defined elsewhere depending on the implementation.
+Broadcast events will call all handlers subscribed at a path relative to the broadcast path.
+    </div>
+    
 
     
     
     
     
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		<th>Argument</th>
-		
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>items</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-            
-            </td>
-            
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-                    
-                
-                    
-                
-                </td>
-            
-            
-            
-            
-            <td class="description last">Initial contents.</td>
-        </tr>
-	
-	
-	</tbody>
-</table>
     
     
     
@@ -216,7 +164,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathCollection.js.html">PathCollection.js</a>, line 5
+        <a href="EventSource.js.html">interfaces/EventSource.js</a>, line 5
     </li></ul></dd>
     
     
@@ -244,7 +192,92 @@
 	</dt>
 	<dd>
 		
-<span class="param-type"><a href="evan.PathCollection.html">evan.PathCollection</a></span>
+<span class="param-type"><a href="evan.EventSource.html">evan.EventSource</a></span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="triggerSync"><span class="type-signature"></span>triggerSync<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="evan.EventSource.html">evan.EventSource</a>}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Triggers an event of a specific type on a specific path in a specific event space.
+These parameters may be passed to this method, or defined elsewhere depending on the implementation.
+Triggered events are unidirectional, optionally bubbling towards the root path.
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="EventSource.js.html">interfaces/EventSource.js</a>, line 3
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type"><a href="evan.EventSource.html">evan.EventSource</a></span>
 
 
 	</dd>
@@ -277,7 +310,7 @@
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Mon Apr 06 2015 12:36:28 GMT+0100 (BST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Mon Apr 06 2015 12:36:27 GMT+0100 (BST)
 </footer>
 
 <script> prettyPrint(); </script>

@@ -74,7 +74,7 @@ Events carry all information regarding their position & properties.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Event.js.html">Event.js</a>, line 10
+        <a href="Event.js.html">Event.js</a>, line 24
     </li></ul></dd>
     
     
@@ -103,6 +103,8 @@ Events carry all information regarding their position & properties.
         
         <ul>
             <li>troop.Base</li>
+        
+            <li><a href="evan.EventSource.html">evan.EventSource</a></li>
         </ul>
     
     
@@ -155,7 +157,7 @@ the event was triggered as part of a broadcast.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Event.js.html">Event.js</a>, line 128
+        <a href="Event.js.html">Event.js</a>, line 129
     </li></ul></dd>
     
     
@@ -207,7 +209,7 @@ the event was triggered as part of a broadcast.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Event.js.html">Event.js</a>, line 79
+        <a href="Event.js.html">Event.js</a>, line 80
     </li></ul></dd>
     
     
@@ -259,7 +261,7 @@ the event was triggered as part of a broadcast.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Event.js.html">Event.js</a>, line 115
+        <a href="Event.js.html">Event.js</a>, line 116
     </li></ul></dd>
     
     
@@ -311,7 +313,7 @@ the event was triggered as part of a broadcast.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Event.js.html">Event.js</a>, line 94
+        <a href="Event.js.html">Event.js</a>, line 95
     </li></ul></dd>
     
     
@@ -359,7 +361,7 @@ the event was triggered as part of a broadcast.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Event.js.html">Event.js</a>, line 67
+        <a href="Event.js.html">Event.js</a>, line 68
     </li></ul></dd>
     
     
@@ -407,7 +409,7 @@ the event was triggered as part of a broadcast.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Event.js.html">Event.js</a>, line 73
+        <a href="Event.js.html">Event.js</a>, line 74
     </li></ul></dd>
     
     
@@ -459,7 +461,7 @@ the event was triggered as part of a broadcast.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Event.js.html">Event.js</a>, line 100
+        <a href="Event.js.html">Event.js</a>, line 101
     </li></ul></dd>
     
     
@@ -486,7 +488,7 @@ the event was triggered as part of a broadcast.
     <div class="description">
         Evan event or DOM event that led to triggering the current event.
 In most cases, this property is not set directly, but through
-evan.eventPropertyStack.pushOriginalEvent()
+evan.pushOriginalEvent()
     </div>
     
     
@@ -513,7 +515,7 @@ evan.eventPropertyStack.pushOriginalEvent()
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Event.js.html">Event.js</a>, line 88
+        <a href="Event.js.html">Event.js</a>, line 89
     </li></ul></dd>
     
     
@@ -523,7 +525,7 @@ evan.eventPropertyStack.pushOriginalEvent()
     <dt class="tag-see">See:</dt>
     <dd class="tag-see">
         <ul>
-            <li>evan.eventPropertyStack.pushOriginalEvent</li>
+            <li><a href="evan.html#pushOriginalEvent">evan.pushOriginalEvent</a></li>
         </ul>
     </dd>
     
@@ -572,7 +574,7 @@ evan.eventPropertyStack.pushOriginalEvent()
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Event.js.html">Event.js</a>, line 121
+        <a href="Event.js.html">Event.js</a>, line 122
     </li></ul></dd>
     
     
@@ -590,16 +592,16 @@ evan.eventPropertyStack.pushOriginalEvent()
         
             
 <dt>
-    <h4 class="name" id="payload"><span class="type-signature"></span>payload<span class="type-signature"> :*</span></h4>
+    <h4 class="name" id="payload"><span class="type-signature"></span>payload<span class="type-signature"> :object</span></h4>
     
     
 </dt>
 <dd>
     
     <div class="description">
-        Custom payload to be carried by the event
-In most cases, this property is not set directly, but through
-evan.eventPropertyStack.pushPayload()
+        Custom payload to be carried by the event.
+In most cases, this property is not modified directly, but through
+evan.setNextPayloadItem()
     </div>
     
     
@@ -626,7 +628,7 @@ evan.eventPropertyStack.pushPayload()
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Event.js.html">Event.js</a>, line 109
+        <a href="Event.js.html">Event.js</a>, line 110
     </li></ul></dd>
     
     
@@ -636,7 +638,7 @@ evan.eventPropertyStack.pushPayload()
     <dt class="tag-see">See:</dt>
     <dd class="tag-see">
         <ul>
-            <li>evan.eventPropertyStack.pushPayload</li>
+            <li><a href="evan.html#setNextPayloadItem">evan.setNextPayloadItem</a></li>
         </ul>
     </dd>
     
@@ -924,7 +926,7 @@ Broadcast events do not bubble.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Event.js.html">Event.js</a>, line 45
+        <a href="Event.js.html">Event.js</a>, line 46
     </li></ul></dd>
     
     
@@ -1055,7 +1057,7 @@ Broadcast events do not bubble.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Event.js.html">Event.js</a>, line 31
+        <a href="Event.js.html">Event.js</a>, line 32
     </li></ul></dd>
     
     
@@ -1186,7 +1188,7 @@ Broadcast events do not bubble.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Event.js.html">Event.js</a>, line 166
+        <a href="Event.js.html">Event.js</a>, line 167
     </li></ul></dd>
     
     
@@ -1228,7 +1230,7 @@ Broadcast events do not bubble.
         
             
 <dt>
-    <h4 class="name" id="broadcastSync"><span class="type-signature"></span>broadcastSync<span class="signature">(broadcastPath, <span class="optional">payload</span>)</span><span class="type-signature"> &rarr; {<a href="evan.Event.html">evan.Event</a>}</span></h4>
+    <h4 class="name" id="broadcastSync"><span class="type-signature"></span>broadcastSync<span class="signature">(<span class="optional">broadcastPath</span>)</span><span class="type-signature"> &rarr; {<a href="evan.Event.html">evan.Event</a>}</span></h4>
     
     
 </dt>
@@ -1290,37 +1292,6 @@ broadcasts.
             
                 <td class="attributes">
                 
-                    
-                
-                    
-                
-                </td>
-            
-            
-            
-            
-            <td class="description last">Target root for broadcast</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>payload</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">*</span>
-
-
-            
-            </td>
-            
-            
-                <td class="attributes">
-                
                     &lt;optional><br>
                 
                     
@@ -1332,7 +1303,7 @@ broadcasts.
             
             
             
-            <td class="description last">Extra payload to be passed along with event to handlers.</td>
+            <td class="description last">Target root for broadcast.</td>
         </tr>
 	
 	
@@ -1363,7 +1334,7 @@ broadcasts.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Event.js.html">Event.js</a>, line 315
+        <a href="Event.js.html">Event.js</a>, line 335
     </li></ul></dd>
     
     
@@ -1508,7 +1479,7 @@ Override in subclasses to clone additional properties.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Event.js.html">Event.js</a>, line 138
+        <a href="Event.js.html">Event.js</a>, line 139
     </li></ul></dd>
     
     
@@ -1591,7 +1562,7 @@ Override in subclasses to clone additional properties.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Event.js.html">Event.js</a>, line 186
+        <a href="Event.js.html">Event.js</a>, line 187
     </li></ul></dd>
     
     
@@ -1681,7 +1652,7 @@ Override in subclasses to clone additional properties.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Event.js.html">Event.js</a>, line 217
+        <a href="Event.js.html">Event.js</a>, line 218
     </li></ul></dd>
     
     
@@ -1812,7 +1783,7 @@ Override in subclasses to clone additional properties.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Event.js.html">Event.js</a>, line 239
+        <a href="Event.js.html">Event.js</a>, line 240
     </li></ul></dd>
     
     
@@ -1946,7 +1917,7 @@ Override in subclasses to clone additional properties.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Event.js.html">Event.js</a>, line 177
+        <a href="Event.js.html">Event.js</a>, line 178
     </li></ul></dd>
     
     
@@ -1988,7 +1959,7 @@ Override in subclasses to clone additional properties.
         
             
 <dt>
-    <h4 class="name" id="setPayload"><span class="type-signature"></span>setPayload<span class="signature">(<span class="optional">payload</span>)</span><span class="type-signature"> &rarr; {<a href="evan.Event.html">evan.Event</a>}</span></h4>
+    <h4 class="name" id="setPayloadItem"><span class="type-signature"></span>setPayloadItem<span class="signature">(payloadName, payloadValue)</span><span class="type-signature"> &rarr; {<a href="evan.Event.html">evan.Event</a>}</span></h4>
     
     
 </dt>
@@ -1996,7 +1967,9 @@ Override in subclasses to clone additional properties.
     
     
     <div class="description">
-        Sets event payload. Payload is a reference carried by the event as it bubbles.
+        Sets an item on the event payload.
+An event may carry multiple payload items set by multiple sources.
+User payloads are usually set via evan.setNextPayloadItem.
     </div>
     
 
@@ -2018,8 +1991,6 @@ Override in subclasses to clone additional properties.
 		<th>Type</th>
 		
 		
-		<th>Argument</th>
-		
 		
 		
 		
@@ -2032,7 +2003,30 @@ Override in subclasses to clone additional properties.
 	
         <tr>
             
-                <td class="name"><code>payload</code></td>
+                <td class="name"><code>payloadName</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last"></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>payloadValue</code></td>
             
             
             <td class="type">
@@ -2044,16 +2038,6 @@ Override in subclasses to clone additional properties.
             
             </td>
             
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-                    
-                
-                    
-                
-                </td>
             
             
             
@@ -2089,7 +2073,147 @@ Override in subclasses to clone additional properties.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Event.js.html">Event.js</a>, line 250
+        <a href="Event.js.html">Event.js</a>, line 255
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li>evan.EventSpace#setNextPayloadItem</li>
+        </ul>
+    </dd>
+    
+    
+    
+</dl>
+
+    
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type"><a href="evan.Event.html">evan.Event</a></span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="setPayloadItems"><span class="type-signature"></span>setPayloadItems<span class="signature">(payloadItems)</span><span class="type-signature"> &rarr; {<a href="evan.Event.html">evan.Event</a>}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Sets multiple payload items in the current event's payload.
+An event may carry multiple payload items set by multiple sources.
+User payloads are usually set via evan.setNextPayloadItems.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>payloadItems</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last"></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Event.js.html">Event.js</a>, line 267
     </li></ul></dd>
     
     
@@ -2220,7 +2344,7 @@ Override in subclasses to clone additional properties.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Event.js.html">Event.js</a>, line 227
+        <a href="Event.js.html">Event.js</a>, line 228
     </li></ul></dd>
     
     
@@ -2262,7 +2386,7 @@ Override in subclasses to clone additional properties.
         
             
 <dt>
-    <h4 class="name" id="triggerSync"><span class="type-signature"></span>triggerSync<span class="signature">(<span class="optional">targetPath</span>, <span class="optional">payload</span>)</span><span class="type-signature"> &rarr; {<a href="evan.Event.html">evan.Event</a>}</span></h4>
+    <h4 class="name" id="triggerSync"><span class="type-signature"></span>triggerSync<span class="signature">(<span class="optional">targetPath</span>)</span><span class="type-signature"> &rarr; {<a href="evan.Event.html">evan.Event</a>}</span></h4>
     
     
 </dt>
@@ -2339,39 +2463,6 @@ may not reflect the current paths and payload carried.
         </tr>
 	
 	
-	
-        <tr>
-            
-                <td class="name"><code>payload</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">*</span>
-
-
-            
-            </td>
-            
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-                    
-                
-                    
-                
-                </td>
-            
-            
-            
-            
-            <td class="description last">Extra payload to be passed along with event to handlers.</td>
-        </tr>
-	
-	
 	</tbody>
 </table>
     
@@ -2399,7 +2490,7 @@ may not reflect the current paths and payload carried.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Event.js.html">Event.js</a>, line 264
+        <a href="Event.js.html">Event.js</a>, line 288
     </li></ul></dd>
     
     
@@ -2454,13 +2545,13 @@ may not reflect the current paths and payload carried.
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="dessert.html">dessert</a></li><li><a href="evan.Event.html">Event</a></li><li><a href="evan.EventCollection.html">EventCollection</a></li><li><a href="evan.Evented.html">Evented</a></li><li><a href="evan.EventPropertyStack.html">EventPropertyStack</a></li><li><a href="evan.EventSpace.html">EventSpace</a></li><li><a href="evan.PathCollection.html">PathCollection</a></li></ul><h3>Namespaces</h3><ul><li><a href="evan.html">evan</a></li><li><a href="sntls.html">sntls</a></li><li><a href="troop.html">troop</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="dessert.html">dessert</a></li><li><a href="evan.Event.html">Event</a></li><li><a href="evan.EventCollection.html">EventCollection</a></li><li><a href="evan.Evented.html">Evented</a></li><li><a href="evan.EventSource.html">EventSource</a></li><li><a href="evan.EventSpace.html">EventSpace</a></li><li><a href="evan.EventSpawner.html">EventSpawner</a></li><li><a href="evan.EventStack.html">EventStack</a></li><li><a href="evan.EventTarget.html">EventTarget</a></li><li><a href="evan.Link.html">Link</a></li><li><a href="evan.OpenChain.html">OpenChain</a></li><li><a href="evan.PathCollection.html">PathCollection</a></li><li><a href="evan.PayloadStore.html">PayloadStore</a></li><li><a href="evan.ValueLink.html">ValueLink</a></li></ul><h3>Namespaces</h3><ul><li><a href="evan.html">evan</a></li><li><a href="sntls.html">sntls</a></li><li><a href="troop.html">troop</a></li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Sun Mar 01 2015 16:37:32 GMT-0000 (GMT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Mon Apr 06 2015 12:36:27 GMT+0100 (BST)
 </footer>
 
 <script> prettyPrint(); </script>

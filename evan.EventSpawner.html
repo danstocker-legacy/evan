@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: PathCollection</title>
+    <title>JSDoc: Class: EventSpawner</title>
     
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Class: PathCollection</h1>
+    <h1 class="page-title">Class: EventSpawner</h1>
     
     
 
@@ -29,7 +29,7 @@
     <h2>
         <span class="ancestors"><a href="evan.html">evan</a>.</span>
     
-    PathCollection
+    EventSpawner
     </h2>
     
 </header>  
@@ -38,6 +38,10 @@
     <div class="container-overview">
 <dd>
     
+    
+    <div class="description">
+        Interface that marks a class as an event spawner. Event spawners create and prepare instances of evan.Event.
+    </div>
     
 
     
@@ -69,7 +73,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathCollection.js.html">PathCollection.js</a>, line 9
+        <a href="EventSpawner.js.html">interfaces/EventSpawner.js</a>, line 1
     </li></ul></dd>
     
     
@@ -97,9 +101,7 @@
         <h3 class="subsection-title">Extends</h3>
         
         <ul>
-            <li>sntls.Collection</li>
-        
-            <li>sntls.Path</li>
+            <li>troop.Base</li>
         </ul>
     
     
@@ -119,12 +121,16 @@
         <dl>
             
 <dt>
-    <h4 class="name" id="create"><span class="type-signature">&lt;static> </span>create<span class="signature">(<span class="optional">items</span>)</span><span class="type-signature"> &rarr; {<a href="evan.PathCollection.html">evan.PathCollection</a>}</span></h4>
+    <h4 class="name" id="spawnEvent"><span class="type-signature"></span>spawnEvent<span class="signature">(eventName)</span><span class="type-signature"> &rarr; {<a href="evan.Event.html">evan.Event</a>}</span></h4>
     
     
 </dt>
 <dd>
     
+    
+    <div class="description">
+        Creates and prepares and event with the specified name.
+    </div>
     
 
     
@@ -145,8 +151,6 @@
 		<th>Type</th>
 		
 		
-		<th>Argument</th>
-		
 		
 		
 		
@@ -159,33 +163,23 @@
 	
         <tr>
             
-                <td class="name"><code>items</code></td>
+                <td class="name"><code>eventName</code></td>
             
             
             <td class="type">
             
                 
-<span class="param-type">object</span>
+<span class="param-type">string</span>
 
 
             
             </td>
             
             
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-                    
-                
-                    
-                
-                </td>
             
             
             
-            
-            <td class="description last">Initial contents.</td>
+            <td class="description last"></td>
         </tr>
 	
 	
@@ -216,7 +210,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PathCollection.js.html">PathCollection.js</a>, line 5
+        <a href="EventSpawner.js.html">interfaces/EventSpawner.js</a>, line 3
     </li></ul></dd>
     
     
@@ -244,7 +238,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type"><a href="evan.PathCollection.html">evan.PathCollection</a></span>
+<span class="param-type"><a href="evan.Event.html">evan.Event</a></span>
 
 
 	</dd>

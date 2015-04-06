@@ -34,8 +34,6 @@ troop.postpone(evan, 'EventSpace', function () {
 
     /**
      * Instantiates an EventSpace.
-     * Make sure the number of event spaces are kept to a minimum, as all EventSpace instances
-     * will be permanently stored in evan.eventSpaceRegistry.
      * @name evan.EventSpace.create
      * @function
      * @return {evan.EventSpace}
@@ -43,9 +41,10 @@ troop.postpone(evan, 'EventSpace', function () {
 
     /**
      * Events traverse within a confined event space.
-     * @class evan.EventSpace
+     * @class
      * @extends troop.Base
-     * @extends sntls.Documented
+     * @extends evan.EventSpawner
+     * @extends evan.EventTarget
      */
     evan.EventSpace = self
         .addPrivateMethods(/** @lends evan.EventSpace */{
@@ -61,21 +60,19 @@ troop.postpone(evan, 'EventSpace', function () {
             /**
              * Prepares spawned event for triggering.
              * @param {evan.Event} event
-             * @param {*} [payload]
              * @private
              */
-            _prepareEvent: function (event, payload) {
-                var eventPropertyStack = evan.eventPropertyStack;
+            _prepareEvent: function (event) {
+                var nextPayloadItems = evan.nextPayloadStore.getPayload(event.eventName),
+                    nextOriginalEvent = evan.originalEventStack.getLastEvent();
 
-                payload = payload || eventPropertyStack.getNextPayload();
-
-                if (payload) {
-                    event.setPayload(payload);
+                if (nextPayloadItems) {
+                    // applying next payload on spawned event
+                    event.setPayloadItems(nextPayloadItems);
                 }
 
-                var nextOriginalEvent = eventPropertyStack.getNextOriginalEvent();
-
                 if (nextOriginalEvent) {
+                    // setting next original event on spawned event
                     event.setOriginalEvent(nextOriginalEvent);
                 }
             }
@@ -83,27 +80,21 @@ troop.postpone(evan, 'EventSpace', function () {
         .addMethods(/** @lends evan.EventSpace# */{
             /** @ignore */
             init: function () {
-                sntls.Documented.init.call(this);
-
                 /**
-                 * Lookup for subscribed event handlers.
+                 * Lookup for subscribed event handlers. Indexed by event name, then event path (stringified), then handler index.
                  * @type {sntls.Tree}
                  * @constant
-                 * @example {myEvent: {handlers: {myPath: [func1, func2]}, paths: [myPath]}}
                  */
                 this.eventRegistry = sntls.Tree.create();
-
-                evan.eventSpaceRegistry.setItem(this.instanceId, this);
             },
 
             /**
              * @param {string} eventName
-             * @param {*} [payload]
              * @return {evan.Event}
              */
-            spawnEvent: function (eventName, payload) {
+            spawnEvent: function (eventName) {
                 var event = evan.Event.create(eventName, this);
-                this._prepareEvent(event, payload);
+                this._prepareEvent(event);
                 return event;
             },
 
@@ -123,8 +114,7 @@ troop.postpone(evan, 'EventSpace', function () {
                     eventPathString = eventPath.toString(),
                     handlers = eventRegistry.getOrSetNode(
                         [eventPathString, eventName].toPath(),
-                        this._generateHandlersStub
-                    );
+                        this._generateHandlersStub);
 
                 // adding handler to handlers
                 handlers.push(handler);
@@ -331,13 +321,13 @@ troop.postpone(evan, 'EventSpace', function () {
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="dessert.html">dessert</a></li><li><a href="evan.Event.html">Event</a></li><li><a href="evan.EventCollection.html">EventCollection</a></li><li><a href="evan.Evented.html">Evented</a></li><li><a href="evan.EventPropertyStack.html">EventPropertyStack</a></li><li><a href="evan.EventSpace.html">EventSpace</a></li><li><a href="evan.PathCollection.html">PathCollection</a></li></ul><h3>Namespaces</h3><ul><li><a href="evan.html">evan</a></li><li><a href="sntls.html">sntls</a></li><li><a href="troop.html">troop</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="dessert.html">dessert</a></li><li><a href="evan.Event.html">Event</a></li><li><a href="evan.EventCollection.html">EventCollection</a></li><li><a href="evan.Evented.html">Evented</a></li><li><a href="evan.EventSource.html">EventSource</a></li><li><a href="evan.EventSpace.html">EventSpace</a></li><li><a href="evan.EventSpawner.html">EventSpawner</a></li><li><a href="evan.EventStack.html">EventStack</a></li><li><a href="evan.EventTarget.html">EventTarget</a></li><li><a href="evan.Link.html">Link</a></li><li><a href="evan.OpenChain.html">OpenChain</a></li><li><a href="evan.PathCollection.html">PathCollection</a></li><li><a href="evan.PayloadStore.html">PayloadStore</a></li><li><a href="evan.ValueLink.html">ValueLink</a></li></ul><h3>Namespaces</h3><ul><li><a href="evan.html">evan</a></li><li><a href="sntls.html">sntls</a></li><li><a href="troop.html">troop</a></li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Sun Mar 01 2015 16:37:31 GMT-0000 (GMT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Mon Apr 06 2015 12:36:27 GMT+0100 (BST)
 </footer>
 
 <script> prettyPrint(); </script>

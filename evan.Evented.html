@@ -75,7 +75,7 @@ events on a specified event space directly.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Evented.js.html">Evented.js</a>, line 8
+        <a href="Evented.js.html">Evented.js</a>, line 18
     </li></ul></dd>
     
     
@@ -104,6 +104,12 @@ events on a specified event space directly.
         
         <ul>
             <li>troop.Base</li>
+        
+            <li><a href="evan.EventSpawner.html">evan.EventSpawner</a></li>
+        
+            <li><a href="evan.EventSource.html">evan.EventSource</a></li>
+        
+            <li><a href="evan.EventTarget.html">evan.EventTarget</a></li>
         </ul>
     
     
@@ -155,7 +161,7 @@ events on a specified event space directly.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Evented.js.html">Evented.js</a>, line 70
+        <a href="Evented.js.html">Evented.js</a>, line 73
     </li></ul></dd>
     
     
@@ -264,7 +270,7 @@ events on a specified event space directly.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Evented.js.html">Evented.js</a>, line 22
+        <a href="Evented.js.html">Evented.js</a>, line 25
     </li></ul></dd>
     
     
@@ -414,7 +420,7 @@ events on a specified event space directly.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Evented.js.html">Evented.js</a>, line 50
+        <a href="Evented.js.html">Evented.js</a>, line 53
     </li></ul></dd>
     
     
@@ -438,7 +444,7 @@ events on a specified event space directly.
         
             
 <dt>
-    <h4 class="name" id="broadcastSync"><span class="type-signature"></span>broadcastSync<span class="signature">(eventName, <span class="optional">payload</span>)</span><span class="type-signature"> &rarr; {<a href="evan.Evented.html">evan.Evented</a>}</span></h4>
+    <h4 class="name" id="broadcastSync"><span class="type-signature"></span>broadcastSync<span class="signature">(eventName)</span><span class="type-signature"> &rarr; {<a href="evan.Evented.html">evan.Evented</a>}</span></h4>
     
     
 </dt>
@@ -469,8 +475,6 @@ associated with the instance / class.
 		<th>Type</th>
 		
 		
-		<th>Argument</th>
-		
 		
 		
 		
@@ -496,51 +500,10 @@ associated with the instance / class.
             </td>
             
             
-                <td class="attributes">
-                
-                    
-                
-                    
-                
-                </td>
-            
             
             
             
             <td class="description last"></td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>payload</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">*</span>
-
-
-            
-            </td>
-            
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-                    
-                
-                    
-                
-                </td>
-            
-            
-            
-            
-            <td class="description last">Payload to be set on triggered event. Overrides payloadStack property.</td>
         </tr>
 	
 	
@@ -571,7 +534,7 @@ associated with the instance / class.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Evented.js.html">Evented.js</a>, line 211
+        <a href="Evented.js.html">Evented.js</a>, line 206
     </li></ul></dd>
     
     
@@ -749,7 +712,7 @@ Handlers subscribed this way CANNOT be unsubscribed individually.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Evented.js.html">Evented.js</a>, line 177
+        <a href="Evented.js.html">Evented.js</a>, line 182
     </li></ul></dd>
     
     
@@ -791,184 +754,18 @@ Handlers subscribed this way CANNOT be unsubscribed individually.
         
             
 <dt>
-    <h4 class="name" id="spawnEvent"><span class="type-signature"></span>spawnEvent<span class="signature">(eventName, <span class="optional">payload</span>)</span><span class="type-signature"> &rarr; {<a href="evan.Event.html">evan.Event</a>}</span></h4>
+    <h4 class="name" id="spawnEvent"><span class="type-signature"></span>spawnEvent<span class="signature">(eventName)</span><span class="type-signature"> &rarr; {<a href="evan.Event.html">evan.Event</a>}</span></h4>
     
     
 </dt>
 <dd>
     
     
-
-    
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		<th>Argument</th>
-		
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>eventName</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-            
-            
-                <td class="attributes">
-                
-                    
-                
-                    
-                
-                </td>
-            
-            
-            
-            
-            <td class="description last"></td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>payload</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">*</span>
-
-
-            
-            </td>
-            
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-                    
-                
-                    
-                
-                </td>
-            
-            
-            
-            
-            <td class="description last"></td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-        <dt class="important tag-deprecated">Deprecated:</dt><dd class="yes-def tag-deprecated"><ul class="dummy"><li>Yes</li></ul></dd>
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Evented.js.html">Evented.js</a>, line 79
-    </li></ul></dd>
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-            
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type"><a href="evan.Event.html">evan.Event</a></span>
-
-
-	</dd>
-</dl>
-
-        
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="spawnPlainEvent"><span class="type-signature"></span>spawnPlainEvent<span class="signature">(eventName)</span><span class="type-signature"> &rarr; {<a href="evan.Event.html">evan.Event</a>}</span></h4>
-    
-    
-</dt>
-<dd>
-    
+    <div class="description">
+        Spawns an event in the current event space, prepared with the current event path
+as the target path. Returned event may be triggered without specifying a target path.
+Current eventSpace and eventPath properties must not be undefined.
+    </div>
     
 
     
@@ -1048,7 +845,7 @@ Handlers subscribed this way CANNOT be unsubscribed individually.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Evented.js.html">Evented.js</a>, line 187
+        <a href="Evented.js.html">Evented.js</a>, line 83
     </li></ul></dd>
     
     
@@ -1203,7 +1000,7 @@ is triggered on (or bubbles to) the specified path.</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Evented.js.html">Evented.js</a>, line 132
+        <a href="Evented.js.html">Evented.js</a>, line 137
     </li></ul></dd>
     
     
@@ -1358,7 +1155,7 @@ is triggered on (or bubbles to) the specified path.</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Evented.js.html">Evented.js</a>, line 163
+        <a href="Evented.js.html">Evented.js</a>, line 168
     </li></ul></dd>
     
     
@@ -1400,7 +1197,7 @@ is triggered on (or bubbles to) the specified path.</td>
         
             
 <dt>
-    <h4 class="name" id="triggerSync"><span class="type-signature"></span>triggerSync<span class="signature">(eventName, <span class="optional">payload</span>)</span><span class="type-signature"> &rarr; {<a href="evan.Evented.html">evan.Evented</a>}</span></h4>
+    <h4 class="name" id="triggerSync"><span class="type-signature"></span>triggerSync<span class="signature">(eventName)</span><span class="type-signature"> &rarr; {<a href="evan.Evented.html">evan.Evented</a>}</span></h4>
     
     
 </dt>
@@ -1431,8 +1228,6 @@ associated with the instance / class.
 		<th>Type</th>
 		
 		
-		<th>Argument</th>
-		
 		
 		
 		
@@ -1458,51 +1253,10 @@ associated with the instance / class.
             </td>
             
             
-                <td class="attributes">
-                
-                    
-                
-                    
-                
-                </td>
-            
             
             
             
             <td class="description last"></td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>payload</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">*</span>
-
-
-            
-            </td>
-            
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-                    
-                
-                    
-                
-                </td>
-            
-            
-            
-            
-            <td class="description last">Payload to be set on triggered event. Overrides payloadStack property.</td>
         </tr>
 	
 	
@@ -1533,7 +1287,7 @@ associated with the instance / class.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Evented.js.html">Evented.js</a>, line 198
+        <a href="Evented.js.html">Evented.js</a>, line 194
     </li></ul></dd>
     
     
@@ -1709,7 +1463,7 @@ associated with the instance / class.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Evented.js.html">Evented.js</a>, line 144
+        <a href="Evented.js.html">Evented.js</a>, line 149
     </li></ul></dd>
     
     
@@ -1764,13 +1518,13 @@ associated with the instance / class.
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="dessert.html">dessert</a></li><li><a href="evan.Event.html">Event</a></li><li><a href="evan.EventCollection.html">EventCollection</a></li><li><a href="evan.Evented.html">Evented</a></li><li><a href="evan.EventPropertyStack.html">EventPropertyStack</a></li><li><a href="evan.EventSpace.html">EventSpace</a></li><li><a href="evan.PathCollection.html">PathCollection</a></li></ul><h3>Namespaces</h3><ul><li><a href="evan.html">evan</a></li><li><a href="sntls.html">sntls</a></li><li><a href="troop.html">troop</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="dessert.html">dessert</a></li><li><a href="evan.Event.html">Event</a></li><li><a href="evan.EventCollection.html">EventCollection</a></li><li><a href="evan.Evented.html">Evented</a></li><li><a href="evan.EventSource.html">EventSource</a></li><li><a href="evan.EventSpace.html">EventSpace</a></li><li><a href="evan.EventSpawner.html">EventSpawner</a></li><li><a href="evan.EventStack.html">EventStack</a></li><li><a href="evan.EventTarget.html">EventTarget</a></li><li><a href="evan.Link.html">Link</a></li><li><a href="evan.OpenChain.html">OpenChain</a></li><li><a href="evan.PathCollection.html">PathCollection</a></li><li><a href="evan.PayloadStore.html">PayloadStore</a></li><li><a href="evan.ValueLink.html">ValueLink</a></li></ul><h3>Namespaces</h3><ul><li><a href="evan.html">evan</a></li><li><a href="sntls.html">sntls</a></li><li><a href="troop.html">troop</a></li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Sun Mar 01 2015 16:37:32 GMT-0000 (GMT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Mon Apr 06 2015 12:36:27 GMT+0100 (BST)
 </footer>
 
 <script> prettyPrint(); </script>

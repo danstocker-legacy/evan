@@ -73,7 +73,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="EventSpace.js.html">EventSpace.js</a>, line 10
+        <a href="EventSpace.js.html">EventSpace.js</a>, line 22
     </li></ul></dd>
     
     
@@ -103,7 +103,9 @@
         <ul>
             <li>troop.Base</li>
         
-            <li>sntls.Documented</li>
+            <li><a href="evan.EventSpawner.html">evan.EventSpawner</a></li>
+        
+            <li><a href="evan.EventTarget.html">evan.EventTarget</a></li>
         </ul>
     
     
@@ -128,7 +130,7 @@
 <dd>
     
     <div class="description">
-        Lookup for subscribed event handlers.
+        Lookup for subscribed event handlers. Indexed by event name, then event path (stringified), then handler index.
     </div>
     
     
@@ -155,7 +157,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="EventSpace.js.html">EventSpace.js</a>, line 67
+        <a href="EventSpace.js.html">EventSpace.js</a>, line 61
     </li></ul></dd>
     
     
@@ -167,11 +169,6 @@
 </dl>
 
     
-    
-        <h5>Example</h5>
-        
-    <pre class="prettyprint"><code> {myEvent: {handlers: {myPath: [func1, func2]}, paths: [myPath]}}</code></pre>
-
     
 </dd>
 
@@ -225,7 +222,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="EventSpace.js.html">EventSpace.js</a>, line 30
+        <a href="EventSpace.js.html">EventSpace.js</a>, line 29
     </li></ul></dd>
     
     
@@ -267,7 +264,7 @@
         
             
 <dt>
-    <h4 class="name" id="_prepareEvent"><span class="type-signature">&lt;private, static> </span>_prepareEvent<span class="signature">(event, <span class="optional">payload</span>)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="_prepareEvent"><span class="type-signature">&lt;private, static> </span>_prepareEvent<span class="signature">(event)</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -297,8 +294,6 @@
 		<th>Type</th>
 		
 		
-		<th>Argument</th>
-		
 		
 		
 		
@@ -323,47 +318,6 @@
             
             </td>
             
-            
-                <td class="attributes">
-                
-                    
-                
-                    
-                
-                </td>
-            
-            
-            
-            
-            <td class="description last"></td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>payload</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">*</span>
-
-
-            
-            </td>
-            
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-                    
-                
-                    
-                
-                </td>
             
             
             
@@ -399,7 +353,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="EventSpace.js.html">EventSpace.js</a>, line 40
+        <a href="EventSpace.js.html">EventSpace.js</a>, line 38
     </li></ul></dd>
     
     
@@ -432,8 +386,6 @@
     
     <div class="description">
         Instantiates an EventSpace.
-Make sure the number of event spaces are kept to a minimum, as all EventSpace instances
-will be permanently stored in evan.eventSpaceRegistry.
     </div>
     
 
@@ -598,7 +550,7 @@ Handlers are assumed to be synchronous.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="EventSpace.js.html">EventSpace.js</a>, line 233
+        <a href="EventSpace.js.html">EventSpace.js</a>, line 223
     </li></ul></dd>
     
     
@@ -813,7 +765,7 @@ Handlers subscribed this way CANNOT be unsubscribed individually.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="EventSpace.js.html">EventSpace.js</a>, line 196
+        <a href="EventSpace.js.html">EventSpace.js</a>, line 186
     </li></ul></dd>
     
     
@@ -971,7 +923,7 @@ Handlers subscribed this way CANNOT be unsubscribed individually.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="EventSpace.js.html">EventSpace.js</a>, line 259
+        <a href="EventSpace.js.html">EventSpace.js</a>, line 249
     </li></ul></dd>
     
     
@@ -1018,7 +970,7 @@ Question is which lib/class should delegate the method.
         
             
 <dt>
-    <h4 class="name" id="spawnEvent"><span class="type-signature"></span>spawnEvent<span class="signature">(eventName, <span class="optional">payload</span>)</span><span class="type-signature"> &rarr; {<a href="evan.Event.html">evan.Event</a>}</span></h4>
+    <h4 class="name" id="spawnEvent"><span class="type-signature"></span>spawnEvent<span class="signature">(eventName)</span><span class="type-signature"> &rarr; {<a href="evan.Event.html">evan.Event</a>}</span></h4>
     
     
 </dt>
@@ -1044,8 +996,6 @@ Question is which lib/class should delegate the method.
 		<th>Type</th>
 		
 		
-		<th>Argument</th>
-		
 		
 		
 		
@@ -1070,47 +1020,6 @@ Question is which lib/class should delegate the method.
             
             </td>
             
-            
-                <td class="attributes">
-                
-                    
-                
-                    
-                
-                </td>
-            
-            
-            
-            
-            <td class="description last"></td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>payload</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">*</span>
-
-
-            
-            </td>
-            
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-                    
-                
-                    
-                
-                </td>
             
             
             
@@ -1146,7 +1055,7 @@ Question is which lib/class should delegate the method.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="EventSpace.js.html">EventSpace.js</a>, line 77
+        <a href="EventSpace.js.html">EventSpace.js</a>, line 68
     </li></ul></dd>
     
     
@@ -1325,7 +1234,7 @@ is triggered on (or bubbles to) the specified path.</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="EventSpace.js.html">EventSpace.js</a>, line 92
+        <a href="EventSpace.js.html">EventSpace.js</a>, line 83
     </li></ul></dd>
     
     
@@ -1503,7 +1412,7 @@ is triggered on (or bubbles to) the specified path.</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="EventSpace.js.html">EventSpace.js</a>, line 167
+        <a href="EventSpace.js.html">EventSpace.js</a>, line 157
     </li></ul></dd>
     
     
@@ -1720,7 +1629,7 @@ TODO: Consider changing unsetKey to unsetPath. Measure performance impact.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="EventSpace.js.html">EventSpace.js</a>, line 119
+        <a href="EventSpace.js.html">EventSpace.js</a>, line 109
     </li></ul></dd>
     
     
@@ -1775,13 +1684,13 @@ TODO: Consider changing unsetKey to unsetPath. Measure performance impact.
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="dessert.html">dessert</a></li><li><a href="evan.Event.html">Event</a></li><li><a href="evan.EventCollection.html">EventCollection</a></li><li><a href="evan.Evented.html">Evented</a></li><li><a href="evan.EventPropertyStack.html">EventPropertyStack</a></li><li><a href="evan.EventSpace.html">EventSpace</a></li><li><a href="evan.PathCollection.html">PathCollection</a></li></ul><h3>Namespaces</h3><ul><li><a href="evan.html">evan</a></li><li><a href="sntls.html">sntls</a></li><li><a href="troop.html">troop</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="dessert.html">dessert</a></li><li><a href="evan.Event.html">Event</a></li><li><a href="evan.EventCollection.html">EventCollection</a></li><li><a href="evan.Evented.html">Evented</a></li><li><a href="evan.EventSource.html">EventSource</a></li><li><a href="evan.EventSpace.html">EventSpace</a></li><li><a href="evan.EventSpawner.html">EventSpawner</a></li><li><a href="evan.EventStack.html">EventStack</a></li><li><a href="evan.EventTarget.html">EventTarget</a></li><li><a href="evan.Link.html">Link</a></li><li><a href="evan.OpenChain.html">OpenChain</a></li><li><a href="evan.PathCollection.html">PathCollection</a></li><li><a href="evan.PayloadStore.html">PayloadStore</a></li><li><a href="evan.ValueLink.html">ValueLink</a></li></ul><h3>Namespaces</h3><ul><li><a href="evan.html">evan</a></li><li><a href="sntls.html">sntls</a></li><li><a href="troop.html">troop</a></li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Sun Mar 01 2015 16:37:32 GMT-0000 (GMT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Mon Apr 06 2015 12:36:28 GMT+0100 (BST)
 </footer>
 
 <script> prettyPrint(); </script>

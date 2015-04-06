@@ -36,8 +36,11 @@ troop.postpone(evan, 'Evented', function () {
      * Trait.
      * Classes with this trait may trigger and capture
      * events on a specified event space directly.
-     * @class evan.Evented
+     * @class
      * @extends troop.Base
+     * @extends evan.EventSpawner
+     * @extends evan.EventSource
+     * @extends evan.EventTarget
      */
     evan.Evented = self
         .addPrivateMethods(/** @lends evan.Evented# */{
@@ -50,7 +53,7 @@ troop.postpone(evan, 'Evented', function () {
                 var result = [],
                     items = dictionary.items,
                     keys = Object.keys(items),
-                    i, key, values, handler,
+                    i, key, values,
                     j;
 
                 for (i = 0; i &lt; keys.length; i++) {
@@ -98,13 +101,15 @@ troop.postpone(evan, 'Evented', function () {
             },
 
             /**
+             * Spawns an event in the current event space, prepared with the current event path
+             * as the target path. Returned event may be triggered without specifying a target path.
+             * Current eventSpace and eventPath properties must not be undefined.
              * @param {string} eventName
-             * @param {*} [payload]
              * @return {evan.Event}
-             * @deprecated
              */
-            spawnEvent: function (eventName, payload) {
-                return this.eventSpace.spawnEvent(eventName, payload);
+            spawnEvent: function (eventName) {
+                return this.eventSpace.spawnEvent(eventName)
+                    .setTargetPath(this.eventPath);
             },
 
             /**
@@ -208,22 +213,13 @@ troop.postpone(evan, 'Evented', function () {
             },
 
             /**
-             * @param {string} eventName
-             * @returns {evan.Event}
-             */
-            spawnPlainEvent: function (eventName) {
-                return evan.Event.create(eventName, this.eventSpace);
-            },
-
-            /**
              * Shorthand for **triggering** an event in the event space
              * associated with the instance / class.
              * @param {string} eventName
-             * @param {*} [payload] Payload to be set on triggered event. Overrides payloadStack property.
              * @return {evan.Evented}
              */
-            triggerSync: function (eventName, payload) {
-                this.spawnEvent(eventName, payload)
+            triggerSync: function (eventName) {
+                this.spawnEvent(eventName)
                     .triggerSync(this.eventPath);
                 return this;
             },
@@ -232,11 +228,10 @@ troop.postpone(evan, 'Evented', function () {
              * Shorthand for **broadcasting** an event in the event space
              * associated with the instance / class.
              * @param {string} eventName
-             * @param {*} [payload] Payload to be set on triggered event. Overrides payloadStack property.
              * @return {evan.Evented}
              */
-            broadcastSync: function (eventName, payload) {
-                this.spawnEvent(eventName, payload)
+            broadcastSync: function (eventName) {
+                this.spawnEvent(eventName)
                     .broadcastSync(this.eventPath);
                 return this;
             }
@@ -252,13 +247,13 @@ troop.postpone(evan, 'Evented', function () {
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="dessert.html">dessert</a></li><li><a href="evan.Event.html">Event</a></li><li><a href="evan.EventCollection.html">EventCollection</a></li><li><a href="evan.Evented.html">Evented</a></li><li><a href="evan.EventPropertyStack.html">EventPropertyStack</a></li><li><a href="evan.EventSpace.html">EventSpace</a></li><li><a href="evan.PathCollection.html">PathCollection</a></li></ul><h3>Namespaces</h3><ul><li><a href="evan.html">evan</a></li><li><a href="sntls.html">sntls</a></li><li><a href="troop.html">troop</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="dessert.html">dessert</a></li><li><a href="evan.Event.html">Event</a></li><li><a href="evan.EventCollection.html">EventCollection</a></li><li><a href="evan.Evented.html">Evented</a></li><li><a href="evan.EventSource.html">EventSource</a></li><li><a href="evan.EventSpace.html">EventSpace</a></li><li><a href="evan.EventSpawner.html">EventSpawner</a></li><li><a href="evan.EventStack.html">EventStack</a></li><li><a href="evan.EventTarget.html">EventTarget</a></li><li><a href="evan.Link.html">Link</a></li><li><a href="evan.OpenChain.html">OpenChain</a></li><li><a href="evan.PathCollection.html">PathCollection</a></li><li><a href="evan.PayloadStore.html">PayloadStore</a></li><li><a href="evan.ValueLink.html">ValueLink</a></li></ul><h3>Namespaces</h3><ul><li><a href="evan.html">evan</a></li><li><a href="sntls.html">sntls</a></li><li><a href="troop.html">troop</a></li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Sun Mar 01 2015 16:37:31 GMT-0000 (GMT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Mon Apr 06 2015 12:36:27 GMT+0100 (BST)
 </footer>
 
 <script> prettyPrint(); </script>

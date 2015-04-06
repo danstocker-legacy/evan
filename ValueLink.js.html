@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: exports.js</title>
+    <title>JSDoc: Source: utils/ValueLink.js</title>
     
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Source: exports.js</h1>
+    <h1 class="page-title">Source: utils/ValueLink.js</h1>
     
     
 
@@ -25,13 +25,63 @@
     
     <section>
         <article>
-            <pre class="prettyprint source"><code>/**
- * Library exports
- */
-/*global evan, module */
-if (typeof module === 'object') {
-    module.exports = evan;
-}
+            <pre class="prettyprint source"><code>/*global dessert, troop, sntls, evan */
+troop.postpone(evan, 'ValueLink', function () {
+    "use strict";
+
+    var base = evan.Link,
+        self = base.extend();
+
+    /**
+     * Creates a ValueLink instance.
+     * @name evan.ValueLink.create
+     * @function
+     * @returns {evan.ValueLink}
+     */
+
+    /**
+     * Link that carries a value, and has the option to be unlinked.
+     * @class
+     * @extends evan.Link
+     */
+    evan.ValueLink = self
+        .addMethods(/** @lends evan.ValueLink# */{
+            /** @ignore */
+            init: function () {
+                base.init.call(this);
+
+                /**
+                 * Value associated with link.
+                 * @type {*}
+                 */
+                this.value = undefined;
+            },
+
+            /**
+             * Sets link value.
+             * @param {*} value
+             * @returns {evan.ValueLink}
+             */
+            setValue: function (value) {
+                this.value = value;
+                return this;
+            },
+
+            /**
+             * Removes link from the chain.
+             * @returns {evan.ValueLink}
+             */
+            unLink: function () {
+                this.nextLink.previousLink = this.previousLink;
+                this.previousLink.nextLink = this.nextLink;
+
+                this.previousLink = undefined;
+                this.nextLink = undefined;
+
+                return this;
+            }
+        });
+});
 </code></pre>
         </article>
     </section>
