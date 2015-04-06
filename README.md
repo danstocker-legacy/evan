@@ -11,6 +11,8 @@ Evan is based on [Troop](https://github.com/production-minds/troop) for OOP and 
 
 [Reference](http://danstocker.github.io/evan/)
 
+[Npm package](https://www.npmjs.com/package/evan)
+
 Features
 --------
 
