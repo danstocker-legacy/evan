@@ -105,7 +105,7 @@ troop.postpone(evan, 'Event', function () {
                  * In most cases, this property is not modified directly, but through
                  * evan.setNextPayloadItem()
                  * @type {object}
-                 * @see evan.setNextPayloadItem()
+                 * @see evan.setNextPayloadItem
                  */
                 this.payload = {};
 
