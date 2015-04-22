@@ -59,6 +59,7 @@ troop.postpone(evan, 'deleteNextPayloadItems', function () {
      * @param {string} eventName
      */
     evan.deleteNextPayloadItems = function (eventName) {
-        evan.nextPayloadStore.deletePayloadItems.apply(this, arguments);
+        var nextPayloadStore = evan.nextPayloadStore;
+        nextPayloadStore.deletePayloadItems.apply(nextPayloadStore, arguments);
     };
 });
