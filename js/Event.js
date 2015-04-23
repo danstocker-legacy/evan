@@ -367,6 +367,7 @@ troop.postpone(evan, 'Event', function () {
 
                 // triggering all affected events
                 broadcastEvents
+                    .setSender(this.sender)
                     .setPayloadItems(this.payload)
                     .setOriginalEvent(this.originalEvent)
                     .triggerSync();

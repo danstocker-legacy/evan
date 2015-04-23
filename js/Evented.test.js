@@ -357,11 +357,13 @@
 
     test("Triggering events", function () {
         var triggeredPaths = [],
+            senders = [],
             evented = EventedStaticClass.create('test>path>foo'.toPath());
 
         // subscribing handlers
         function eventHandler(event) {
             triggeredPaths.push(event.currentPath.toString());
+            senders.push(event.sender);
         }
 
         EventedStaticClass.subscribeTo('myEvent', eventHandler);
@@ -372,18 +374,23 @@
         deepEqual(triggeredPaths, ['test>path>foo', 'test>path'],
             "should hit both instance and static subscriptions");
 
+        deepEqual(senders, [evented, evented],
+            "should pass evented instance as sender");
+
         EventedStaticClass.unsubscribeFrom('myEvent');
         evented.unsubscribeFrom('myEvent');
     });
 
     test("Broadcasting", function () {
         var triggeredPaths,
+            senders,
             evented1 = EventedStaticClass.create('test>path>foo'.toPath()),
             evented2 = EventedStaticClass.create('test>path>bar'.toPath());
 
         // subscribing handlers
         function eventHandler(event) {
             triggeredPaths.push(event.currentPath.toString());
+            senders.push(event.sender);
         }
 
         EventedStaticClass.subscribeTo('myEvent', eventHandler);
@@ -392,21 +399,29 @@
 
         // broadcasting on instance
         triggeredPaths = [];
+        senders = [];
         evented1.broadcastSync('myEvent');
         deepEqual(
             triggeredPaths.sort(),
             ['test>path', 'test>path>foo'],
-            "should hit instance and static subscriptions when broadcasting on class"
-        );
+            "should hit all instance subscriptions when broadcasting on instance");
+        deepEqual(
+            senders,
+            [evented1, evented1],
+            "should hit all instance subscriptions when broadcasting on instance");
 
         // broadcasting on class
         triggeredPaths = [];
+        senders = [];
         EventedStaticClass.broadcastSync('myEvent');
         deepEqual(
             triggeredPaths.sort(),
             ['test>path', 'test>path>bar', 'test>path>foo'],
-            "should hit all instance subscriptions when broadcasting on instance"
-        );
+            "should hit instance and static subscriptions when broadcasting on class");
+        deepEqual(
+            senders,
+            [EventedStaticClass, EventedStaticClass, EventedStaticClass],
+            "should carry class as sender when broadcasting on class");
 
         EventedStaticClass.unsubscribeFrom('myEvent');
         evented1.unsubscribeFrom('myEvent');

@@ -193,6 +193,7 @@ troop.postpone(evan, 'Evented', function () {
              */
             triggerSync: function (eventName) {
                 this.spawnEvent(eventName)
+                    .setSender(this)
                     .triggerSync(this.eventPath);
                 return this;
             },
@@ -205,6 +206,7 @@ troop.postpone(evan, 'Evented', function () {
              */
             broadcastSync: function (eventName) {
                 this.spawnEvent(eventName)
+                    .setSender(this)
                     .broadcastSync(this.eventPath);
                 return this;
             }
