@@ -101,6 +101,12 @@ troop.postpone(evan, 'Event', function () {
                 this.handled = false;
 
                 /**
+                 * Identifies the sender of the event.
+                 * @type {*}
+                 */
+                this.sender = undefined;
+
+                /**
                  * Custom payload to be carried by the event.
                  * In most cases, this property is not modified directly, but through
                  * evan.setNextPayloadItem()
@@ -154,6 +160,7 @@ troop.postpone(evan, 'Event', function () {
                 result.handled = this.handled;
 
                 // transferring load
+                result.sender = this.sender;
                 result.payload = this.payload;
 
                 return result;
@@ -172,7 +179,7 @@ troop.postpone(evan, 'Event', function () {
 
             /**
              * Sets original event that led to triggering the current event.
-             * @param {even.Event|*} originalEvent
+             * @param {evan.Event|*} originalEvent
              * @returns {evan.Event}
              */
             setOriginalEvent: function (originalEvent) {
@@ -240,6 +247,16 @@ troop.postpone(evan, 'Event', function () {
             setBroadcastPath: function (broadcastPath) {
                 dessert.isPath(broadcastPath, "Invalid broadcast path");
                 this.broadcastPath = broadcastPath;
+                return this;
+            },
+
+            /**
+             * Sets event sender reference.
+             * @param {*} sender
+             * @returns {evan.Event}
+             */
+            setSender: function (sender) {
+                this.sender = sender;
                 return this;
             },
 

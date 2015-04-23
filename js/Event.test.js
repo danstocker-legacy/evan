@@ -27,6 +27,7 @@
 
         equal(typeof event.originalPath, 'undefined', "should clear original path");
         equal(typeof event.currentPath, 'undefined', "should clear current path");
+        equal(typeof event.sender, 'undefined', "should set sender property");
         deepEqual(event.payload, {}, "should set payload property");
     });
 
@@ -52,7 +53,8 @@
         notStrictEqual(originalEvent.currentPath, cloneEvent.currentPath, "should create a new current path");
         equal(originalEvent.currentPath.toString(), cloneEvent.currentPath.toString(), "should transfer contents of current path");
 
-        strictEqual(originalEvent.payload, cloneEvent.payload, "should transfer data load");
+        strictEqual(originalEvent.payload, cloneEvent.payload, "should transfer payload");
+        strictEqual(originalEvent.sender, cloneEvent.sender, "should transfer sender");
 
         currentPath = 'test>path'.toPath();
         cloneEvent = originalEvent.clone(currentPath);
@@ -109,6 +111,14 @@
             "should set different Path instances for originalPath and currentPath");
         equal(event.originalPath.toString(), event.currentPath.toString(),
             "should set originalPath and currentPath with identical contents");
+    });
+
+    test("Sender setter", function () {
+        var event = evan.Event.create('testEvent', eventSpace),
+            sender = {};
+
+        strictEqual(event.setSender(sender), event, "should be chainable");
+        strictEqual(event.sender, sender, "should set sender property");
     });
 
     test("Setting single payload item", function () {
