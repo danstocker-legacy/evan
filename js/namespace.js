@@ -23,9 +23,3 @@ var troop = troop || require('troop');
  * @see https://github.com/danstocker/sntls
  */
 var sntls = sntls || require('sntls');
-
-/**
- * @namespace
- * @see https://github.com/kriskowal/q
- */
-var Q = Q || require('q', 'Q');
