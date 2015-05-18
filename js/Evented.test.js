@@ -332,7 +332,7 @@
     });
 
     test("Spawning event", function () {
-        expect(3);
+        expect(4);
 
         var evented = EventedClass.create('test>path>foo>bar'.toPath()),
             event = eventSpace.spawnEvent('event-name');
@@ -345,6 +345,11 @@
         });
 
         event.addMocks({
+            setSender: function (sender) {
+                strictEqual(sender, evented, "should set sender property");
+                return this;
+            },
+
             setTargetPath: function (targetPath) {
                 strictEqual(targetPath, evented.eventPath, "should set target path");
                 return this;

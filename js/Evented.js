@@ -82,6 +82,7 @@ troop.postpone(evan, 'Evented', function () {
              */
             spawnEvent: function (eventName) {
                 return this.eventSpace.spawnEvent(eventName)
+                    .setSender(this)
                     .setTargetPath(this.eventPath);
             },
 
@@ -193,7 +194,6 @@ troop.postpone(evan, 'Evented', function () {
              */
             triggerSync: function (eventName) {
                 this.spawnEvent(eventName)
-                    .setSender(this)
                     .triggerSync(this.eventPath);
                 return this;
             },
@@ -206,7 +206,6 @@ troop.postpone(evan, 'Evented', function () {
              */
             broadcastSync: function (eventName) {
                 this.spawnEvent(eventName)
-                    .setSender(this)
                     .broadcastSync(this.eventPath);
                 return this;
             }
