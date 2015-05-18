@@ -13,6 +13,7 @@ module.exports = function (grunt) {
             'js/utils/OpenChain.js',
             'js/PathCollection.js',
             'js/Event.js',
+            'js/EventCollection.js',
             'js/EventSpace.js',
             'js/Evented.js',
             'js/EventStack.js',
