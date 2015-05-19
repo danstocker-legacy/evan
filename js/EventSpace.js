@@ -57,6 +57,7 @@ troop.postpone(evan, 'EventSpace', function () {
                  * Lookup for subscribed event handlers. Indexed by event name, then event path (stringified), then handler index.
                  * @type {sntls.Tree}
                  * @constant
+                 * TODO: Rename to subscriptionRegistry. Breaking.
                  */
                 this.eventRegistry = sntls.Tree.create();
             },
@@ -218,7 +219,7 @@ troop.postpone(evan, 'EventSpace', function () {
              * Handlers are assumed to be synchronous.
              * @param {evan.Event} event
              * @return {number|boolean} Number of handlers processed, or false when one handler returned false.
-             * @see evan.Event.trigger
+             * @see evan.Event#triggerSync
              */
             callHandlers: function (event) {
                 var handlersPath = [event.currentPath.toString(), event.eventName].toPath(),
@@ -226,11 +227,16 @@ troop.postpone(evan, 'EventSpace', function () {
                     i = 0, handler;
 
                 if (handlers && handlers.length) {
+                    // making local copy of handlers
+                    // in case any of these handlers end up modifying the subscription registry
+                    handlers = handlers.concat();
+
                     for (; i < handlers.length; i++) {
                         handler = handlers[i];
                         // calling handler, passing event and payload
                         if (handler.call(this, event, event.payload) === false) {
                             // stopping iteration when handler returns false
+                            // TODO: Add .stopPropagation() API to event.
                             return false;
                         }
                     }
