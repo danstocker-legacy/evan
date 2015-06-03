@@ -70,4 +70,12 @@
         strictEqual(afterLink.previousLink, beforeLink, "should set previousLink on old next link");
         strictEqual(beforeLink.nextLink, afterLink, "should set nextLink on old previous link");
     });
+
+    test("Unlinking lone link", function () {
+        var link = evan.Link.create();
+
+        link.unLink();
+        ok(!link.nextLink, "should leave nextLink unaffected");
+        ok(!link.previousLink, "should leave previousLink unaffected");
+    });
 }());

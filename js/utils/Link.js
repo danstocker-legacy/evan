@@ -81,11 +81,19 @@ troop.postpone(evan, 'Link', function () {
              * @returns {evan.Link}
              */
             unLink: function () {
-                this.nextLink.previousLink = this.previousLink;
-                this.previousLink.nextLink = this.nextLink;
+                var nextLink = this.nextLink,
+                    previousLink = this.previousLink;
+
+                if (nextLink) {
+                    nextLink.previousLink = previousLink;
+                }
+                if (previousLink) {
+                    previousLink.nextLink = nextLink;
+                }
 
                 this.previousLink = undefined;
                 this.nextLink = undefined;
+                this.parentChain = undefined;
 
                 return this;
             }
