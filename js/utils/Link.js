@@ -74,6 +74,20 @@ troop.postpone(evan, 'Link', function () {
                 link.previousLink = this;
 
                 return this;
+            },
+
+            /**
+             * Removes link from the chain.
+             * @returns {evan.Link}
+             */
+            unLink: function () {
+                this.nextLink.previousLink = this.previousLink;
+                this.previousLink.nextLink = this.nextLink;
+
+                this.previousLink = undefined;
+                this.nextLink = undefined;
+
+                return this;
             }
         });
 });

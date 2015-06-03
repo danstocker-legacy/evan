@@ -38,20 +38,6 @@ troop.postpone(evan, 'ValueLink', function () {
             setValue: function (value) {
                 this.value = value;
                 return this;
-            },
-
-            /**
-             * Removes link from the chain.
-             * @returns {evan.ValueLink}
-             */
-            unLink: function () {
-                this.nextLink.previousLink = this.previousLink;
-                this.previousLink.nextLink = this.nextLink;
-
-                this.previousLink = undefined;
-                this.nextLink = undefined;
-
-                return this;
             }
         });
 });

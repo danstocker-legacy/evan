@@ -55,5 +55,19 @@
         strictEqual(link.previousLink, previousLink, "should set previousLink on link");
         strictEqual(nextLink.previousLink, link, "should set previousLink on next link");
         strictEqual(previousLink.nextLink, link, "should set nextLink on previous link");
-    });    
+    });
+
+    test("Link removal", function () {
+        var link = evan.Link.create(),
+            afterLink = evan.Link.create()
+                .addAfter(link),
+            beforeLink = evan.Link.create()
+                .addBefore(link);
+
+        strictEqual(link.unLink(), link, "should be chainable");
+        ok(!link.nextLink, "should remove nextLink");
+        ok(!link.previousLink, "should remove previousLink");
+        strictEqual(afterLink.previousLink, beforeLink, "should set previousLink on old next link");
+        strictEqual(beforeLink.nextLink, afterLink, "should set nextLink on old previous link");
+    });
 }());
