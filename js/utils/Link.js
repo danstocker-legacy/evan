@@ -18,6 +18,24 @@ troop.postpone(evan, 'Link', function () {
      * @extends troop.Base
      */
     evan.Link = self
+        .addPrivateMethods(/** @lends evan.Link# */{
+            /**
+             * @param {evan.OpenChain} linkParentChain
+             * @private
+             */
+            _unlinkAndSetParentChain: function (linkParentChain) {
+                var ownParentChain = this.parentChain;
+
+                if (ownParentChain) {
+                    // updating parent
+                    this.unLink();
+                }
+
+                if (ownParentChain !== linkParentChain) {
+                    this.setParentChain(linkParentChain);
+                }
+            }
+        })
         .addMethods(/** @lends evan.Link# */{
             /** @ignore */
             init: function () {
@@ -32,17 +50,27 @@ troop.postpone(evan, 'Link', function () {
                  * @type {evan.Link}
                  */
                 this.nextLink = undefined;
+
+                /**
+                 * Chain instance the link is associated with.
+                 * @type {evan.OpenChain}
+                 */
+                this.parentChain = undefined;
             },
 
             /**
-             * Adds current link after the specified link.
+             * Adds current unconnected link after the specified link.
              * @param {evan.Link} link
              * @returns {evan.Link}
              */
             addAfter: function (link) {
+                dessert.assert(!this.previousLink && !this.nextLink,
+                    "Attempted to connect already connected link");
+
                 // setting links on current link
                 this.previousLink = link;
                 this.nextLink = link.nextLink;
+                this.parentChain = link.parentChain;
 
                 // setting self as previous link on old next link
                 if (link.nextLink) {
@@ -61,9 +89,13 @@ troop.postpone(evan, 'Link', function () {
              * @returns {evan.Link}
              */
             addBefore: function (link) {
+                dessert.assert(!this.previousLink && !this.nextLink,
+                    "Attempted to connect already connected link");
+
                 // setting links on current link
                 this.nextLink = link;
                 this.previousLink = link.previousLink;
+                this.parentChain = link.parentChain;
 
                 // setting self as next link on old previous link
                 if (link.previousLink) {
@@ -95,6 +127,19 @@ troop.postpone(evan, 'Link', function () {
                 this.nextLink = undefined;
                 this.parentChain = undefined;
 
+                return this;
+            },
+
+            /**
+             * Sets the parent chain on unconnected links.
+             * Fails when called on connected links.
+             * @param {evan.OpenChain} parentChain
+             * @returns {evan.Link}
+             */
+            setParentChain: function (parentChain) {
+                dessert.assert(!this.previousLink && !this.nextLink,
+                    "Attempted to set parent chain on connected link");
+                this.parentChain = parentChain;
                 return this;
             }
         });

@@ -11,6 +11,8 @@
         ok(chain.lastLink.instanceOf(evan.Link), "should add lastLink property");
         strictEqual(chain.lastLink.previousLink, chain.firstLink, "should link first to last link");
         strictEqual(chain.firstLink.nextLink, chain.lastLink, "should link last to first link");
+        strictEqual(chain.lastLink.parentChain, chain, "should set parentChain on lastLink");
+        strictEqual(chain.firstLink.parentChain, chain, "should set parentChain on firstLink");
     });
 
     test("Link push", function () {

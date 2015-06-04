@@ -27,7 +27,8 @@ troop.postpone(evan, 'OpenChain', function () {
                  * First (fixed) link in the chain.
                  * @type {evan.ValueLink}
                  */
-                this.firstLink = evan.Link.create();
+                this.firstLink = evan.Link.create()
+                    .setParentChain(this);
 
                 /**
                  * Last (fixed) link in the chain.
