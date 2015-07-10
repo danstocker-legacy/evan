@@ -18,24 +18,6 @@ troop.postpone(evan, 'Link', function () {
      * @extends troop.Base
      */
     evan.Link = self
-        .addPrivateMethods(/** @lends evan.Link# */{
-            /**
-             * @param {evan.OpenChain} linkParentChain
-             * @private
-             */
-            _unlinkAndSetParentChain: function (linkParentChain) {
-                var ownParentChain = this.parentChain;
-
-                if (ownParentChain) {
-                    // updating parent
-                    this.unLink();
-                }
-
-                if (ownParentChain !== linkParentChain) {
-                    this.setParentChain(linkParentChain);
-                }
-            }
-        })
         .addMethods(/** @lends evan.Link# */{
             /** @ignore */
             init: function () {
