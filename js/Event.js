@@ -189,6 +189,7 @@ troop.postpone(evan, 'Event', function () {
 
             /**
              * Retrieves event from chain of original events by type.
+             * @param {function|troop.Base} eventType
              * @returns {evan.Event|*} Original event matching the specified type.
              */
             getOriginalEventByType: function (eventType) {
@@ -212,6 +213,27 @@ troop.postpone(evan, 'Event', function () {
                         } else {
                             that = that.originalEvent;
                         }
+                    }
+                }
+
+                return result;
+            },
+
+            /**
+             * Retrieves event from chain of original events by the name of the event.
+             * @param {string} eventName
+             * @returns {evan.Event|*} Original event matching the specified name.
+             */
+            getOriginalEventByName: function (eventName) {
+                var that = this.originalEvent,
+                    result;
+
+                while (that) {
+                    if (that.eventName === eventName) {
+                        result = that;
+                        break;
+                    } else {
+                        that = that.originalEvent;
                     }
                 }
 
@@ -314,7 +336,6 @@ troop.postpone(evan, 'Event', function () {
                     eventSpace = this.eventSpace,
                     handlerCount;
 
-
                 if (!this.canBubble || this.originalPath.isA(sntls.Query)) {
                     // event can't bubble because it's not allowed to
                     // or because path is a query and queries shouldn't bubble
@@ -389,7 +410,7 @@ troop.postpone(evan, 'Event', function () {
         /** @param {evan.Event} expr */
         isEventOptional: function (expr) {
             return typeof expr === 'undefined' ||
-                   evan.Event.isBaseOf(expr);
+                evan.Event.isBaseOf(expr);
         }
     });
 }());
